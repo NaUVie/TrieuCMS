@@ -4,45 +4,66 @@
     ViewData["Title"] = "Quản lý thành viên";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="text-dark">QUẢN LÝ THÀNH VIÊN</h2>
-        <button class="btn btn-success btn-sm">+ Thêm thành viên mới</button>
+<div class="flat-card">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h3 class="fw-bold mb-1" style="color: #1e293b;">Quản trị thành viên</h3>
+            <p class="text-muted small mb-0">Quản trị phân quyền tài khoản biên tập nội dung & quản trị hệ thống</p>
+        </div>
+        <button class="btn-clean btn-sm">
+            <i class="bi bi-person-plus-fill"></i> Thêm thành viên
+        </button>
     </div>
 
-    <table class="table table-hover shadow-sm border">
-        <thead class="table-light">
-            <tr>
-                <th>ID</th>
-                <th>Tên Đăng Nhập</th>
-                <th>Họ Và Tên</th>
-                <th>Quyền Hạn</th>
-                <th>Thao Tác</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var user in Model)
-            {
+    <div class="clean-table-container">
+        <table class="clean-table">
+            <thead>
                 <tr>
-                    <td>@user.Id</td>
-                    <td><strong>@user.Username</strong></td>
-                    <td>@user.FullName</td>
-                    <td>
-                        @if (user.Role == "Administrator")
-                        {
-                            <span class="badge bg-danger">@user.Role</span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-info text-dark">@user.Role</span>
-                        }
-                    </td>
-                    <td>
-                        <button class="btn btn-sm btn-outline-warning">Sửa</button>
-                        <button class="btn btn-sm btn-outline-danger">Xóa</button>
-                    </td>
+                    <th style="width: 80px;">ID</th>
+                    <th>Tên đăng nhập</th>
+                    <th>Họ và tên</th>
+                    <th>Quyền hạn hệ thống</th>
+                    <th style="width: 160px; text-align: center;">Thao tác</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td>
+                            <span class="badge-clean badge-clean-primary">#@user.Id</span>
+                        </td>
+                        <td>
+                            <strong><i class="bi bi-person-circle me-1" style="color: #64748b;"></i> @user.Username</strong>
+                        </td>
+                        <td>@user.FullName</td>
+                        <td>
+                            @if (user.Role == "Admin" || user.Role == "Administrator")
+                            {
+                                <span class="badge-clean badge-clean-danger"><i class="bi bi-shield-lock-fill"></i> Administrator</span>
+                            }
+                            else if (user.Role == "Editor")
+                            {
+                                <span class="badge-clean badge-clean-primary"><i class="bi bi-pencil-fill"></i> Editor</span>
+                            }
+                            else if (user.Role == "Moderator")
+                            {
+                                <span class="badge-clean badge-clean-secondary" style="background: #e0f2fe; color: #0369a1; border-color: #bae6fd;"><i class="bi bi-eye-fill"></i> Moderator</span>
+                            }
+                            else
+                            {
+                                <span class="badge-clean badge-clean-success"><i class="bi bi-person"></i> @user.Role</span>
+                            }
+                        </td>
+                        <td>
+                            <div class="d-flex gap-1 justify-content-center">
+                                <a href="#" class="action-link action-link-edit"><i class="bi bi-pencil-square"></i> Sửa</a>
+                                <a href="#" class="action-link action-link-delete"><i class="bi bi-trash"></i> Xóa</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>

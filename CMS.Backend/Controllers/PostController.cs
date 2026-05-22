@@ -16,11 +16,21 @@ namespace CMS.Backend.Controllers
             _context = context;
         }
 
-        // Hàm Index: Hiển thị danh sách bài viết mẫu
-        public IActionResult Index()
+        // Hàm Index: Hiển thị danh sách bài viết mẫu, hỗ trợ lọc theo danh mục
+        public IActionResult Index(int? id)
         {
-            // Lấy danh sách bài viết từ Database kèm theo thông tin Danh mục
-            var posts = _context.Posts.Include(p => p.Category).ToList();
+            // 1. Kiểm tra nếu không có id truyền vào thì lấy toàn bộ bài viết, ngược lại lọc theo id
+            IQueryable<Post> query = _context.Posts.Include(p => p.Category);
+            
+            if (id != null)
+            {
+                query = query.Where(p => p.CategoryId == id);
+            }
+
+            // 2. Sắp xếp theo ngày đăng mới nhất và chuyển thành danh sách thực thi
+            var posts = query.OrderByDescending(p => p.CreatedDate).ToList();
+
+            // 3. Truyền dữ liệu ra View
             return View(posts);
         }
 

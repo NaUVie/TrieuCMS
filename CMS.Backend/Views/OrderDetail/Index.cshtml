@@ -1,49 +1,66 @@
 @model IEnumerable<CMS.Data.Entities.OrderDetail>
 
 @{
-    ViewData["Title"] = "Chi tiết đơn hàng";
+    ViewData["Title"] = "Chi tiết mua hàng";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="text-primary fw-bold">CHI TIẾT MUA HÀNG (LỊCH SỬ GIAO DỊCH)</h2>
+<div class="flat-card">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h3 class="fw-bold mb-1" style="color: #1e293b;">Chi tiết mua hàng</h3>
+            <p class="text-muted small mb-0">Thống kê doanh số bán ra và doanh thu thực nhận chi tiết trên từng hóa đơn giao dịch</p>
+        </div>
     </div>
 
-    <table class="table table-hover shadow-sm border rounded">
-        <thead class="table-light">
-            <tr>
-                <th>Mã Chi Tiết</th>
-                <th>Mã Đơn</th>
-                <th>Khách Hàng</th>
-                <th>Sản Phẩm</th>
-                <th class="text-end">Đơn Giá</th>
-                <th class="text-center">Số Lượng</th>
-                <th class="text-end">Thành Tiền</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (Model == null || !Model.Any())
-            {
+    <div class="clean-table-container">
+        <table class="clean-table">
+            <thead>
                 <tr>
-                    <td colspan="7" class="text-center text-muted">Không có dữ liệu chi tiết nào.</td>
+                    <th style="width: 100px;">Chi tiết</th>
+                    <th style="width: 100px;">Mã Đơn</th>
+                    <th>Khách hàng đặt</th>
+                    <th>Tên sản phẩm</th>
+                    <th class="text-end">Đơn giá niêm yết</th>
+                    <th class="text-center" style="width: 100px;">Số lượng</th>
+                    <th class="text-end" style="width: 200px;">Thành tiền (Subtotal)</th>
                 </tr>
-            }
-            else
-            {
-                @foreach (var detail in Model)
+            </thead>
+            <tbody>
+                @if (Model == null || !Model.Any())
                 {
-                    var total = detail.UnitPrice * detail.Quantity;
                     <tr>
-                        <td>#@detail.Id</td>
-                        <td><strong>#@detail.OrderId</strong></td>
-                        <td>@detail.Order?.Customer?.FullName</td>
-                        <td>@detail.Product?.Name</td>
-                        <td class="text-end">@detail.UnitPrice.ToString("N0") VNĐ</td>
-                        <td class="text-center">@detail.Quantity</td>
-                        <td class="text-end text-danger fw-bold">@total.ToString("N0") VNĐ</td>
+                        <td colspan="7" class="text-center py-4 text-muted">Không có hồ sơ giao dịch chi tiết nào được ghi nhận.</td>
                     </tr>
                 }
-            }
-        </tbody>
-    </table>
+                else
+                {
+                    @foreach (var detail in Model)
+                    {
+                        var total = detail.UnitPrice * detail.Quantity;
+                        <tr>
+                            <td>
+                                <span class="badge-clean badge-clean-secondary">#@detail.Id</span>
+                            </td>
+                            <td>
+                                <strong>#@detail.OrderId</strong>
+                            </td>
+                            <td>
+                                <span><i class="bi bi-person-circle me-1 text-muted"></i> @detail.Order?.Customer?.FullName</span>
+                            </td>
+                            <td>
+                                <strong><i class="bi bi-box-seam me-1 text-primary"></i> @detail.Product?.Name</strong>
+                            </td>
+                            <td class="text-end text-dark">@detail.UnitPrice.ToString("N0") VNĐ</td>
+                            <td class="text-center">
+                                <span class="badge-clean badge-clean-primary" style="font-size: 0.725rem;">x @detail.Quantity</span>
+                            </td>
+                            <td class="text-end fw-bold text-dark">
+                                @total.ToString("N0") VNĐ
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
 </div>

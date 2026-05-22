@@ -40,7 +40,7 @@ namespace CMS.Data
                     {
                         Title = "Lộ trình học ASP.NET",
                         Content = "Hướng dẫn chi tiết cho người mới bắt đầu học lập trình web với ASP.NET Core MVC và Web API từ cơ bản đến nâng cao.",
-                        ImageUrl = "/img/dotnet.jpg",
+                        ImageUrl = "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&auto=format&fit=crop",
                         CategoryId = devCat?.Id ?? 5,
                         CreatedDate = new DateTime(2026, 4, 1)
                     },
@@ -48,7 +48,7 @@ namespace CMS.Data
                     {
                         Title = "Top 5 bãi biển đẹp",
                         Content = "Những địa điểm không thể bỏ qua mùa hè này để tận hưởng không khí trong lành, làn nước trong xanh và cát trắng nắng vàng.",
-                        ImageUrl = "/img/beach.jpg",
+                        ImageUrl = "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop",
                         CategoryId = travelCat?.Id ?? 2,
                         CreatedDate = new DateTime(2026, 4, 2)
                     },
@@ -56,7 +56,7 @@ namespace CMS.Data
                     {
                         Title = "Chạy bộ đúng cách",
                         Content = "Lợi ích tuyệt vời của việc chạy bộ mỗi sáng giúp tăng cường sức khỏe tim mạch, cải thiện vóc dáng và giải tỏa stress.",
-                        ImageUrl = "/img/run.jpg",
+                        ImageUrl = "https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=800&auto=format&fit=crop",
                         CategoryId = sportCat?.Id ?? 3,
                         CreatedDate = new DateTime(2026, 4, 3)
                     },
@@ -64,7 +64,7 @@ namespace CMS.Data
                     {
                         Title = "AI và tương lai",
                         Content = "Trí tuệ nhân tạo đang thay đổi cuộc sống và cách chúng ta làm việc một cách chóng mặt. Hãy cùng khám phá tương lai của AI.",
-                        ImageUrl = "/img/ai.jpg",
+                        ImageUrl = "https://images.unsplash.com/photo-1677442136019-21780efad99a?w=800&auto=format&fit=crop",
                         CategoryId = techCat?.Id ?? 1,
                         CreatedDate = new DateTime(2026, 4, 4)
                     },
@@ -72,12 +72,27 @@ namespace CMS.Data
                     {
                         Title = "Kỹ năng Teamwork",
                         Content = "Cách phối hợp hiệu quả trong nhóm đồ án giúp mọi thành viên phát huy tối đa năng lực và đạt kết quả tốt nhất.",
-                        ImageUrl = "/img/team.jpg",
+                        ImageUrl = "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&auto=format&fit=crop",
                         CategoryId = eduCat?.Id ?? 4,
                         CreatedDate = new DateTime(2026, 4, 5)
                     }
                 };
                 context.Posts.AddRange(posts);
+                context.SaveChanges();
+            }
+
+            // Hot-swap existing placeholder image paths with premium Unsplash image URLs
+            if (context.Posts.Any(p => p.ImageUrl.Contains("/img/")))
+            {
+                var postsList = context.Posts.ToList();
+                foreach (var post in postsList)
+                {
+                    if (post.ImageUrl.Contains("dotnet.jpg")) post.ImageUrl = "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&auto=format&fit=crop";
+                    else if (post.ImageUrl.Contains("beach.jpg")) post.ImageUrl = "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop";
+                    else if (post.ImageUrl.Contains("run.jpg")) post.ImageUrl = "https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=800&auto=format&fit=crop";
+                    else if (post.ImageUrl.Contains("ai.jpg")) post.ImageUrl = "https://images.unsplash.com/photo-1677442136019-21780efad99a?w=800&auto=format&fit=crop";
+                    else if (post.ImageUrl.Contains("team.jpg")) post.ImageUrl = "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&auto=format&fit=crop";
+                }
                 context.SaveChanges();
             }
 
@@ -118,13 +133,28 @@ namespace CMS.Data
 
                 var products = new List<Product>
                 {
-                    new Product { Name = "iPhone 15 Pro Max", Price = 29990000, StockQuantity = 50, ImageUrl = "/img/iphone.jpg", Description = "Siêu phẩm Apple 2024 bộ nhớ 256GB vỏ Titan siêu nhẹ", CategoryProductId = mobileCat?.Id ?? 1 },
-                    new Product { Name = "Samsung Galaxy S24 Ultra", Price = 26990000, StockQuantity = 40, ImageUrl = "/img/s24.jpg", Description = "Thiết kế vuông vức cùng bút S-Pen và tính năng Galaxy AI đột phá", CategoryProductId = mobileCat?.Id ?? 1 },
-                    new Product { Name = "Macbook Pro M3", Price = 39990000, StockQuantity = 15, ImageUrl = "/img/macbook.jpg", Description = "Apple Silicon M3 cực mạnh cho lập trình viên và đồ họa chuyên nghiệp", CategoryProductId = laptopCat?.Id ?? 2 },
-                    new Product { Name = "Dell XPS 13", Price = 34500000, StockQuantity = 12, ImageUrl = "/img/dell.jpg", Description = "Laptop ultrabook doanh nhân siêu mỏng nhẹ màn hình vô cực", CategoryProductId = laptopCat?.Id ?? 2 },
-                    new Product { Name = "Tai nghe AirPods Pro 2", Price = 5990000, StockQuantity = 100, ImageUrl = "/img/airpods.jpg", Description = "Chống ồn chủ động vượt trội và âm thanh vòm sống động", CategoryProductId = accessoryCat?.Id ?? 3 }
+                    new Product { Name = "iPhone 15 Pro Max", Price = 29990000, StockQuantity = 50, ImageUrl = "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop", Description = "Siêu phẩm Apple 2024 bộ nhớ 256GB vỏ Titan siêu nhẹ", CategoryProductId = mobileCat?.Id ?? 1 },
+                    new Product { Name = "Samsung Galaxy S24 Ultra", Price = 26990000, StockQuantity = 40, ImageUrl = "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=800&auto=format&fit=crop", Description = "Thiết kế vuông vức cùng bút S-Pen và tính năng Galaxy AI đột phá", CategoryProductId = mobileCat?.Id ?? 1 },
+                    new Product { Name = "Macbook Pro M3", Price = 39990000, StockQuantity = 15, ImageUrl = "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&auto=format&fit=crop", Description = "Apple Silicon M3 cực mạnh cho lập trình viên và đồ họa chuyên nghiệp", CategoryProductId = laptopCat?.Id ?? 2 },
+                    new Product { Name = "Dell XPS 13", Price = 34500000, StockQuantity = 12, ImageUrl = "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=800&auto=format&fit=crop", Description = "Laptop ultrabook doanh nhân siêu mỏng nhẹ màn hình vô cực", CategoryProductId = laptopCat?.Id ?? 2 },
+                    new Product { Name = "Tai nghe AirPods Pro 2", Price = 5990000, StockQuantity = 100, ImageUrl = "https://images.unsplash.com/photo-1588449668338-d1345b11a4f1?w=800&auto=format&fit=crop", Description = "Chống ồn chủ động vượt trội và âm thanh vòm sống động", CategoryProductId = accessoryCat?.Id ?? 3 }
                 };
                 context.Products.AddRange(products);
+                context.SaveChanges();
+            }
+
+            // Hot-swap existing placeholder image paths with premium Unsplash image URLs for Products
+            if (context.Products.Any(p => p.ImageUrl.Contains("/img/")))
+            {
+                var productsList = context.Products.ToList();
+                foreach (var prod in productsList)
+                {
+                    if (prod.ImageUrl.Contains("iphone.jpg")) prod.ImageUrl = "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop";
+                    else if (prod.ImageUrl.Contains("s24.jpg")) prod.ImageUrl = "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=800&auto=format&fit=crop";
+                    else if (prod.ImageUrl.Contains("macbook.jpg")) prod.ImageUrl = "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&auto=format&fit=crop";
+                    else if (prod.ImageUrl.Contains("dell.jpg")) prod.ImageUrl = "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=800&auto=format&fit=crop";
+                    else if (prod.ImageUrl.Contains("airpods.jpg")) prod.ImageUrl = "https://images.unsplash.com/photo-1588449668338-d1345b11a4f1?w=800&auto=format&fit=crop";
+                }
                 context.SaveChanges();
             }
 

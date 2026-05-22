@@ -4,33 +4,50 @@
     ViewData["Title"] = "Danh mục sản phẩm";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="text-primary fw-bold">DANH SÁCH DANH MỤC SẢN PHẨM</h2>
-        <button class="btn btn-primary btn-sm">+ Thêm danh mục sản phẩm</button>
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h3 class="fw-bold mb-1" style="color: #1e293b;">Danh mục sản phẩm</h3>
+        <p class="text-muted small mb-0">Quản lý các loại sản phẩm, phân nhóm thiết bị phần cứng & phụ kiện điện tử</p>
     </div>
+    <button class="btn-clean btn-sm">
+        <i class="bi bi-grid-plus"></i> Thêm danh mục mới
+    </button>
+</div>
 
-    <div class="row">
-        @if (Model == null || !Model.Any())
+<div class="row g-4">
+    @if (Model == null || !Model.Any())
+    {
+        <div class="col-12 text-center py-5">
+            <div class="flat-card">
+                <i class="bi bi-folder2-open display-4 text-muted mb-2"></i>
+                <p class="text-muted">Không có danh mục nào được tìm thấy trong hệ thống.</p>
+            </div>
+        </div>
+    }
+    else
+    {
+        @foreach (var item in Model)
         {
-            <div class="col-12 text-center text-muted">Không có danh mục nào.</div>
-        }
-        else
-        {
-            @foreach (var item in Model)
-            {
-                <div class="col-md-4 mb-3">
-                    <div class="card h-100 shadow-sm border-0 bg-light">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-3">
-                                <span class="badge bg-primary fs-6 me-2">#@item.Id</span>
-                                <h5 class="card-title text-dark fw-bold mb-0">@item.Name</h5>
-                            </div>
-                            <p class="card-text text-muted">@item.Description</p>
+            <div class="col-md-6 col-lg-4">
+                <div class="flat-card h-100 d-flex flex-column justify-content-between mb-0" style="padding: 20px;">
+                    <div>
+                        <!-- Header -->
+                        <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2" style="border-color: var(--border-light) !important;">
+                            <span class="badge-clean badge-clean-primary" style="font-size: 0.75rem;">Mã #@item.Id</span>
+                            <i class="bi bi-tag-fill text-muted fs-5"></i>
                         </div>
+                        <!-- Title & Description -->
+                        <h5 class="fw-bold text-dark mb-2">@item.Name</h5>
+                        <p class="text-muted small mb-4" style="line-height: 1.6; height: 48px; overflow: hidden;">@item.Description</p>
+                    </div>
+                    
+                    <!-- Footer Options -->
+                    <div class="d-flex justify-content-end gap-1 pt-3 border-top" style="border-color: var(--border-light) !important;">
+                        <a href="#" class="btn-clean-outline btn-sm py-1 px-2" style="font-size: 0.775rem;"><i class="bi bi-pencil"></i> Sửa</a>
+                        <a href="#" class="btn-clean-outline btn-sm py-1 px-2 text-danger" style="font-size: 0.775rem;"><i class="bi bi-trash"></i> Xóa</a>
                     </div>
                 </div>
-            }
+            </div>
         }
-    </div>
+    }
 </div>
