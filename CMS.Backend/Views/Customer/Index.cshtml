@@ -1,0 +1,50 @@
+@model IEnumerable<CMS.Data.Entities.Customer>
+
+@{
+    ViewData["Title"] = "Quản lý khách hàng";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="text-primary fw-bold">QUẢN LÝ KHÁCH HÀNG</h2>
+        <button class="btn btn-success btn-sm">+ Thêm khách hàng</button>
+    </div>
+
+    <table class="table table-hover shadow-sm border rounded">
+        <thead class="table-light">
+            <tr>
+                <th>ID</th>
+                <th>Họ Và Tên</th>
+                <th>Email</th>
+                <th>Số Điện Thoại</th>
+                <th>Địa Chỉ</th>
+                <th>Thao Tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model == null || !Model.Any())
+            {
+                <tr>
+                    <td colspan="6" class="text-center text-muted">Không có khách hàng nào.</td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var cust in Model)
+                {
+                    <tr>
+                        <td>@cust.Id</td>
+                        <td><strong>@cust.FullName</strong></td>
+                        <td>@cust.Email</td>
+                        <td>@(cust.Phone ?? "Chưa cung cấp")</td>
+                        <td>@(cust.Address ?? "Chưa cung cấp")</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-warning">Sửa</button>
+                            <button class="btn btn-sm btn-outline-danger">Xóa</button>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

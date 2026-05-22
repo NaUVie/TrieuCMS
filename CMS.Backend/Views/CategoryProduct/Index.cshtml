@@ -1,0 +1,36 @@
+@model IEnumerable<CMS.Data.Entities.CategoryProduct>
+
+@{
+    ViewData["Title"] = "Danh mục sản phẩm";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold">DANH SÁCH DANH MỤC SẢN PHẨM</h2>
+        <button class="btn btn-primary btn-sm">+ Thêm danh mục sản phẩm</button>
+    </div>
+
+    <div class="row">
+        @if (Model == null || !Model.Any())
+        {
+            <div class="col-12 text-center text-muted">Không có danh mục nào.</div>
+        }
+        else
+        {
+            @foreach (var item in Model)
+            {
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100 shadow-sm border-0 bg-light">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <span class="badge bg-primary fs-6 me-2">#@item.Id</span>
+                                <h5 class="card-title text-dark fw-bold mb-0">@item.Name</h5>
+                            </div>
+                            <p class="card-text text-muted">@item.Description</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>

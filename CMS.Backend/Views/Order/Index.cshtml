@@ -1,0 +1,67 @@
+@model IEnumerable<CMS.Data.Entities.Order>
+
+@{
+    ViewData["Title"] = "Quản lý đơn hàng";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="text-primary fw-bold">QUẢN LÝ ĐƠN HÀNG</h2>
+        <button class="btn btn-primary btn-sm">+ Tạo đơn hàng mới</button>
+    </div>
+
+    <table class="table table-hover shadow-sm border rounded">
+        <thead class="table-light">
+            <tr>
+                <th>Mã Đơn</th>
+                <th>Ngày Đặt</th>
+                <th>Khách Hàng</th>
+                <th>Trạng Thái</th>
+                <th>Ghi Chú</th>
+                <th>Thao Tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model == null || !Model.Any())
+            {
+                <tr>
+                    <td colspan="6" class="text-center text-muted">Không có đơn hàng nào.</td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var order in Model)
+                {
+                    <tr>
+                        <td><strong>#@order.Id</strong></td>
+                        <td>@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@order.Customer?.FullName</td>
+                        <td>
+                            @if (order.Status == 0)
+                            {
+                                <span class="badge bg-warning text-dark">Chờ duyệt</span>
+                            }
+                            else if (order.Status == 1)
+                            {
+                                <span class="badge bg-info text-dark">Đang giao</span>
+                            }
+                            else if (order.Status == 2)
+                            {
+                                <span class="badge bg-success">Đã xong</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Hủy bỏ</span>
+                            }
+                        </td>
+                        <td class="text-truncate" style="max-width: 250px;">@(order.Notes ?? "-")</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary">Chi tiết</button>
+                            <button class="btn btn-sm btn-outline-danger">Xóa</button>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

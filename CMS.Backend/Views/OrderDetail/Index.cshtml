@@ -1,0 +1,49 @@
+@model IEnumerable<CMS.Data.Entities.OrderDetail>
+
+@{
+    ViewData["Title"] = "Chi tiết đơn hàng";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="text-primary fw-bold">CHI TIẾT MUA HÀNG (LỊCH SỬ GIAO DỊCH)</h2>
+    </div>
+
+    <table class="table table-hover shadow-sm border rounded">
+        <thead class="table-light">
+            <tr>
+                <th>Mã Chi Tiết</th>
+                <th>Mã Đơn</th>
+                <th>Khách Hàng</th>
+                <th>Sản Phẩm</th>
+                <th class="text-end">Đơn Giá</th>
+                <th class="text-center">Số Lượng</th>
+                <th class="text-end">Thành Tiền</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model == null || !Model.Any())
+            {
+                <tr>
+                    <td colspan="7" class="text-center text-muted">Không có dữ liệu chi tiết nào.</td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var detail in Model)
+                {
+                    var total = detail.UnitPrice * detail.Quantity;
+                    <tr>
+                        <td>#@detail.Id</td>
+                        <td><strong>#@detail.OrderId</strong></td>
+                        <td>@detail.Order?.Customer?.FullName</td>
+                        <td>@detail.Product?.Name</td>
+                        <td class="text-end">@detail.UnitPrice.ToString("N0") VNĐ</td>
+                        <td class="text-center">@detail.Quantity</td>
+                        <td class="text-end text-danger fw-bold">@total.ToString("N0") VNĐ</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

@@ -6,26 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CMS.Data", "CMS.Data\CMS.Da
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CMS.Backend", "CMS.Backend\CMS.Backend.csproj", "{EBA9FAEE-95CC-40F2-9645-E3DA453C930E}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "cms.frontend", "cms.frontend\", "{6052B35B-883F-44F4-A0D3-F8558A59C133}"
-	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
-		Debug.AspNetCompiler.VirtualPath = "/localhost_5000"
-		Debug.AspNetCompiler.PhysicalPath = "cms.frontend\"
-		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_5000\"
-		Debug.AspNetCompiler.Updateable = "true"
-		Debug.AspNetCompiler.ForceOverwrite = "true"
-		Debug.AspNetCompiler.FixedNames = "false"
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.VirtualPath = "/localhost_5000"
-		Release.AspNetCompiler.PhysicalPath = "cms.frontend\"
-		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_5000\"
-		Release.AspNetCompiler.Updateable = "true"
-		Release.AspNetCompiler.ForceOverwrite = "true"
-		Release.AspNetCompiler.FixedNames = "false"
-		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "5000"
-	EndProjectSection
-EndProject
+
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "cms.frontend", "cms.frontend\", "{BFC96697-7D92-84DD-AB7A-313652811C56}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
@@ -81,14 +62,7 @@ Global
 		{EBA9FAEE-95CC-40F2-9645-E3DA453C930E}.Release|x64.Build.0 = Release|Any CPU
 		{EBA9FAEE-95CC-40F2-9645-E3DA453C930E}.Release|x86.ActiveCfg = Release|Any CPU
 		{EBA9FAEE-95CC-40F2-9645-E3DA453C930E}.Release|x86.Build.0 = Release|Any CPU
-		{6052B35B-883F-44F4-A0D3-F8558A59C133}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6052B35B-883F-44F4-A0D3-F8558A59C133}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6052B35B-883F-44F4-A0D3-F8558A59C133}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{6052B35B-883F-44F4-A0D3-F8558A59C133}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{6052B35B-883F-44F4-A0D3-F8558A59C133}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{6052B35B-883F-44F4-A0D3-F8558A59C133}.Release|Any CPU.Build.0 = Debug|Any CPU
-		{6052B35B-883F-44F4-A0D3-F8558A59C133}.Release|x64.ActiveCfg = Debug|Any CPU
-		{6052B35B-883F-44F4-A0D3-F8558A59C133}.Release|x86.ActiveCfg = Debug|Any CPU
+
 		{BFC96697-7D92-84DD-AB7A-313652811C56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BFC96697-7D92-84DD-AB7A-313652811C56}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BFC96697-7D92-84DD-AB7A-313652811C56}.Debug|x64.ActiveCfg = Debug|Any CPU
