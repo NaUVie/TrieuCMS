@@ -101,14 +101,30 @@
                 </div>
                 
                 <!-- Admin Profile Badge -->
-                <div class="admin-profile">
-                    <div class="text-end d-none d-sm-block">
-                        <span class="admin-name" style="color: #1e293b;">La Quang Triều</span>
-                        <span class="admin-role">MSSV: 2123110160</span>
-                    </div>
-                    <div class="admin-avatar">
-                        LQT
-                    </div>
+                <div class="admin-profile d-flex align-items-center gap-3">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <div class="text-end d-none d-sm-block">
+                            <span class="admin-name" style="color: #1e293b;">@User.FindFirst("FullName")?.Value</span>
+                            <span class="admin-role">@User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value</span>
+                        </div>
+                        <div class="admin-avatar">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+                        <a asp-controller="Account" asp-action="Logout" class="btn btn-outline-danger btn-sm ms-2">
+                            <i class="bi bi-box-arrow-right"></i> Đăng xuất
+                        </a>
+                    }
+                    else
+                    {
+                        <div class="text-end d-none d-sm-block">
+                            <span class="admin-name" style="color: #1e293b;">Khách</span>
+                            <span class="admin-role">Chưa đăng nhập</span>
+                        </div>
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-primary btn-sm ms-2">
+                            Đăng nhập
+                        </a>
+                    }
                 </div>
             </header>
 

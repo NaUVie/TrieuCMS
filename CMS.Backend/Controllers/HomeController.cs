@@ -4,9 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using CMS.Backend.Models;
 using CMS.Data;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CMS.Backend.Controllers;
 
+[Authorize]
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;

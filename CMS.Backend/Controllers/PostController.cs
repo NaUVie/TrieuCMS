@@ -6,9 +6,11 @@ using CMS.Data;
 using System;
 using System.IO;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CMS.Backend.Controllers
 {
+    [Authorize]
     public class PostController : Controller
     {
         private readonly ApplicationDbContext _context;

@@ -4,9 +4,11 @@ using CMS.Data.Entities;
 using CMS.Data;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CMS.Backend.Controllers
 {
+    [Authorize]
     public class ProductController : Controller
     {
         private readonly ApplicationDbContext _context;

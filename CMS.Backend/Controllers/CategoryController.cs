@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using CMS.Data.Entities; // Kết nối tới lớp dữ liệu bạn vừa tạo
 using CMS.Data;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CMS.Backend.Controllers
 {
+    [Authorize]
     public class CategoryController : Controller {
         private readonly ApplicationDbContext _context;
 
