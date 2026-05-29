@@ -54,36 +54,37 @@ namespace CMS.Backend.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Post model, IFormFile uploadImage)
         {
-            if (ModelState.IsValid)
+            if (string.IsNullOrEmpty(model.Title))
             {
-                // Xử lý upload ảnh
-                if (uploadImage != null && uploadImage.Length > 0)
-                {
-                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-                    if (!Directory.Exists(uploadsFolder))
-                    {
-                        Directory.CreateDirectory(uploadsFolder);
-                    }
-                    var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(uploadImage.FileName);
-                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                     {
-                        uploadImage.CopyTo(fileStream);
-                    }
-                    model.ImageUrl = "/uploads/" + uniqueFileName;
-                }
-                else if (string.IsNullOrEmpty(model.ImageUrl))
-                {
-                    model.ImageUrl = "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&auto=format&fit=crop";
-                }
-
-                _context.Posts.Add(model);
-                _context.SaveChanges();
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError("Title", "Tiêu đề bài viết không được để trống.");
+                ViewBag.CategoryList = new SelectList(_context.Categories, "Id", "Name", model.CategoryId);
+                return View(model);
             }
 
-            ViewBag.CategoryList = new SelectList(_context.Categories, "Id", "Name", model.CategoryId);
-            return View(model);
+            // Xử lý upload ảnh
+            if (uploadImage != null && uploadImage.Length > 0)
+            {
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+                var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(uploadImage.FileName);
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                 {
+                    uploadImage.CopyTo(fileStream);
+                }
+                model.ImageUrl = "/uploads/" + uniqueFileName;
+            }
+            else if (string.IsNullOrEmpty(model.ImageUrl))
+            {
+                model.ImageUrl = "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&auto=format&fit=crop";
+            }
+
+            _context.Posts.Add(model);
+            _context.SaveChanges();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Post/Edit/5
@@ -102,41 +103,44 @@ namespace CMS.Backend.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Post model, IFormFile uploadImage)
         {
-            if (ModelState.IsValid)
+            if (string.IsNullOrEmpty(model.Title))
             {
-                // Xử lý upload ảnh mới
-                if (uploadImage != null && uploadImage.Length > 0)
-                {
-                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-                    if (!Directory.Exists(uploadsFolder))
-                    {
-                        Directory.CreateDirectory(uploadsFolder);
-                    }
-                    var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(uploadImage.FileName);
-                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        uploadImage.CopyTo(fileStream);
-                    }
-                    model.ImageUrl = "/uploads/" + uniqueFileName;
-                }
-                else
-                {
-                    // Lấy lại đường dẫn ảnh cũ để tránh bị đè đè mất dữ liệu hình ảnh
-                    var existingPost = _context.Posts.AsNoTracking().FirstOrDefault(p => p.Id == model.Id);
-                    if (existingPost != null)
-                    {
-                        model.ImageUrl = existingPost.ImageUrl;
-                    }
-                }
-
-                _context.Entry(model).State = EntityState.Modified;
-                _context.SaveChanges();
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError("Title", "Tiêu đề bài viết không được để trống.");
+                ViewBag.CategoryList = new SelectList(_context.Categories, "Id", "Name", model.CategoryId);
+                return View(model);
             }
 
-            ViewBag.CategoryList = new SelectList(_context.Categories, "Id", "Name", model.CategoryId);
-            return View(model);
+            var dbPost = _context.Posts.Find(model.Id);
+            if (dbPost == null) return NotFound();
+
+            dbPost.Title = model.Title;
+            dbPost.Content = model.Content;
+            dbPost.CategoryId = model.CategoryId;
+            dbPost.CreatedDate = model.CreatedDate;
+
+            // Xử lý upload ảnh mới
+            if (uploadImage != null && uploadImage.Length > 0)
+            {
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+                var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(uploadImage.FileName);
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    uploadImage.CopyTo(fileStream);
+                }
+                dbPost.ImageUrl = "/uploads/" + uniqueFileName;
+            }
+            else if (!string.IsNullOrEmpty(model.ImageUrl))
+            {
+                dbPost.ImageUrl = model.ImageUrl;
+            }
+
+            _context.SaveChanges();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Post/Delete/5

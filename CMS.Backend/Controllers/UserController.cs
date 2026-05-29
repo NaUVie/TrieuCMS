@@ -35,22 +35,23 @@ namespace CMS.Backend.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(User model)
         {
-            if (ModelState.IsValid)
+            if (string.IsNullOrEmpty(model.Username))
             {
-                // Kiểm tra trùng lặp tên đăng nhập
-                var exists = _context.Users.Any(u => u.Username.ToLower() == model.Username.ToLower());
-                if (exists)
-                {
-                    ModelState.AddModelError("Username", "Tên đăng nhập này đã tồn tại trong hệ thống. Vui lòng chọn tên khác.");
-                    return View(model);
-                }
-
-                _context.Users.Add(model);
-                _context.SaveChanges();
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError("Username", "Tên đăng nhập không được để trống.");
+                return View(model);
             }
 
-            return View(model);
+            // Kiểm tra trùng lặp tên đăng nhập
+            var exists = _context.Users.Any(u => u.Username.ToLower() == model.Username.ToLower());
+            if (exists)
+            {
+                ModelState.AddModelError("Username", "Tên đăng nhập này đã tồn tại trong hệ thống. Vui lòng chọn tên khác.");
+                return View(model);
+            }
+
+            _context.Users.Add(model);
+            _context.SaveChanges();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: User/Edit/5
@@ -68,29 +69,25 @@ namespace CMS.Backend.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(User model, string NewPassword)
         {
-            if (ModelState.IsValid)
+            if (string.IsNullOrEmpty(model.FullName))
             {
-                if (!string.IsNullOrEmpty(NewPassword))
-                {
-                    // Nếu người dùng nhập mật khẩu mới, cập nhật nó
-                    model.PasswordHash = NewPassword;
-                }
-                else
-                {
-                    // Nếu để trống mật khẩu, truy vấn AsNoTracking để giữ nguyên mật khẩu cũ
-                    var existingUser = _context.Users.AsNoTracking().FirstOrDefault(u => u.Id == model.Id);
-                    if (existingUser != null)
-                    {
-                        model.PasswordHash = existingUser.PasswordHash;
-                    }
-                }
-
-                _context.Entry(model).State = EntityState.Modified;
-                _context.SaveChanges();
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError("FullName", "Họ và tên không được để trống.");
+                return View(model);
             }
 
-            return View(model);
+            var dbUser = _context.Users.Find(model.Id);
+            if (dbUser == null) return NotFound();
+
+            dbUser.FullName = model.FullName;
+            dbUser.Role = model.Role;
+
+            if (!string.IsNullOrEmpty(NewPassword))
+            {
+                dbUser.PasswordHash = NewPassword;
+            }
+
+            _context.SaveChanges();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: User/Delete/5
