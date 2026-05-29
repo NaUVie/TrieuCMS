@@ -1,6 +1,7 @@
 @model CMS.Data.Entities.Post
 
 @{
+    Layout = "_LayoutAdmin";
     ViewData["Title"] = Model.Title;
 }
 
@@ -41,7 +42,7 @@
 
                 <!-- Content -->
                 <div class="post-content text-dark fs-5 lh-lg mb-5" style="font-weight: 400; color: #334155 !important;">
-                    @Model.Content
+                    @Html.Raw(Model.Content)
                 </div>
 
                 <!-- Footer Back Navigation -->

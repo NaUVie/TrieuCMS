@@ -1,6 +1,7 @@
 @model IEnumerable<CMS.Data.Entities.Product>
 
 @{
+    Layout = "_LayoutAdmin";
     ViewData["Title"] = "Quản lý sản phẩm";
 }
 
@@ -9,9 +10,9 @@
         <h3 class="fw-bold mb-1" style="color: #1e293b;">Danh sách sản phẩm</h3>
         <p class="text-muted small mb-0">Quản lý kho hàng, thông số chi tiết, giá bán niêm yết và tồn kho linh kiện</p>
     </div>
-    <button class="btn-clean btn-sm">
+    <a asp-action="Create" class="btn-clean btn-sm text-decoration-none">
         <i class="bi bi-plus-circle-fill"></i> Thêm sản phẩm mới
-    </button>
+    </a>
 </div>
 
 <div class="card-grid">
@@ -68,8 +69,8 @@
                     
                     <!-- Actions -->
                     <div class="flat-item-card-footer">
-                        <a href="#" class="btn-clean-outline btn-sm py-1 px-2" style="font-size: 0.775rem;"><i class="bi bi-pencil-square"></i> Sửa</a>
-                        <a href="#" class="btn-clean-outline btn-sm py-1 px-2 text-danger" style="font-size: 0.775rem;"><i class="bi bi-trash"></i> Xóa</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn-clean-outline btn-sm py-1 px-2" style="font-size: 0.775rem;"><i class="bi bi-pencil-square"></i> Sửa</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn-clean-outline btn-sm py-1 px-2 text-danger" style="font-size: 0.775rem;" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này không?');"><i class="bi bi-trash"></i> Xóa</a>
                     </div>
                 </div>
             </div>

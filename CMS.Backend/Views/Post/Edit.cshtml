@@ -1,0 +1,110 @@
+@model CMS.Data.Entities.Post
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Chỉnh sửa bài viết";
+}
+
+<div class="container-fluid p-0">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="glass-breadcrumb" style="background: #ffffff; border: 1px solid var(--border-light); margin-bottom: 20px; padding: 10px 16px; border-radius: 8px;">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="/Home" class="text-primary text-decoration-none">Bảng điều khiển</a></li>
+            <li class="breadcrumb-item"><a href="/Post" class="text-primary text-decoration-none">Quản lý Bài viết</a></li>
+            <li class="breadcrumb-item active" aria-current="page" style="color: #64748b;">Chỉnh sửa bài viết</li>
+        </ol>
+    </nav>
+
+    <!-- Edit Card Form -->
+    <div class="flat-card p-4">
+        <div class="mb-4">
+            <h4 class="fw-bold mb-1" style="color: #1e293b;"><i class="bi bi-pencil-square text-warning me-2"></i>Chỉnh sửa bài viết</h4>
+            <p class="text-muted small mb-0">Cập nhật thông tin chi tiết hoặc sửa đổi nội dung bài viết hiện tại trên hệ thống.</p>
+        </div>
+        <hr style="border-color: var(--border-light);" />
+
+        <form asp-action="Edit" method="post" enctype="multipart/form-data" class="mt-4">
+            <!-- Hidden field for Id -->
+            <input type="hidden" asp-for="Id" />
+
+            <div class="row g-4">
+                <!-- Column 1: Main Content -->
+                <div class="col-lg-8">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Tiêu đề bài viết:</label>
+                        <input asp-for="Title" class="form-control form-control-lg fs-6" required />
+                        <span asp-validation-for="Title" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Nội dung bài viết:</label>
+                        <textarea asp-for="Content" id="Content" class="form-control" rows="12">@Model.Content</textarea>
+                        <span asp-validation-for="Content" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <!-- Column 2: Sidebar Settings -->
+                <div class="col-lg-4">
+                    <div class="p-3 rounded border" style="background: #fafafa; border-color: var(--border-light) !important;">
+                        <h5 class="fw-bold mb-3" style="font-size: 1rem; color: #334155;"><i class="bi bi-gear-fill me-2 text-secondary"></i>Cấu hình bài viết</h5>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-slate" style="font-size: 0.85rem;">Danh mục chủ đề:</label>
+                            <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.CategoryList" required></select>
+                            <span asp-validation-for="CategoryId" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Current Image Preview -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-slate d-block" style="font-size: 0.85rem;">Ảnh đại diện hiện tại:</label>
+                            <div class="p-1 border rounded bg-white text-center mb-2" style="max-height: 160px; overflow: hidden;">
+                                <img src="@Model.ImageUrl" alt="Current Image" class="w-100 rounded" style="max-height: 150px; object-fit: cover;" onerror="this.src='https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&auto=format&fit=crop'" />
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-slate" style="font-size: 0.85rem;">Thay đổi hình ảnh mới:</label>
+                            <input type="file" name="uploadImage" class="form-control" accept="image/*" />
+                            <small class="text-muted d-block mt-1">Để trống nếu muốn giữ nguyên ảnh hiện tại.</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-slate" style="font-size: 0.85rem;">Hoặc nhập Link ảnh mới:</label>
+                            <input asp-for="ImageUrl" class="form-control" />
+                            <span asp-validation-for="ImageUrl" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-slate" style="font-size: 0.85rem;">Ngày đăng:</label>
+                            <input asp-for="CreatedDate" class="form-control" type="datetime-local" required />
+                            <span asp-validation-for="CreatedDate" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-flex flex-column gap-2 pt-3 border-top mt-4" style="border-color: #e2e8f0 !important;">
+                            <button type="submit" class="btn-clean btn-sm justify-content-center py-2" style="background: #eab308; border-color: #eab308;">
+                                <i class="bi bi-check-circle"></i> Cập nhật bài viết
+                            </button>
+                            <a asp-action="Index" class="btn-clean-outline btn-sm justify-content-center py-2 text-decoration-none">
+                                Hủy bỏ quay lại
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- CKEditor 5 CDN -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#Content'), {
+                toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ]
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
+}

@@ -1,0 +1,93 @@
+@model CMS.Data.Entities.Product
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Thêm sản phẩm mới";
+}
+
+<div class="container-fluid p-0">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="glass-breadcrumb" style="background: #ffffff; border: 1px solid var(--border-light); margin-bottom: 20px; padding: 10px 16px; border-radius: 8px;">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="/Home" class="text-primary text-decoration-none">Bảng điều khiển</a></li>
+            <li class="breadcrumb-item"><a href="/Product" class="text-primary text-decoration-none">Quản lý sản phẩm</a></li>
+            <li class="breadcrumb-item active" aria-current="page" style="color: #64748b;">Thêm sản phẩm mới</li>
+        </ol>
+    </nav>
+
+    <!-- Create Card Form -->
+    <form asp-action="Create" method="post">
+        <div class="row g-4">
+            <!-- Left Column: Core Info -->
+            <div class="col-lg-8">
+                <div class="flat-card p-4 h-100 mb-0">
+                    <div class="mb-4">
+                        <h4 class="fw-bold mb-1" style="color: #1e293b;"><i class="bi bi-box-seam text-primary me-2"></i>Thông tin sản phẩm cơ bản</h4>
+                        <p class="text-muted small mb-0">Nhập các thông tin cơ bản về tên và mô tả chi tiết của linh kiện/sản phẩm mới.</p>
+                    </div>
+                    <hr style="border-color: var(--border-light);" />
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Tên sản phẩm:</label>
+                        <input asp-for="Name" class="form-control" placeholder="Ví dụ: iPhone 15 Pro Max, Laptop Asus..." required />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Mô tả sản phẩm:</label>
+                        <textarea asp-for="Description" class="form-control" rows="8" placeholder="Nhập thông số kỹ thuật chi tiết hoặc giới thiệu chung về sản phẩm..." required></textarea>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Settings & Price -->
+            <div class="col-lg-4">
+                <div class="flat-card p-4 h-100 mb-0 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="mb-4">
+                            <h4 class="fw-bold mb-1" style="color: #1e293b;"><i class="bi bi-gear text-primary me-2"></i>Giá & Tồn kho</h4>
+                            <p class="text-muted small mb-0">Cấu hình giá bán, số lượng nhập kho và hình ảnh sản phẩm.</p>
+                        </div>
+                        <hr style="border-color: var(--border-light);" />
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Danh mục sản phẩm:</label>
+                            <select asp-for="CategoryProductId" class="form-select" asp-items="ViewBag.CategoryProductList" required>
+                                <option value="">-- Chọn danh mục --</option>
+                            </select>
+                            <span asp-validation-for="CategoryProductId" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Giá bán (VNĐ):</label>
+                            <input asp-for="Price" type="number" class="form-control" placeholder="Ví dụ: 15000000" min="0" required />
+                            <span asp-validation-for="Price" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Số lượng tồn kho:</label>
+                            <input asp-for="StockQuantity" type="number" class="form-control" placeholder="Ví dụ: 50" min="0" required />
+                            <span asp-validation-for="StockQuantity" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Đường dẫn hình ảnh (URL):</label>
+                            <input asp-for="ImageUrl" class="form-control" placeholder="https://images.unsplash.com/... hoặc để trống" />
+                            <span asp-validation-for="ImageUrl" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 pt-3 border-top mt-4" style="border-color: #f1f5f9 !important;">
+                        <button type="submit" class="btn-clean btn-sm px-4 flex-grow-1">
+                            <i class="bi bi-save"></i> Lưu sản phẩm
+                        </button>
+                        <a asp-action="Index" class="btn-clean-outline btn-sm text-decoration-none px-3">
+                            Hủy bỏ
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

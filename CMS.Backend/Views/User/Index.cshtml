@@ -1,6 +1,7 @@
 @model IEnumerable<CMS.Data.Entities.User>
 
 @{
+    Layout = "_LayoutAdmin";
     ViewData["Title"] = "Quản lý thành viên";
 }
 
@@ -10,9 +11,9 @@
             <h3 class="fw-bold mb-1" style="color: #1e293b;">Quản trị thành viên</h3>
             <p class="text-muted small mb-0">Quản trị phân quyền tài khoản biên tập nội dung & quản trị hệ thống</p>
         </div>
-        <button class="btn-clean btn-sm">
+        <a asp-action="Create" class="btn-clean btn-sm text-decoration-none">
             <i class="bi bi-person-plus-fill"></i> Thêm thành viên
-        </button>
+        </a>
     </div>
 
     <div class="clean-table-container">
@@ -27,40 +28,49 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var user in Model)
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var user in Model)
+                    {
+                        <tr>
+                            <td>
+                                <span class="badge-clean badge-clean-primary">#@user.Id</span>
+                            </td>
+                            <td>
+                                <strong><i class="bi bi-person-circle me-1" style="color: #64748b;"></i> @user.Username</strong>
+                            </td>
+                            <td>@user.FullName</td>
+                            <td>
+                                @if (user.Role == "Admin" || user.Role == "Administrator")
+                                {
+                                    <span class="badge-clean badge-clean-danger"><i class="bi bi-shield-lock-fill"></i> Administrator</span>
+                                }
+                                else if (user.Role == "Editor")
+                                {
+                                    <span class="badge-clean badge-clean-primary"><i class="bi bi-pencil-fill"></i> Editor</span>
+                                }
+                                else if (user.Role == "Moderator")
+                                {
+                                    <span class="badge-clean badge-clean-secondary" style="background: #e0f2fe; color: #0369a1; border-color: #bae6fd;"><i class="bi bi-eye-fill"></i> Moderator</span>
+                                }
+                                else
+                                {
+                                    <span class="badge-clean badge-clean-success"><i class="bi bi-person"></i> @user.Role</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="d-flex gap-1 justify-content-center">
+                                    <a asp-action="Edit" asp-route-id="@user.Id" class="action-link action-link-edit"><i class="bi bi-pencil-square"></i> Sửa</a>
+                                    <a asp-action="Delete" asp-route-id="@user.Id" class="action-link action-link-delete" onclick="return confirm('Bạn có chắc chắn muốn xóa thành viên này không?');"><i class="bi bi-trash"></i> Xóa</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
                 {
                     <tr>
-                        <td>
-                            <span class="badge-clean badge-clean-primary">#@user.Id</span>
-                        </td>
-                        <td>
-                            <strong><i class="bi bi-person-circle me-1" style="color: #64748b;"></i> @user.Username</strong>
-                        </td>
-                        <td>@user.FullName</td>
-                        <td>
-                            @if (user.Role == "Admin" || user.Role == "Administrator")
-                            {
-                                <span class="badge-clean badge-clean-danger"><i class="bi bi-shield-lock-fill"></i> Administrator</span>
-                            }
-                            else if (user.Role == "Editor")
-                            {
-                                <span class="badge-clean badge-clean-primary"><i class="bi bi-pencil-fill"></i> Editor</span>
-                            }
-                            else if (user.Role == "Moderator")
-                            {
-                                <span class="badge-clean badge-clean-secondary" style="background: #e0f2fe; color: #0369a1; border-color: #bae6fd;"><i class="bi bi-eye-fill"></i> Moderator</span>
-                            }
-                            else
-                            {
-                                <span class="badge-clean badge-clean-success"><i class="bi bi-person"></i> @user.Role</span>
-                            }
-                        </td>
-                        <td>
-                            <div class="d-flex gap-1 justify-content-center">
-                                <a href="#" class="action-link action-link-edit"><i class="bi bi-pencil-square"></i> Sửa</a>
-                                <a href="#" class="action-link action-link-delete"><i class="bi bi-trash"></i> Xóa</a>
-                            </div>
-                        </td>
+                        <td colspan="5" class="text-center py-4 text-muted">Không tìm thấy thành viên nào.</td>
                     </tr>
                 }
             </tbody>

@@ -1,8 +1,8 @@
-@model CMS.Data.Entities.Category
+@model CMS.Data.Entities.CategoryProduct
 
 @{
     Layout = "_LayoutAdmin";
-    ViewData["Title"] = "Thêm danh mục mới";
+    ViewData["Title"] = "Thêm danh mục sản phẩm mới";
 }
 
 <div class="container-fluid p-0">
@@ -10,7 +10,7 @@
     <nav aria-label="breadcrumb" class="glass-breadcrumb" style="background: #ffffff; border: 1px solid var(--border-light); margin-bottom: 20px; padding: 10px 16px; border-radius: 8px;">
         <ol class="breadcrumb mb-0">
             <li class="breadcrumb-item"><a href="/Home" class="text-primary text-decoration-none">Bảng điều khiển</a></li>
-            <li class="breadcrumb-item"><a href="/Category" class="text-primary text-decoration-none">Danh mục tin</a></li>
+            <li class="breadcrumb-item"><a href="/CategoryProduct" class="text-primary text-decoration-none">Danh mục sản phẩm</a></li>
             <li class="breadcrumb-item active" aria-current="page" style="color: #64748b;">Thêm danh mục mới</li>
         </ol>
     </nav>
@@ -20,21 +20,21 @@
         <div class="col-lg-6">
             <div class="flat-card p-4">
                 <div class="mb-4">
-                    <h4 class="fw-bold mb-1" style="color: #1e293b;"><i class="bi bi-folder-plus text-primary me-2"></i>Thêm danh mục mới</h4>
-                    <p class="text-muted small mb-0">Tạo phân loại tin tức hoặc chủ đề học tập mới trên hệ thống.</p>
+                    <h4 class="fw-bold mb-1" style="color: #1e293b;"><i class="bi bi-folder-plus text-primary me-2"></i>Thêm danh mục sản phẩm mới</h4>
+                    <p class="text-muted small mb-0">Tạo phân loại sản phẩm mới cho các linh kiện phần cứng hoặc phụ kiện công nghệ.</p>
                 </div>
                 <hr style="border-color: var(--border-light);" />
 
                 <form asp-action="Create" method="post" class="mt-4">
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Tên danh mục:</label>
-                        <input asp-for="Name" class="form-control" placeholder="Ví dụ: Đời sống số, Sức khỏe..." required />
+                        <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Tên danh mục sản phẩm:</label>
+                        <input asp-for="Name" class="form-control" placeholder="Ví dụ: Điện thoại, Laptop, Phụ kiện..." required />
                         <span asp-validation-for="Name" class="text-danger small"></span>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Mô tả chi tiết:</label>
-                        <textarea asp-for="Description" class="form-control" rows="4" placeholder="Mô tả ngắn gọn về chủ đề danh mục này..." required></textarea>
+                        <textarea asp-for="Description" class="form-control" rows="4" placeholder="Mô tả ngắn gọn về nhóm sản phẩm này..." required></textarea>
                         <span asp-validation-for="Description" class="text-danger small"></span>
                     </div>
 

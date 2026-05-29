@@ -1,0 +1,77 @@
+@model CMS.Data.Entities.User
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Chỉnh sửa thành viên";
+}
+
+<div class="container-fluid p-0">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="glass-breadcrumb" style="background: #ffffff; border: 1px solid var(--border-light); margin-bottom: 20px; padding: 10px 16px; border-radius: 8px;">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="/Home" class="text-primary text-decoration-none">Bảng điều khiển</a></li>
+            <li class="breadcrumb-item"><a href="/User" class="text-primary text-decoration-none">Quản lý Thành viên</a></li>
+            <li class="breadcrumb-item active" aria-current="page" style="color: #64748b;">Chỉnh sửa thành viên</li>
+        </ol>
+    </nav>
+
+    <!-- Edit Card Form -->
+    <div class="row justify-content-start">
+        <div class="col-lg-6">
+            <div class="flat-card p-4">
+                <div class="mb-4">
+                    <h4 class="fw-bold mb-1" style="color: #1e293b;"><i class="bi bi-pencil-square text-warning me-2"></i>Chỉnh sửa thành viên</h4>
+                    <p class="text-muted small mb-0">Cập nhật thông tin chi tiết, thay đổi quyền hạn hoặc thiết lập lại mật khẩu thành viên.</p>
+                </div>
+                <hr style="border-color: var(--border-light);" />
+
+                <form asp-action="Edit" method="post" class="mt-4">
+                    <!-- Hidden field to preserve User Id -->
+                    <input type="hidden" asp-for="Id" />
+
+                    <!-- Global Error Summary -->
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Tên đăng nhập (Username):</label>
+                        <!-- Keep readonly so it submits correctly, but cannot be changed -->
+                        <input asp-for="Username" class="form-control bg-light" readonly />
+                        <span asp-validation-for="Username" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Mật khẩu mới (New Password):</label>
+                        <input type="password" name="NewPassword" class="form-control" placeholder="Nhập mật khẩu mới tại đây..." />
+                        <small class="text-muted d-block mt-1">Để trống ô này nếu bạn KHÔNG muốn thay đổi mật khẩu cũ.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Họ và tên thành viên:</label>
+                        <input asp-for="FullName" class="form-control" required />
+                        <span asp-validation-for="FullName" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Vai trò hệ thống (Role):</label>
+                        <select asp-for="Role" class="form-select" required>
+                            <option value="Admin">Administrator (Toàn quyền hệ thống)</option>
+                            <option value="Editor">Editor (Biên tập bài viết/sản phẩm)</option>
+                            <option value="Moderator">Moderator (Duyệt nội dung)</option>
+                            <option value="User">User (Khách truy cập/Sinh viên)</option>
+                        </select>
+                        <span asp-validation-for="Role" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex gap-2 pt-3 border-top mt-4" style="border-color: #f1f5f9 !important;">
+                        <button type="submit" class="btn-clean btn-sm px-4" style="background: #eab308; border-color: #eab308;">
+                            <i class="bi bi-check-circle"></i> Cập nhật thành viên
+                        </button>
+                        <a asp-action="Index" class="btn-clean-outline btn-sm text-decoration-none px-4">
+                            Hủy bỏ
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
