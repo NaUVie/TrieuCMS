@@ -21,18 +21,27 @@ namespace CMS.Backend.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var posts = await _context.Posts
-                .OrderByDescending(p => p.Id) 
-                .Select(p => new {            
-                    p.Id, 
-                    p.Title, 
-                    p.ImageUrl, 
-                    p.CreatedDate,
-                    CategoryName = p.Category.Name 
-                })
-                .ToListAsync();
+            try 
+            {
+                var posts = await _context.Posts
+                    .Include(p => p.Category)
+                    .OrderByDescending(p => p.Id) 
+                    .Select(p => new {            
+                        p.Id, 
+                        p.Title, 
+                        p.Content,
+                        p.ImageUrl, 
+                        p.CreatedDate,
+                        CategoryName = p.Category != null ? p.Category.Name : "Chưa phân loại"
+                    })
+                    .ToListAsync();
 
-            return Ok(posts); 
+                return Ok(posts);
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(500, new { message = "Lỗi khi tải bài viết", detail = ex.Message });
+            }
         }
 
         [HttpGet("category/{categoryId}")] 

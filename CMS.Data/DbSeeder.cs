@@ -118,30 +118,58 @@ namespace CMS.Data
                 {
                     new CategoryProduct { Name = "Điện thoại & Máy tính bảng", Description = "Các dòng thiết bị di động, tablet thông minh mới nhất" },
                     new CategoryProduct { Name = "Laptop & Thiết bị văn phòng", Description = "Máy tính xách tay và các linh kiện phục vụ làm việc & giải trí" },
-                    new CategoryProduct { Name = "Phụ kiện công nghệ", Description = "Tai nghe, chuột, bàn phím và dây sạc chất lượng cao" }
+                    new CategoryProduct { Name = "Phụ kiện công nghệ", Description = "Tai nghe, chuột, bàn phím và dây sạc chất lượng cao" },
+                    new CategoryProduct { Name = "Đồng hồ thông minh", Description = "Smartwatch và thiết bị đeo tay theo dõi sức khỏe" },
+                    new CategoryProduct { Name = "Màn hình & TV", Description = "Màn hình máy tính, TV thông minh các kích thước" }
                 };
                 context.CategoriesProducts.AddRange(productCategories);
                 context.SaveChanges();
             }
 
-            // 5. Seed Product
-            if (!context.Products.Any())
-            {
-                var mobileCat = context.CategoriesProducts.FirstOrDefault(c => c.Name == "Điện thoại & Máy tính bảng");
-                var laptopCat = context.CategoriesProducts.FirstOrDefault(c => c.Name == "Laptop & Thiết bị văn phòng");
-                var accessoryCat = context.CategoriesProducts.FirstOrDefault(c => c.Name == "Phụ kiện công nghệ");
+            // 5. Seed Product — bổ sung sản phẩm nếu chưa đủ 15 sản phẩm
+            var mobileCat = context.CategoriesProducts.FirstOrDefault(c => c.Name == "Điện thoại & Máy tính bảng");
+            var laptopCat = context.CategoriesProducts.FirstOrDefault(c => c.Name == "Laptop & Thiết bị văn phòng");
+            var accessoryCat = context.CategoriesProducts.FirstOrDefault(c => c.Name == "Phụ kiện công nghệ");
+            var watchCat = context.CategoriesProducts.FirstOrDefault(c => c.Name == "Đồng hồ thông minh");
+            var tvCat = context.CategoriesProducts.FirstOrDefault(c => c.Name == "Màn hình & TV");
 
-                var products = new List<Product>
+            var allNewProducts = new List<Product>
+            {
+                // === Điện thoại ===
+                new Product { Name = "iPhone 15 Pro Max", Price = 29990000, StockQuantity = 50, ImageUrl = "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop", Description = "Siêu phẩm Apple 2024 bộ nhớ 256GB vỏ Titan siêu nhẹ", CategoryProductId = mobileCat?.Id ?? 1 },
+                new Product { Name = "Samsung Galaxy S24 Ultra", Price = 26990000, StockQuantity = 40, ImageUrl = "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=800&auto=format&fit=crop", Description = "Thiết kế vuông vức cùng bút S-Pen và tính năng Galaxy AI đột phá", CategoryProductId = mobileCat?.Id ?? 1 },
+                new Product { Name = "Google Pixel 8 Pro", Price = 22490000, StockQuantity = 25, ImageUrl = "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=800&auto=format&fit=crop", Description = "Camera AI hàng đầu thế giới, trải nghiệm Android thuần khiết", CategoryProductId = mobileCat?.Id ?? 1 },
+                new Product { Name = "Xiaomi 14 Ultra", Price = 19990000, StockQuantity = 35, ImageUrl = "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&auto=format&fit=crop", Description = "Flagship Xiaomi với camera Leica chuyên nghiệp, sạc nhanh 90W", CategoryProductId = mobileCat?.Id ?? 1 },
+                new Product { Name = "iPad Pro M4 12.9 inch", Price = 32990000, StockQuantity = 18, ImageUrl = "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=800&auto=format&fit=crop", Description = "Máy tính bảng mỏng nhất thế giới với chip M4 cực mạnh", CategoryProductId = mobileCat?.Id ?? 1 },
+
+                // === Laptop ===
+                new Product { Name = "Macbook Pro M3 v2", Price = 39990000, StockQuantity = 15, ImageUrl = "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&auto=format&fit=crop", Description = "Apple Silicon M3 cực mạnh cho lập trình viên và đồ họa chuyên nghiệp", CategoryProductId = laptopCat?.Id ?? 2 },
+                new Product { Name = "Dell XPS 13 2323", Price = 34500000, StockQuantity = 12, ImageUrl = "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=800&auto=format&fit=crop", Description = "Laptop ultrabook doanh nhân siêu mỏng nhẹ màn hình vô cực", CategoryProductId = laptopCat?.Id ?? 2 },
+                new Product { Name = "ASUS ROG Strix G16", Price = 28990000, StockQuantity = 20, ImageUrl = "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=800&auto=format&fit=crop", Description = "Laptop gaming RTX 4060, màn hình 165Hz, tản nhiệt siêu mát", CategoryProductId = laptopCat?.Id ?? 2 },
+                new Product { Name = "Lenovo ThinkPad X1 Carbon", Price = 31500000, StockQuantity = 8, ImageUrl = "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop", Description = "Laptop doanh nhân bền bỉ chuẩn quân đội, bàn phím huyền thoại", CategoryProductId = laptopCat?.Id ?? 2 },
+
+                // === Phụ kiện ===
+                new Product { Name = "Tai nghe AirPods Pro 2", Price = 5990000, StockQuantity = 100, ImageUrl = "https://images.unsplash.com/photo-1588449668338-d1345b11a4f1?w=800&auto=format&fit=crop", Description = "Chống ồn chủ động vượt trội và âm thanh vòm sống động", CategoryProductId = accessoryCat?.Id ?? 3 },
+                new Product { Name = "Bàn phím cơ Keychron K8", Price = 2490000, StockQuantity = 60, ImageUrl = "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=800&auto=format&fit=crop", Description = "Bàn phím cơ không dây hot-swap, switch Gateron, đèn RGB", CategoryProductId = accessoryCat?.Id ?? 3 },
+                new Product { Name = "Chuột Logitech MX Master 3S", Price = 2290000, StockQuantity = 45, ImageUrl = "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=800&auto=format&fit=crop", Description = "Chuột ergonomic cao cấp, cuộn siêu nhanh, kết nối 3 thiết bị", CategoryProductId = accessoryCat?.Id ?? 3 },
+
+                // === Đồng hồ ===
+                new Product { Name = "Apple Watch Ultra 2", Price = 21990000, StockQuantity = 22, ImageUrl = "https://images.unsplash.com/photo-1434494878577-86c23bcb06b9?w=800&auto=format&fit=crop", Description = "Đồng hồ thông minh cao cấp nhất Apple, chống nước 100m, GPS 2 tần số", CategoryProductId = watchCat?.Id ?? mobileCat?.Id ?? 1 },
+                new Product { Name = "Samsung Galaxy Watch 6 Classic", Price = 8990000, StockQuantity = 30, ImageUrl = "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=800&auto=format&fit=crop", Description = "Vòng bezel xoay cổ điển, đo huyết áp và nhịp tim chính xác", CategoryProductId = watchCat?.Id ?? mobileCat?.Id ?? 1 },
+
+                // === Màn hình ===
+                new Product { Name = "LG UltraFine 27 inch 4K", Price = 12990000, StockQuantity = 15, ImageUrl = "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=800&auto=format&fit=crop", Description = "Màn hình 4K IPS 99% sRGB, USB-C 96W, hoàn hảo cho Macbook", CategoryProductId = tvCat?.Id ?? laptopCat?.Id ?? 2 },
+                new Product { Name = "Samsung Smart TV 55 inch QLED", Price = 15490000, StockQuantity = 10, ImageUrl = "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=800&auto=format&fit=crop", Description = "TV QLED 4K, Tizen OS, hỗ trợ AirPlay 2 và SmartThings", CategoryProductId = tvCat?.Id ?? laptopCat?.Id ?? 2 },
+            };
+
+            foreach (var newProd in allNewProducts)
+            {
+                if (!context.Products.Any(p => p.Name == newProd.Name))
                 {
-                    new Product { Name = "iPhone 15 Pro Max", Price = 29990000, StockQuantity = 50, ImageUrl = "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop", Description = "Siêu phẩm Apple 2024 bộ nhớ 256GB vỏ Titan siêu nhẹ", CategoryProductId = mobileCat?.Id ?? 1 },
-                    new Product { Name = "Samsung Galaxy S24 Ultra", Price = 26990000, StockQuantity = 40, ImageUrl = "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=800&auto=format&fit=crop", Description = "Thiết kế vuông vức cùng bút S-Pen và tính năng Galaxy AI đột phá", CategoryProductId = mobileCat?.Id ?? 1 },
-                    new Product { Name = "Macbook Pro M3", Price = 39990000, StockQuantity = 15, ImageUrl = "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&auto=format&fit=crop", Description = "Apple Silicon M3 cực mạnh cho lập trình viên và đồ họa chuyên nghiệp", CategoryProductId = laptopCat?.Id ?? 2 },
-                    new Product { Name = "Dell XPS 13", Price = 34500000, StockQuantity = 12, ImageUrl = "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=800&auto=format&fit=crop", Description = "Laptop ultrabook doanh nhân siêu mỏng nhẹ màn hình vô cực", CategoryProductId = laptopCat?.Id ?? 2 },
-                    new Product { Name = "Tai nghe AirPods Pro 2", Price = 5990000, StockQuantity = 100, ImageUrl = "https://images.unsplash.com/photo-1588449668338-d1345b11a4f1?w=800&auto=format&fit=crop", Description = "Chống ồn chủ động vượt trội và âm thanh vòm sống động", CategoryProductId = accessoryCat?.Id ?? 3 }
-                };
-                context.Products.AddRange(products);
-                context.SaveChanges();
+                    context.Products.Add(newProd);
+                }
             }
+            context.SaveChanges();
 
             // Hot-swap existing placeholder image paths with premium Unsplash image URLs for Products
             if (context.Products.Any(p => p.ImageUrl.Contains("/img/")))
