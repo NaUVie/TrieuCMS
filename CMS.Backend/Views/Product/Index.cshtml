@@ -77,3 +77,53 @@
         }
     }
 </div>
+
+@if (ViewBag.TotalPages > 1)
+{
+    <div class="d-flex justify-content-center align-items-center mt-5">
+        <nav aria-label="Page navigation">
+            <ul class="pagination pagination-sm gap-2 mb-0 border-0">
+                <!-- Nút trang trước -->
+                <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
+                    <a class="page-link rounded-circle border d-flex align-items-center justify-content-center" 
+                       href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1 })" 
+                       style="width: 36px; height: 36px; color: #475569; background: #ffffff; border-color: #cbd5e1 !important; transition: all 0.2s ease;">
+                        <i class="bi bi-chevron-left" style="font-size: 0.8rem;"></i>
+                    </a>
+                </li>
+
+                <!-- Danh sách trang -->
+                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                {
+                    <li class="page-item @(ViewBag.CurrentPage == i ? "active" : "")">
+                        @if (ViewBag.CurrentPage == i)
+                        {
+                            <span class="page-link rounded-circle d-flex align-items-center justify-content-center active-page" 
+                                  style="width: 36px; height: 36px; background-color: var(--primary) !important; border-color: var(--primary) !important; color: #ffffff !important; font-weight: 600; box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);">
+                                @i
+                            </span>
+                        }
+                        else
+                        {
+                            <a class="page-link rounded-circle border d-flex align-items-center justify-content-center" 
+                               href="@Url.Action("Index", new { page = i })" 
+                               style="width: 36px; height: 36px; color: #475569; background: #ffffff; border-color: #cbd5e1 !important; transition: all 0.2s ease;">
+                                @i
+                            </a>
+                        }
+                    </li>
+                }
+
+                <!-- Nút trang sau -->
+                <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
+                    <a class="page-link rounded-circle border d-flex align-items-center justify-content-center" 
+                       href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1 })" 
+                       aria-label="Next"
+                       style="width: 36px; height: 36px; color: #475569; background: #ffffff; border-color: #cbd5e1 !important; transition: all 0.2s ease;">
+                        <i class="bi bi-chevron-right" style="font-size: 0.8rem;"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+}

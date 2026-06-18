@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 using CMS.Data;
+using CMS.Data.Security;
 
 namespace CMS.Backend.Controllers
 {
@@ -25,9 +26,9 @@ namespace CMS.Backend.Controllers
         public async Task<IActionResult> Login(string username, string password)
         {
             // 1. Kiểm tra tài khoản trong Database
-            var user = _context.Users.FirstOrDefault(u => u.Username == username && u.PasswordHash == password);
+            var user = _context.Users.FirstOrDefault(u => u.Username == username);
 
-            if (user != null)
+            if (user != null && PasswordHasher.VerifyPassword(password, user.PasswordHash))
             {
                 // Ngăn chặn tài khoản có Role là "User" đăng nhập vào trang quản trị
                 if (user.Role == "User")

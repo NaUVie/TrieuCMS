@@ -16,7 +16,7 @@
     </nav>
 
     <!-- Edit Card Form -->
-    <form asp-action="Edit" method="post">
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
         <!-- Hidden field to preserve Id -->
         <input type="hidden" asp-for="Id" />
 
@@ -75,9 +75,9 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Đường dẫn hình ảnh (URL):</label>
-                            <input asp-for="ImageUrl" class="form-control" placeholder="https://images.unsplash.com/... hoặc để trống" />
-                            <span asp-validation-for="ImageUrl" class="text-danger small"></span>
+                            <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Tải lên hình ảnh sản phẩm mới:</label>
+                            <input type="file" name="ImageFile" class="form-control" accept="image/*" />
+                            <small class="text-muted d-block mt-1">Để trống nếu muốn giữ nguyên ảnh hiện tại.</small>
                         </div>
                         
                         <!-- Mini Preview if Image exists -->

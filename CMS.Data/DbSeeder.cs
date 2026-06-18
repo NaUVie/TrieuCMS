@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CMS.Data.Entities;
+using CMS.Data.Security;
 
 namespace CMS.Data
 {
@@ -101,14 +102,31 @@ namespace CMS.Data
             {
                 var users = new List<User>
                 {
-                    new User { Username = "admin", PasswordHash = "123456", FullName = "Quản trị viên hệ thống", Role = "Admin" },
-                    new User { Username = "thai_gv", PasswordHash = "thai1969", FullName = "Nguyễn Cao Thái", Role = "Editor" },
-                    new User { Username = "sv_01", PasswordHash = "student1", FullName = "Nguyễn Văn A", Role = "User" },
-                    new User { Username = "sv_02", PasswordHash = "student2", FullName = "Trần Thị B", Role = "User" },
-                    new User { Username = "moderator", PasswordHash = "mod789", FullName = "Lê Văn C", Role = "Moderator" }
+                    new User { Username = "admin", PasswordHash = PasswordHasher.HashPassword("123456"), FullName = "Quản trị viên hệ thống", Role = "Admin" },
+                    new User { Username = "thai_gv", PasswordHash = PasswordHasher.HashPassword("thai1969"), FullName = "Nguyễn Cao Thái", Role = "Editor" },
+                    new User { Username = "sv_01", PasswordHash = PasswordHasher.HashPassword("student1"), FullName = "Nguyễn Văn A", Role = "User" },
+                    new User { Username = "sv_02", PasswordHash = PasswordHasher.HashPassword("student2"), FullName = "Trần Thị B", Role = "User" },
+                    new User { Username = "moderator", PasswordHash = PasswordHasher.HashPassword("mod789"), FullName = "Lê Văn C", Role = "Moderator" }
                 };
                 context.Users.AddRange(users);
                 context.SaveChanges();
+            }
+            else
+            {
+                var users = context.Users.ToList();
+                bool modified = false;
+                foreach (var user in users)
+                {
+                    if (!string.IsNullOrEmpty(user.PasswordHash) && !IsHashed(user.PasswordHash))
+                    {
+                        user.PasswordHash = PasswordHasher.HashPassword(user.PasswordHash);
+                        modified = true;
+                    }
+                }
+                if (modified)
+                {
+                    context.SaveChanges();
+                }
             }
 
             // 4. Seed CategoryProduct
@@ -160,6 +178,18 @@ namespace CMS.Data
                 // === Màn hình ===
                 new Product { Name = "LG UltraFine 27 inch 4K", Price = 12990000, StockQuantity = 15, ImageUrl = "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=800&auto=format&fit=crop", Description = "Màn hình 4K IPS 99% sRGB, USB-C 96W, hoàn hảo cho Macbook", CategoryProductId = tvCat?.Id ?? laptopCat?.Id ?? 2 },
                 new Product { Name = "Samsung Smart TV 55 inch QLED", Price = 15490000, StockQuantity = 10, ImageUrl = "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=800&auto=format&fit=crop", Description = "TV QLED 4K, Tizen OS, hỗ trợ AirPlay 2 và SmartThings", CategoryProductId = tvCat?.Id ?? laptopCat?.Id ?? 2 },
+
+                // === Thêm sản phẩm mới để đạt 20+ sản phẩm ===
+                new Product { Name = "Samsung Galaxy Tab S9 Ultra", Price = 21990000, StockQuantity = 15, ImageUrl = "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=800&auto=format&fit=crop", Description = "Máy tính bảng màn hình Dynamic AMOLED 2X 14.6 inch cực đại", CategoryProductId = mobileCat?.Id ?? 1 },
+                new Product { Name = "Sony WH-1000XM5", Price = 6490000, StockQuantity = 40, ImageUrl = "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=800&auto=format&fit=crop", Description = "Tai nghe chụp tai chống ồn đỉnh cao, thời lượng pin 30 giờ", CategoryProductId = accessoryCat?.Id ?? 3 },
+                new Product { Name = "Bàn phím Leopold FC750R PD", Price = 3150000, StockQuantity = 25, ImageUrl = "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=800&auto=format&fit=crop", Description = "Bàn phím cơ nhập khẩu Hàn Quốc, keycap PBT Doubleshot siêu bền", CategoryProductId = accessoryCat?.Id ?? 3 },
+                new Product { Name = "Chuột Logitech G Pro X Superlight 2", Price = 3590000, StockQuantity = 30, ImageUrl = "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=800&auto=format&fit=crop", Description = "Chuột chơi game không dây siêu nhẹ cho game thủ chuyên nghiệp", CategoryProductId = accessoryCat?.Id ?? 3 },
+                new Product { Name = "Garmin Fenix 7 Pro Sapphire", Price = 17990000, StockQuantity = 12, ImageUrl = "https://images.unsplash.com/photo-1434494878577-86c23bcb06b9?w=800&auto=format&fit=crop", Description = "Đồng hồ GPS thể thao cao cấp tích hợp sạc năng lượng mặt trời", CategoryProductId = watchCat?.Id ?? mobileCat?.Id ?? 1 },
+                new Product { Name = "Loa Bluetooth JBL Charge 5", Price = 3490000, StockQuantity = 50, ImageUrl = "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=800&auto=format&fit=crop", Description = "Loa di động kháng nước IP67, âm bass sâu rõ, pin dùng 20 giờ", CategoryProductId = accessoryCat?.Id ?? 3 },
+                new Product { Name = "Oppo Find X7 Ultra", Price = 18490000, StockQuantity = 20, ImageUrl = "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&auto=format&fit=crop", Description = "Điện thoại camera Hasselblad kép kính tiềm vọng thu phóng vượt trội", CategoryProductId = mobileCat?.Id ?? 1 },
+                new Product { Name = "ASUS TUF Gaming VG279QL1A", Price = 6190000, StockQuantity = 15, ImageUrl = "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=800&auto=format&fit=crop", Description = "Màn hình gaming 27 inch Full HD, IPS 165Hz chuyên nghiệp", CategoryProductId = tvCat?.Id ?? laptopCat?.Id ?? 2 },
+                new Product { Name = "MacBook Air M3 13 inch", Price = 27990000, StockQuantity = 25, ImageUrl = "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&auto=format&fit=crop", Description = "Thiết kế siêu mỏng nhẹ, pin 18 tiếng, hiệu năng vượt bậc với chip M3", CategoryProductId = laptopCat?.Id ?? 2 },
+                new Product { Name = "Tai nghe chụp tai Marshall Major IV", Price = 3690000, StockQuantity = 35, ImageUrl = "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop", Description = "Tai nghe không dây cổ điển biểu tượng Marshall, thời lượng pin 80 giờ", CategoryProductId = accessoryCat?.Id ?? 3 },
             };
 
             foreach (var newProd in allNewProducts)
@@ -191,11 +221,28 @@ namespace CMS.Data
             {
                 var customers = new List<Customer>
                 {
-                    new Customer { FullName = "La Quang Triều", Email = "trieu@gmail.com", Phone = "0987654321", Address = "93 Cao Thắng, Quận 3, TP.HCM", Password = "123" },
-                    new Customer { FullName = "Nguyễn Cao Thái", Email = "thai@cms.edu.vn", Phone = "0909123456", Address = "Quy Nhơn, Bình Định", Password = "123" }
+                    new Customer { FullName = "La Quang Triều", Email = "trieu@gmail.com", Phone = "0987654321", Address = "93 Cao Thắng, Quận 3, TP.HCM", Password = PasswordHasher.HashPassword("123") },
+                    new Customer { FullName = "Nguyễn Cao Thái", Email = "thai@cms.edu.vn", Phone = "0909123456", Address = "Quy Nhơn, Bình Định", Password = PasswordHasher.HashPassword("123") }
                 };
                 context.Customers.AddRange(customers);
                 context.SaveChanges();
+            }
+            else
+            {
+                var customers = context.Customers.ToList();
+                bool modified = false;
+                foreach (var customer in customers)
+                {
+                    if (!string.IsNullOrEmpty(customer.Password) && !IsHashed(customer.Password))
+                    {
+                        customer.Password = PasswordHasher.HashPassword(customer.Password);
+                        modified = true;
+                    }
+                }
+                if (modified)
+                {
+                    context.SaveChanges();
+                }
             }
 
             // 7. Seed Order
@@ -228,6 +275,60 @@ namespace CMS.Data
                 };
                 context.OrderDetails.AddRange(details);
                 context.SaveChanges();
+            }
+
+            // 9. Seed Advertisements
+            if (!context.Advertisements.Any())
+            {
+                var banners = new List<Advertisement>
+                {
+                    new Advertisement
+                    {
+                        Title = "Săn Deal iPhone 15 Pro Max",
+                        SubTitle = "Giá chỉ từ 29.990.000đ. Nhập mã TRIEU2026 giảm thêm 1 triệu đồng.",
+                        ImageUrl = "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=1200&auto=format&fit=crop",
+                        LinkUrl = "#shop",
+                        Status = 1,
+                        CreatedDate = DateTime.Now
+                    },
+                    new Advertisement
+                    {
+                        Title = "Laptop Gaming ASUS ROG Strix G16",
+                        SubTitle = "Đồ họa đỉnh cao RTX 4060. Tặng kèm chuột ROG Pugio II cực chất.",
+                        ImageUrl = "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=1200&auto=format&fit=crop",
+                        LinkUrl = "#shop",
+                        Status = 1,
+                        CreatedDate = DateTime.Now.AddDays(-1)
+                    },
+                    new Advertisement
+                    {
+                        Title = "Đồng Hồ Apple Watch Ultra 2",
+                        SubTitle = "Định vị GPS 2 tần số siêu chính hãng. Bảo hành vàng 18 tháng.",
+                        ImageUrl = "https://images.unsplash.com/photo-1434494878577-86c23bcb06b9?w=1200&auto=format&fit=crop",
+                        LinkUrl = "#shop",
+                        Status = 1,
+                        CreatedDate = DateTime.Now.AddDays(-2)
+                    }
+                };
+                context.Advertisements.AddRange(banners);
+                context.SaveChanges();
+            }
+        }
+
+        private static bool IsHashed(string password)
+        {
+            if (string.IsNullOrEmpty(password) || password.Length != 64)
+            {
+                return false;
+            }
+            try
+            {
+                var bytes = Convert.FromBase64String(password);
+                return bytes.Length == 48;
+            }
+            catch
+            {
+                return false;
             }
         }
     }

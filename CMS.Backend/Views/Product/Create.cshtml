@@ -16,7 +16,7 @@
     </nav>
 
     <!-- Create Card Form -->
-    <form asp-action="Create" method="post">
+    <form asp-action="Create" method="post" enctype="multipart/form-data">
         <div class="row g-4">
             <!-- Left Column: Core Info -->
             <div class="col-lg-8">
@@ -72,9 +72,9 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Đường dẫn hình ảnh (URL):</label>
-                            <input asp-for="ImageUrl" class="form-control" placeholder="https://images.unsplash.com/... hoặc để trống" />
-                            <span asp-validation-for="ImageUrl" class="text-danger small"></span>
+                            <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Tải lên hình ảnh sản phẩm:</label>
+                            <input type="file" name="ImageFile" class="form-control" accept="image/*" required />
+                            <small class="text-muted d-block mt-1">Định dạng hỗ trợ: JPG, PNG, WEBP...</small>
                         </div>
                     </div>
 

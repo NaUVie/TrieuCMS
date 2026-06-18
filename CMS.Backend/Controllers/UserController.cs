@@ -4,6 +4,7 @@ using CMS.Data;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using CMS.Data.Security;
 
 namespace CMS.Backend.Controllers
 {
@@ -51,6 +52,14 @@ namespace CMS.Backend.Controllers
                 return View(model);
             }
 
+            if (string.IsNullOrEmpty(model.PasswordHash))
+            {
+                ModelState.AddModelError("PasswordHash", "Mật khẩu không được để trống.");
+                return View(model);
+            }
+
+            model.PasswordHash = PasswordHasher.HashPassword(model.PasswordHash);
+
             _context.Users.Add(model);
             _context.SaveChanges();
             return RedirectToAction(nameof(Index));
@@ -85,7 +94,7 @@ namespace CMS.Backend.Controllers
 
             if (!string.IsNullOrEmpty(NewPassword))
             {
-                dbUser.PasswordHash = NewPassword;
+                dbUser.PasswordHash = PasswordHasher.HashPassword(NewPassword);
             }
 
             _context.SaveChanges();

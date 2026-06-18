@@ -55,14 +55,8 @@
 
                         <div class="mb-3">
                             <label class="form-label fw-bold text-slate" style="font-size: 0.85rem;">Tải lên hình ảnh:</label>
-                            <input type="file" name="uploadImage" class="form-control" accept="image/*" />
+                            <input type="file" name="uploadImage" class="form-control" accept="image/*" required />
                             <small class="text-muted d-block mt-1">Định dạng hỗ trợ: JPG, PNG, WEBP...</small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label fw-bold text-slate" style="font-size: 0.85rem;">Hoặc nhập Link ảnh (nếu không tải lên):</label>
-                            <input asp-for="ImageUrl" class="form-control" placeholder="https://..." />
-                            <span asp-validation-for="ImageUrl" class="text-danger small"></span>
                         </div>
 
                         <div class="mb-3">

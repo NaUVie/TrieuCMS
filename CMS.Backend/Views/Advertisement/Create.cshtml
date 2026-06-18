@@ -1,0 +1,57 @@
+@model CMS.Data.Entities.Advertisement
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Thêm mới Banner/Quảng cáo";
+}
+
+<div class="flat-card" style="max-width: 800px; margin: 0 auto;">
+    <div class="mb-4">
+        <h4 class="fw-bold mb-1" style="color: #1e293b;"><i class="bi bi-plus-circle-fill text-primary me-2"></i>Thêm Mới Banner Quảng Cáo</h4>
+        <p class="text-muted small mb-0">Cấu hình thông tin hình ảnh, tiêu đề, và liên kết cho slide quảng cáo trang chủ.</p>
+    </div>
+    <hr style="border-color: var(--border-light);" />
+
+    <form asp-action="Create" method="post" enctype="multipart/form-data" class="mt-4">
+        <div class="mb-3">
+            <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Tiêu đề chính của Banner *</label>
+            <input asp-for="Title" class="form-control" placeholder="Ví dụ: Siêu Sale iPhone 15 Pro Max" required />
+            <span asp-validation-for="Title" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Dòng mô tả phụ (SubTitle)</label>
+            <input asp-for="SubTitle" class="form-control" placeholder="Ví dụ: Giảm giá sốc lên tới 3 triệu đồng kèm nhiều quà tặng độc quyền" />
+            <span asp-validation-for="SubTitle" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Đường dẫn liên kết (Link URL)</label>
+            <input asp-for="LinkUrl" class="form-control" placeholder="Ví dụ: #shop hoặc /product/details/1" />
+            <span asp-validation-for="LinkUrl" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Tải lên ảnh Banner *</label>
+            <input type="file" name="uploadImage" class="form-control" accept="image/*" required />
+            <small class="text-muted d-block mt-1">Nên chọn hình ảnh có tỉ lệ nằm ngang lớn để hiển thị đẹp nhất.</small>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Trạng thái hiển thị</label>
+            <select asp-for="Status" class="form-select">
+                <option value="1">Hiển thị (Active)</option>
+                <option value="0">Ẩn (Inactive)</option>
+            </select>
+        </div>
+
+        <div class="d-flex gap-2 pt-3 border-top" style="border-color: #f1f5f9 !important;">
+            <button type="submit" class="btn-clean btn-sm px-4">
+                <i class="bi bi-check-circle"></i> Thêm banner mới
+            </button>
+            <a asp-action="Index" class="btn-clean-outline btn-sm text-decoration-none px-3">
+                Quay lại
+            </a>
+        </div>
+    </form>
+</div>

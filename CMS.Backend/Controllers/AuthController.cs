@@ -4,6 +4,7 @@ using CMS.Data;
 using CMS.Data.Entities;
 using System.Threading.Tasks;
 using System.Linq;
+using CMS.Data.Security;
 
 namespace CMS.Backend.Controllers
 {
@@ -40,7 +41,7 @@ namespace CMS.Backend.Controllers
                 {
                     FullName = input.FullName,
                     Email = input.Email,
-                    Password = input.Password, // Lưu thô theo yêu cầu tối giản
+                    Password = PasswordHasher.HashPassword(input.Password), // Hashed secure password
                     Phone = input.Phone,
                     Address = input.Address
                 };
@@ -69,9 +70,9 @@ namespace CMS.Backend.Controllers
             }
 
             var customer = await _context.Customers
-                .FirstOrDefaultAsync(c => c.Email.ToLower() == input.Email.ToLower() && c.Password == input.Password);
+                .FirstOrDefaultAsync(c => c.Email.ToLower() == input.Email.ToLower());
 
-            if (customer == null)
+            if (customer == null || !PasswordHasher.VerifyPassword(input.Password, customer.Password))
             {
                 return Unauthorized(new { message = "Email hoặc Mật khẩu không chính xác!" });
             }

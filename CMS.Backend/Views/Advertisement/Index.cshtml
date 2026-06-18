@@ -1,0 +1,67 @@
+@model IEnumerable<CMS.Data.Entities.Advertisement>
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Quản lý Banners/Quảng cáo";
+}
+
+<div class="flat-card">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h3 class="fw-bold mb-1" style="color: #1e293b;">Danh sách Banner & Quảng cáo</h3>
+            <p class="text-muted small mb-0">Quản lý các banner slideshow ngoài trang chủ người dùng</p>
+        </div>
+        <a asp-action="Create" class="btn-clean btn-sm text-decoration-none">
+            <i class="bi bi-plus-lg"></i> Thêm banner mới
+        </a>
+    </div>
+
+    <div class="clean-table-container">
+        <table class="clean-table">
+            <thead>
+                <tr>
+                    <th style="width: 80px;">ID</th>
+                    <th style="width: 120px;">Hình ảnh</th>
+                    <th>Tiêu đề quảng cáo</th>
+                    <th>Mô tả phụ</th>
+                    <th>Đường dẫn</th>
+                    <th style="width: 120px; text-align: center;">Trạng thái</th>
+                    <th style="width: 160px; text-align: center;">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model) {
+                    <tr>
+                        <td>
+                            <span class="badge-clean badge-clean-primary">#@item.Id</span>
+                        </td>
+                        <td>
+                            <img src="@item.ImageUrl" style="width: 100px; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid #e2e8f0;" alt="Banner" onerror="this.src='https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=100&auto=format&fit=crop'" />
+                        </td>
+                        <td>
+                            <strong>@item.Title</strong>
+                        </td>
+                        <td>@item.SubTitle</td>
+                        <td><code>@item.LinkUrl</code></td>
+                        <td class="text-center">
+                            @if (item.Status == 1)
+                            {
+                                <span class="badge bg-success" style="border-radius: 12px; font-weight: 500;">Hiển thị</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary" style="border-radius: 12px; font-weight: 500;">Ẩn</span>
+                            }
+                        </td>
+                        <td>
+                            <div class="d-flex gap-1 justify-content-center">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="action-link action-link-edit"><i class="bi bi-pencil-square"></i> Sửa</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="action-link action-link-delete" onclick="return confirm('Bạn có chắc chắn muốn xóa banner này?')"><i class="bi bi-trash"></i> Xóa</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

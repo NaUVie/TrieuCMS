@@ -68,11 +68,7 @@
                             <small class="text-muted d-block mt-1">Để trống nếu muốn giữ nguyên ảnh hiện tại.</small>
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label fw-bold text-slate" style="font-size: 0.85rem;">Hoặc nhập Link ảnh mới:</label>
-                            <input asp-for="ImageUrl" class="form-control" />
-                            <span asp-validation-for="ImageUrl" class="text-danger small"></span>
-                        </div>
+                        <input type="hidden" asp-for="ImageUrl" />
 
                         <div class="mb-3">
                             <label class="form-label fw-bold text-slate" style="font-size: 0.85rem;">Ngày đăng:</label>

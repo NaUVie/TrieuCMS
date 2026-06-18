@@ -1,6 +1,7 @@
 @model IEnumerable<CMS.Data.Entities.OrderDetail>
 
 @{
+    Layout = "_LayoutAdmin";
     ViewData["Title"] = "Chi tiết mua hàng";
 }
 
@@ -23,6 +24,7 @@
                     <th class="text-end">Đơn giá niêm yết</th>
                     <th class="text-center" style="width: 100px;">Số lượng</th>
                     <th class="text-end" style="width: 200px;">Thành tiền (Subtotal)</th>
+                    <th style="width: 160px; text-align: center;">Thao tác</th>
                 </tr>
             </thead>
             <tbody>
@@ -56,6 +58,12 @@
                             </td>
                             <td class="text-end fw-bold text-dark">
                                 @total.ToString("N0") VNĐ
+                            </td>
+                            <td>
+                                <div class="d-flex gap-1 justify-content-center">
+                                    <a asp-action="Edit" asp-route-id="@detail.Id" class="action-link action-link-edit"><i class="bi bi-pencil-square"></i> Sửa</a>
+                                    <a asp-action="Delete" asp-route-id="@detail.Id" class="action-link action-link-delete" onclick="return confirm('Bạn có chắc chắn muốn xóa chi tiết này?')"><i class="bi bi-trash"></i> Xóa</a>
+                                </div>
                             </td>
                         </tr>
                     }

@@ -1,6 +1,7 @@
 @model IEnumerable<CMS.Data.Entities.Customer>
 
 @{
+    Layout = "_LayoutAdmin";
     ViewData["Title"] = "Quản lý khách hàng";
 }
 
@@ -10,9 +11,9 @@
             <h3 class="fw-bold mb-1" style="color: #1e293b;">Danh sách khách hàng</h3>
             <p class="text-muted small mb-0">Quản lý danh sách khách hàng đăng ký thành viên mua sắm và thông tin liên hệ giao nhận</p>
         </div>
-        <button class="btn-clean btn-sm">
+        <a asp-action="Create" class="btn-clean btn-sm text-decoration-none">
             <i class="bi bi-person-plus-fill"></i> Thêm khách hàng
-        </button>
+        </a>
     </div>
 
     <div class="clean-table-container">
@@ -56,8 +57,8 @@
                             </td>
                             <td>
                                 <div class="d-flex gap-1 justify-content-center">
-                                    <a href="#" class="action-link action-link-edit"><i class="bi bi-pencil-square"></i> Sửa</a>
-                                    <a href="#" class="action-link action-link-delete"><i class="bi bi-trash"></i> Xóa</a>
+                                    <a asp-action="Edit" asp-route-id="@cust.Id" class="action-link action-link-edit"><i class="bi bi-pencil-square"></i> Sửa</a>
+                                    <a asp-action="Delete" asp-route-id="@cust.Id" class="action-link action-link-delete" onclick="return confirm('Bạn có chắc chắn muốn xóa khách hàng này?')"><i class="bi bi-trash"></i> Xóa</a>
                                 </div>
                             </td>
                         </tr>

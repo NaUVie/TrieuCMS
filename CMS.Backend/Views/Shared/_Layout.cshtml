@@ -43,6 +43,11 @@
                     <i class="bi bi-file-earmark-post"></i>
                     <span>Bài viết</span>
                 </a>
+                <a class="menu-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Advertisement" ? "active" : "")" 
+                   asp-controller="Advertisement" asp-action="Index">
+                    <i class="bi bi-images"></i>
+                    <span>Quản lý Banners</span>
+                </a>
                 <a class="menu-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "User" ? "active" : "")" 
                    asp-controller="User" asp-action="Index">
                     <i class="bi bi-people"></i>
