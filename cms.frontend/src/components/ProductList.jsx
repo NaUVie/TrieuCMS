@@ -26,6 +26,11 @@ const ProductList = ({ activeId, onSelectProduct, onAddToCart }) => {
     const [sortBy, setSortBy] = useState('default');
     const [minPrice, setMinPrice] = useState('');
     const [maxPrice, setMaxPrice] = useState('');
+    const [filterTag, setFilterTag] = useState('all');
+
+    useEffect(() => {
+        setFilterTag('all');
+    }, [activeId]);
 
     useEffect(() => {
         setSearchTerm(urlSearch);
@@ -50,10 +55,10 @@ const ProductList = ({ activeId, onSelectProduct, onAddToCart }) => {
         fetchProducts();
     }, []);
 
-    // Reset trang hiện tại khi thay đổi danh mục, tìm kiếm hoặc sắp xếp
+    // Reset trang hiện tại khi thay đổi danh mục, tìm kiếm, sắp xếp hoặc tag lọc
     useEffect(() => {
         setCurrentPage(1);
-    }, [activeId, searchTerm, sortBy, minPrice, maxPrice]);
+    }, [activeId, searchTerm, sortBy, minPrice, maxPrice, filterTag]);
 
     if (loading) {
         return (
@@ -67,6 +72,17 @@ const ProductList = ({ activeId, onSelectProduct, onAddToCart }) => {
     let filtered = activeId 
         ? products.filter(item => item.categoryProductId === activeId) 
         : products;
+
+    // Áp dụng bộ lọc xịn theo tag
+    if (filterTag === 'sale') {
+        filtered = filtered.filter(item => item.isOnSale);
+    } else if (filterTag === 'new') {
+        // Sắp xếp ID lớn nhất (mới nhất) lên đầu
+        filtered = [...filtered].sort((a, b) => b.id - a.id);
+    } else if (filterTag === 'bestseller') {
+        // Giả lập sản phẩm bán chạy có tồn kho < 25 (sắp cháy hàng)
+        filtered = filtered.filter(item => item.stockQuantity > 0 && item.stockQuantity < 25);
+    }
 
     if (searchTerm.trim() !== '') {
         filtered = filtered.filter(item => 
@@ -100,6 +116,34 @@ const ProductList = ({ activeId, onSelectProduct, onAddToCart }) => {
 
     return (
         <div>
+            {/* Quick Filter Tabs */}
+            <div className="filter-tabs-container">
+                <button 
+                    className={`filter-tab-btn ${filterTag === 'all' ? 'active' : ''}`}
+                    onClick={() => setFilterTag('all')}
+                >
+                    <i className="fa-solid fa-border-all"></i> Tất cả
+                </button>
+                <button 
+                    className={`filter-tab-btn ${filterTag === 'sale' ? 'active' : ''}`}
+                    onClick={() => setFilterTag('sale')}
+                >
+                    <i className="fa-solid fa-fire text-danger"></i> Đang Giảm Giá
+                </button>
+                <button 
+                    className={`filter-tab-btn ${filterTag === 'new' ? 'active' : ''}`}
+                    onClick={() => setFilterTag('new')}
+                >
+                    <i className="fa-solid fa-bolt text-warning"></i> Mới Về
+                </button>
+                <button 
+                    className={`filter-tab-btn ${filterTag === 'bestseller' ? 'active' : ''}`}
+                    onClick={() => setFilterTag('bestseller')}
+                >
+                    <i className="fa-solid fa-crown text-primary"></i> Bán Chạy
+                </button>
+            </div>
+
             {/* Toolbar: Tìm kiếm và Sắp xếp */}
             <div className="product-toolbar mb-4">
                 <div className="row g-3 align-items-center justify-content-between">
