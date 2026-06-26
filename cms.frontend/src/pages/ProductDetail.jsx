@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import productService from '../services/productService';
 import { BACKEND_URL } from '../api/axiosClient';
+import { useToast } from '../context/ToastContext';
 
 function ProductDetail({ onAddToCart }) {
   const { id } = useParams();
+  const { showToast } = useToast();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [qty, setQty] = useState(1);
@@ -139,7 +141,7 @@ function ProductDetail({ onAddToCart }) {
                     if (qty < product.stockQuantity) {
                       setQty(qty + 1);
                     } else {
-                      alert(`Chỉ còn ${product.stockQuantity} sản phẩm trong kho!`);
+                      showToast(`Chỉ còn ${product.stockQuantity} sản phẩm trong kho!`, 'warning');
                     }
                   }}
                 >

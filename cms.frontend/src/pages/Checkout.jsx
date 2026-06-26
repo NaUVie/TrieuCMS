@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import orderService from '../services/orderService';
+import { useToast } from '../context/ToastContext';
 
 function Checkout({ cartItems, onRemoveItems }) {
   const navigate = useNavigate();
   const location = useLocation();
+  const { showToast, confirm } = useToast();
   
   // Use checkoutItems from router state (checked items or "Buy Now" item), fallback to all cart items
   const checkoutItems = location.state?.checkoutItems || cartItems;
@@ -133,14 +135,26 @@ function Checkout({ cartItems, onRemoveItems }) {
 
       const customerId = localStorage.getItem('customerId');
       if (!customerId) {
-          setError('Bạn cần đăng nhập để đặt hàng!');
+          showToast('Bạn cần đăng nhập để đặt hàng!', 'warning');
           return;
       }
 
       if (!checkoutForm.fullName || !checkoutForm.phone || !checkoutForm.address) {
-          setError('Vui lòng nhập đầy đủ thông tin giao hàng bắt buộc (Họ tên, Số điện thoại, Địa chỉ)!');
+          showToast('Vui lòng nhập đầy đủ thông tin giao hàng bắt buộc!', 'warning');
           return;
       }
+
+      const totalAmount = checkoutItems.reduce((sum, item) => {
+          const price = item.isOnSale ? item.salePrice : item.price;
+          return sum + price * item.quantity;
+      }, 0);
+
+      const isConfirmed = await confirm({
+          title: 'Xác nhận đặt hàng',
+          message: `Bạn có chắc chắn muốn đặt đơn hàng này với tổng trị giá ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalAmount)}?`
+      });
+
+      if (!isConfirmed) return;
 
       setLoading(true);
 
@@ -156,16 +170,19 @@ function Checkout({ cartItems, onRemoveItems }) {
 
           await orderService.createOrder(orderData);
 
-          setSuccessMessage(`Đặt hàng thành công! Đơn hàng mới đã được khởi tạo trong Database. Một email thông tin chi tiết hóa đơn đơn hàng đã được gửi tự động tới ${localStorage.getItem('customerEmail') || 'hòm thư của bạn'}.`);
+          showToast('Đặt hàng thành công! Cảm ơn bạn đã mua hàng.', 'success');
+          setSuccessMessage('Đặt hàng thành công! Cảm ơn bạn đã mua hàng.');
           
           setTimeout(() => {
               // Remove only the items that were checked out
               onRemoveItems(checkoutItems.map(item => item.id));
               navigate('/');
-          }, 4000);
+          }, 2000);
 
       } catch (err) {
-          setError(err.response?.data?.message || 'Có lỗi xảy ra trong quá trình đặt hàng. Vui lòng thử lại!');
+          const errMsg = err.response?.data?.message || 'Có lỗi xảy ra trong quá trình đặt hàng. Vui lòng thử lại!';
+          showToast(errMsg, 'error');
+          setError(errMsg);
       } finally {
           setLoading(false);
       }

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import productService from '../services/productService';
 import { BACKEND_URL } from '../api/axiosClient';
+import { useToast } from '../context/ToastContext';
 
 const getImageUrl = (url) => {
     if (!url) return 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&auto=format&fit=crop';
@@ -11,6 +12,7 @@ const getImageUrl = (url) => {
 };
 
 const ProductList = ({ activeId, onSelectProduct, onAddToCart }) => {
+    const { showToast } = useToast();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     
@@ -278,7 +280,7 @@ const ProductList = ({ activeId, onSelectProduct, onAddToCart }) => {
                                                             if (currentQty < item.stockQuantity) {
                                                                 setQuantities({ ...quantities, [item.id]: currentQty + 1 });
                                                             } else {
-                                                                alert(`Chỉ còn ${item.stockQuantity} sản phẩm trong kho!`);
+                                                                showToast(`Chỉ còn ${item.stockQuantity} sản phẩm trong kho!`, 'warning');
                                                             }
                                                         }}
                                                     >

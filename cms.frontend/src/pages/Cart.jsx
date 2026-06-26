@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { BACKEND_URL } from '../api/axiosClient';
+import { useToast } from '../context/ToastContext';
 
 function Cart({ cartItems, onUpdateQuantity, onRemoveItem, onClearCart, onOpenAuth }) {
   const navigate = useNavigate();
+  const { showToast } = useToast();
   const [checkedItemIds, setCheckedItemIds] = useState([]);
 
   // Initialize checked items to all items in cart when cart loaded
@@ -46,12 +48,12 @@ function Cart({ cartItems, onUpdateQuantity, onRemoveItem, onClearCart, onOpenAu
   const handleCheckoutClick = (e) => {
     e.preventDefault();
     if (!localStorage.getItem('customerId')) {
-      alert('Vui lòng đăng nhập trước khi tiến hành thanh toán!');
+      showToast('Vui lòng đăng nhập trước khi tiến hành thanh toán!', 'warning');
       onOpenAuth();
       return;
     }
     if (checkedItems.length === 0) {
-      alert('Vui lòng chọn ít nhất một sản phẩm trong giỏ hàng để thanh toán!');
+      showToast('Vui lòng chọn ít nhất một sản phẩm trong giỏ hàng để thanh toán!', 'warning');
       return;
     }
     // Navigate passing checkedItems only in the router state

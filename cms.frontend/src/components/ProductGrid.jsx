@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useToast } from '../context/ToastContext';
 
 const ProductGrid = ({ 
   title, 
@@ -11,6 +12,7 @@ const ProductGrid = ({
   BACKEND_URL, 
   navigate 
 }) => {
+  const { showToast } = useToast();
   if (!products || products.length === 0) return null;
 
   return (
@@ -88,7 +90,7 @@ const ProductGrid = ({
                           if (currentQty < product.stockQuantity) {
                             setQuantities({ ...quantities, [product.id]: currentQty + 1 });
                           } else {
-                            alert(`Chỉ còn ${product.stockQuantity} sản phẩm trong kho!`);
+                            showToast(`Chỉ còn ${product.stockQuantity} sản phẩm trong kho!`, 'warning');
                           }
                         }}
                       >

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import orderService from '../services/orderService';
 import { BACKEND_URL } from '../api/axiosClient';
+import { useToast } from '../context/ToastContext';
 
 const getImageUrl = (url) => {
     if (!url) return 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&auto=format&fit=crop';
@@ -10,6 +11,7 @@ const getImageUrl = (url) => {
 };
 
 const CartDrawer = ({ isOpen, onClose, cartItems, onUpdateQuantity, onRemoveItem, onClearCart, onOpenAuth }) => {
+    const { showToast, confirm } = useToast();
     const [isCheckingOut, setIsCheckingOut] = useState(false);
     const [notes, setNotes] = useState('');
     const [checkoutForm, setCheckoutForm] = useState({
@@ -36,15 +38,22 @@ const CartDrawer = ({ isOpen, onClose, cartItems, onUpdateQuantity, onRemoveItem
 
         const customerId = localStorage.getItem('customerId');
         if (!customerId) {
-            setError('Bạn cần đăng nhập để đặt hàng!');
+            showToast('Bạn cần đăng nhập để đặt hàng!', 'warning');
             onOpenAuth();
             return;
         }
 
         if (!checkoutForm.fullName || !checkoutForm.phone || !checkoutForm.address) {
-            setError('Vui lòng nhập đầy đủ thông tin giao hàng (Họ tên, Số điện thoại, Địa chỉ)!');
+            showToast('Vui lòng điền đầy đủ thông tin giao hàng!', 'warning');
             return;
         }
+
+        const isConfirmed = await confirm({
+            title: 'Xác nhận đặt hàng',
+            message: `Bạn có chắc chắn muốn đặt đơn hàng này với tổng giá trị ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalAmount)}?`
+        });
+
+        if (!isConfirmed) return;
 
         setLoading(true);
 
@@ -60,18 +69,18 @@ const CartDrawer = ({ isOpen, onClose, cartItems, onUpdateQuantity, onRemoveItem
 
             await orderService.createOrder(orderData);
 
-            // Simulation of Email sent
-            setSuccessMessage(`Đặt hàng thành công! Đơn hàng mới đã được khởi tạo trong Database. Một email thông tin chi tiết đơn hàng đã được gửi tới ${localStorage.getItem('customerEmail') || 'email của bạn'}.`);
+            showToast('Đặt hàng thành công! Cảm ơn bạn đã mua hàng.', 'success');
+            setSuccessMessage('Đặt hàng thành công! Cảm ơn bạn đã mua hàng.');
             
             setTimeout(() => {
                 onClearCart();
                 setIsCheckingOut(false);
                 setNotes('');
                 onClose();
-            }, 3500);
+            }, 2000);
 
         } catch (err) {
-            setError(err.response?.data?.message || 'Có lỗi xảy ra trong quá trình đặt hàng. Vui lòng thử lại!');
+            showToast(err.response?.data?.message || 'Có lỗi xảy ra trong quá trình đặt hàng!', 'error');
         } finally {
             setLoading(false);
         }

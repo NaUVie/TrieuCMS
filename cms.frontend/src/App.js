@@ -17,7 +17,10 @@ import './App.css';
 import Header from './components/Header';
 import Footer from './components/Footer';
 
+import { useToast } from './context/ToastContext';
+
 function App() {
+  const { showToast } = useToast();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [customerName, setCustomerName] = useState('');
   const [categories, setCategories] = useState([]);
@@ -80,18 +83,18 @@ function App() {
       const existing = cart.find(item => item.id === product.id);
       if (existing) {
           if (existing.quantity + qty > product.stockQuantity) {
-              alert(`Số lượng sản phẩm trong kho không đủ! Chỉ còn ${product.stockQuantity} sản phẩm.`);
+              showToast(`Số lượng sản phẩm trong kho không đủ! Chỉ còn ${product.stockQuantity} sản phẩm.`, 'warning');
               return false;
           }
           setCart(cart.map(item => item.id === product.id ? { ...item, quantity: item.quantity + qty } : item));
       } else {
           if (product.stockQuantity < qty) {
-              alert(`Số lượng sản phẩm trong kho không đủ! Chỉ còn ${product.stockQuantity} sản phẩm.`);
+              showToast(`Số lượng sản phẩm trong kho không đủ! Chỉ còn ${product.stockQuantity} sản phẩm.`, 'warning');
               return false;
           }
           setCart([...cart, { ...product, quantity: qty }]);
       }
-      alert(`Đã thêm "${product.name}" vào giỏ hàng!`);
+      showToast(`Đã thêm "${product.name}" vào giỏ hàng!`, 'success');
       return true;
   };
 
