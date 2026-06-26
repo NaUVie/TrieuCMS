@@ -1289,4 +1289,42 @@ a { text-decoration: none !important; color: inherit; }
   margin-right: 8px;
 }
 
+/* --- Category Circle Icons Custom Styling --- */
+.category-card-circle {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.category-card-circle:hover {
+  transform: translateY(-5px);
+}
+
+.category-circle-icon-wrapper {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  margin: 0 auto 12px auto;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4f46e5;
+  font-size: 2rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.category-card-circle:hover .category-circle-icon-wrapper {
+  background: linear-gradient(135deg, #6366f1, #d946ef);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.35);
+  transform: scale(1.05);
+}
+
+.category-card-circle:hover .category-card-name {
+  color: #6366f1 !important;
+}
+
 
