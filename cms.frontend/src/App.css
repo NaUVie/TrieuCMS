@@ -1493,4 +1493,15 @@ a { text-decoration: none !important; color: inherit; }
   transform: translateX(2px);
 }
 
+/* Prevent images in post content from overflowing */
+.post-content img,
+.post-detail-content img {
+  max-width: 100% !important;
+  height: auto !important;
+  display: block;
+  margin: 1.5rem auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
 
