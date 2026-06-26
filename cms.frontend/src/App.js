@@ -18,6 +18,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 
 import { useToast } from './context/ToastContext';
+import AIChatBot from './components/AIChatBot';
 
 function App() {
   const { showToast } = useToast();
@@ -136,9 +137,9 @@ function App() {
       {/* ========== MAIN CONTENT ========== */}
       <main className="container" style={{ paddingTop: '2rem', paddingBottom: '2rem', minHeight: '60vh' }}>
         <Routes>
-          <Route path="/" element={<Home onAddToCart={handleAddToCart} />} />
-          <Route path="/shop" element={<Shop onAddToCart={handleAddToCart} />} />
-          <Route path="/product/:id" element={<ProductDetail onAddToCart={handleAddToCart} />} />
+          <Route path="/" element={<Home onAddToCart={handleAddToCart} onOpenAuth={() => setIsAuthModalOpen(true)} />} />
+          <Route path="/shop" element={<Shop onAddToCart={handleAddToCart} onOpenAuth={() => setIsAuthModalOpen(true)} />} />
+          <Route path="/product/:id" element={<ProductDetail onAddToCart={handleAddToCart} onOpenAuth={() => setIsAuthModalOpen(true)} />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/post/:id" element={<PostDetail />} />
           <Route path="/cart" element={<Cart cartItems={cart} onUpdateQuantity={handleUpdateQuantity} onRemoveItem={handleRemoveItem} onClearCart={handleClearCart} onOpenAuth={() => setIsAuthModalOpen(true)} />} />
@@ -157,6 +158,9 @@ function App() {
           onClose={() => setIsAuthModalOpen(false)} 
           onAuthSuccess={handleAuthSuccess}
       />
+
+      {/* ========== FLOATING AI CHATBOT ASSISTANT ========== */}
+      <AIChatBot onAddToCart={handleAddToCart} />
     </>
   );
 }

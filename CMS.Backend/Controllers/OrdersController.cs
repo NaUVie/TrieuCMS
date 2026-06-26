@@ -168,7 +168,7 @@ namespace CMS.Backend.Controllers
                     {
                         try
                         {
-                            var subject = $"Xác nhận đơn hàng #{newOrder.Id} - TrieuCMS Store";
+                            var subject = $"Xác nhận đơn hàng #{newOrder.Id} - NaUCMS.TechGear Store";
                             var itemsHtml = "";
                             decimal totalSum = 0;
 
@@ -190,7 +190,7 @@ namespace CMS.Backend.Controllers
                             }
 
                             var body = $@"
-                                <h3>Cảm ơn {customer.FullName} đã đặt hàng tại TrieuCMS Store!</h3>
+                                <h3>Cảm ơn {customer.FullName} đã đặt hàng tại NaUCMS.TechGear Store!</h3>
                                 <p>Đơn hàng của bạn đã được tiếp nhận thành công và đang chờ ban quản trị duyệt.</p>
                                 <p><strong>Mã đơn hàng:</strong> #{newOrder.Id}</p>
                                 <p><strong>Ngày đặt:</strong> {newOrder.OrderDate:dd/MM/yyyy HH:mm}</p>
@@ -218,7 +218,7 @@ namespace CMS.Backend.Controllers
                                 
                                 <p>Chúng tôi sẽ sớm liên hệ lại với bạn để giao hàng.</p>
                                 <br/>
-                                <p>Trân trọng,<br/>TrieuCMS Store</p>";
+                                <p>Trân trọng,<br/>NaUCMS.TechGear Store</p>";
 
                             // Send email asynchronously without blocking the client response
                             _ = emailService.SendEmailAsync(customer.Email, subject, body);

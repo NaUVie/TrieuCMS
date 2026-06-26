@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import CategoryProductList from '../components/CategoryProductList';
 import ProductList from '../components/ProductList';
 
-function Shop({ onAddToCart }) {
+function Shop({ onAddToCart, onOpenAuth }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const catParam = searchParams.get('category');
   
@@ -58,6 +58,7 @@ function Shop({ onAddToCart }) {
           activeId={activeCategoryId} 
           onSelectProduct={(p) => window.location.href = `/product/${p.id}`}
           onAddToCart={onAddToCart}
+          onOpenAuth={onOpenAuth}
         />
       </div>
     </div>

@@ -9,6 +9,7 @@ const ProductGrid = ({
   quantities, 
   setQuantities, 
   onAddToCart, 
+  onOpenAuth,
   BACKEND_URL, 
   navigate 
 }) => {
@@ -104,7 +105,7 @@ const ProductGrid = ({
                           -{Math.round(((product.price - product.salePrice) / product.price) * 100)}%
                         </span>
                       ) : (
-                        <span className="product-badge" style={{ background: '#10b981' }}>New</span>
+                        <span className="product-badge" style={{ background: '#10b981' }}>Mới</span>
                       )}
                       <img src={product.imageUrl?.startsWith('/') ? BACKEND_URL + product.imageUrl : product.imageUrl || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&auto=format&fit=crop'} alt={product.name} className="product-img" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     </div>
@@ -181,10 +182,15 @@ const ProductGrid = ({
                         style={{ borderRadius: '8px', height: '32px', fontSize: '0.75rem', fontWeight: 'bold' }}
                         onClick={(e) => {
                           e.preventDefault();
+                          if (!localStorage.getItem('customerId')) {
+                            showToast('Vui lòng đăng nhập trước khi mua hàng!', 'warning');
+                            onOpenAuth();
+                            return;
+                          }
                           const qty = quantities[product.id] || 1;
                           const success = onAddToCart(product, qty);
                           if (success !== false) {
-                            navigate('/checkout');
+                            navigate('/checkout', { state: { checkoutItems: [{ ...product, quantity: qty }] } });
                           }
                         }}
                         disabled={product.stockQuantity === 0}

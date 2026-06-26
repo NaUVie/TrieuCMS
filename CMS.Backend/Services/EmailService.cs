@@ -29,8 +29,8 @@ namespace CMS.Backend.Services
 
             var smtpServer = _configuration["EmailSettings:SmtpServer"] ?? "smtp.gmail.com";
             var portStr = _configuration["EmailSettings:Port"] ?? "587";
-            var senderName = _configuration["EmailSettings:SenderName"] ?? "TrieuCMS Store";
-            var senderEmail = _configuration["EmailSettings:SenderEmail"] ?? "noreply.trieucms@gmail.com";
+            var senderName = _configuration["EmailSettings:SenderName"] ?? "NaUCMS.TechGear Store";
+            var senderEmail = _configuration["EmailSettings:SenderEmail"] ?? "noreply.naucmstechgear@gmail.com";
             var username = _configuration["EmailSettings:Username"] ?? "";
             var password = _configuration["EmailSettings:Password"] ?? "";
             if (!string.IsNullOrEmpty(password))

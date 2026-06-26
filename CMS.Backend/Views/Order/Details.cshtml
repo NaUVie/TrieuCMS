@@ -44,6 +44,7 @@
         <table class="clean-table">
             <thead>
                 <tr>
+                    <th style="width: 80px; text-align: center;">Ảnh</th>
                     <th>Sản phẩm</th>
                     <th style="width: 120px; text-align: right;">Đơn giá</th>
                     <th style="width: 80px; text-align: center;">SL</th>
@@ -54,20 +55,32 @@
                 @foreach (var item in Model.OrderDetails)
                 {
                     <tr>
-                        <td>
+                        <td style="text-align: center; vertical-align: middle;">
+                            @if (item.Product != null && !string.IsNullOrEmpty(item.Product.ImageUrl))
+                            {
+                                <img src="@item.Product.ImageUrl" alt="@item.Product.Name" style="width: 50px; height: 50px; object-fit: contain; border-radius: 6px; border: 1px solid #e2e8f0; background: #fff;" onerror="this.src='https://images.unsplash.com/photo-1588449668338-d1345b11a4f1?w=800&auto=format&fit=crop'">
+                            }
+                            else
+                            {
+                                <div style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0; color: #94a3b8; font-size: 0.8rem; margin: 0 auto;">
+                                    <i class="bi bi-box-seam"></i>
+                                </div>
+                            }
+                        </td>
+                        <td style="vertical-align: middle;">
                             <strong>@item.Product?.Name</strong>
                         </td>
-                        <td style="text-align: right;">
+                        <td style="text-align: right; vertical-align: middle;">
                             @item.UnitPrice.ToString("N0") đ
                         </td>
-                        <td style="text-align: center;">@item.Quantity</td>
-                        <td style="text-align: right; font-weight: 700; color: #ef4444;">
+                        <td style="text-align: center; vertical-align: middle;">@item.Quantity</td>
+                        <td style="text-align: right; font-weight: 700; color: #ef4444; vertical-align: middle;">
                             @((item.UnitPrice * item.Quantity).ToString("N0")) đ
                         </td>
                     </tr>
                 }
                 <tr style="border-top: 2px solid #e2e8f0; background: #fafafa;">
-                    <td colspan="3" class="text-end fw-bold">Tổng thanh toán:</td>
+                    <td colspan="4" class="text-end fw-bold">Tổng thanh toán:</td>
                     <td style="text-align: right; font-weight: 800; color: #ef4444; font-size: 1.15rem;">
                         @(Model.OrderDetails.Sum(d => d.UnitPrice * d.Quantity).ToString("N0")) đ
                     </td>

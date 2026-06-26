@@ -30,8 +30,8 @@ namespace CMS.Backend.Controllers
 
             if (user != null && PasswordHasher.VerifyPassword(password, user.PasswordHash))
             {
-                // Ngăn chặn tài khoản có Role là "User" đăng nhập vào trang quản trị
-                if (user.Role == "User")
+                // Chỉ cho phép Admin hoặc Editor đăng nhập vào trang quản trị
+                if (user.Role != "Admin" && user.Role != "Editor")
                 {
                     ViewBag.Error = "Tài khoản của bạn không có quyền truy cập trang quản trị!";
                     return View();

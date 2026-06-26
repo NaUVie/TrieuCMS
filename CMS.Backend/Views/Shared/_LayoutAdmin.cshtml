@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - TrieuCMS Admin</title>
+    <title>@ViewData["Title"] - NaUCMS.TechGear Admin</title>
     
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
@@ -19,7 +19,7 @@
         <aside class="sidebar">
             <div class="sidebar-brand">
                 <i class="bi bi-cpu-fill fs-4 text-primary"></i>
-                <span class="sidebar-logo">TrieuCMS Admin</span>
+                <span class="sidebar-logo">NaUCMS.TechGear Admin</span>
             </div>
             
             <div class="sidebar-menu">
@@ -48,11 +48,22 @@
                     <i class="bi bi-images"></i>
                     <span>Quản lý Banners</span>
                 </a>
-                <a class="menu-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "User" ? "active" : "")" 
-                   asp-controller="User" asp-action="Index">
-                    <i class="bi bi-people"></i>
-                    <span>Quản lý Thành viên</span>
-                </a>
+                @if (User.IsInRole("Admin"))
+                {
+                    <a class="menu-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "User" ? "active" : "")" 
+                       asp-controller="User" asp-action="Index">
+                        <i class="bi bi-people"></i>
+                        <span>Quản lý Thành viên</span>
+                    </a>
+                }
+                else
+                {
+                    <a class="menu-link no-access-btn @(ViewContext.RouteData.Values["controller"]?.ToString() == "User" ? "active" : "")" 
+                       href="javascript:void(0);">
+                        <i class="bi bi-people"></i>
+                        <span>Quản lý Thành viên</span>
+                    </a>
+                }
                 
                 <!-- Group 3: Shop Subsystem -->
                 <div class="menu-header">Quản lý bán hàng</div>
@@ -142,7 +153,7 @@
             <footer class="flat-footer text-center mt-auto">
                 <div class="container">
                     <p class="mb-0 text-muted">
-                        © 2026 TrieuCMS | Thiết kế bởi <span class="text-dark fw-bold">La Quang Triều - 2123110160</span> | Trường Cao đẳng Công Thương TP.HCM
+                        © 2026 NaUCMS.TechGear | Thiết kế bởi <span class="text-dark fw-bold">La Quang Triều - 2123110160</span> | Trường Cao đẳng Công Thương TP.HCM
                     </p>
                 </div>
             </footer>
@@ -167,6 +178,19 @@
                 if (!$(e.target).closest('.sidebar').length) {
                     $(".sidebar").removeClass("show");
                 }
+            });
+
+            // Show alert for unauthorized actions
+            $(".no-access-btn").on("click", function(e) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Không có quyền truy cập',
+                    text: 'Bạn không có đủ quyền hạn (chỉ dành cho Administrator) để thực hiện chức năng này!',
+                    confirmButtonColor: '#ef4444',
+                    background: '#ffffff',
+                    color: '#1e293b'
+                });
             });
 
             // Intercept all confirm calls on links and buttons

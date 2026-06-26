@@ -11,7 +11,7 @@ const getImageUrl = (url) => {
     return BACKEND_URL + '/uploads/' + url;
 };
 
-const ProductList = ({ activeId, onSelectProduct, onAddToCart }) => {
+const ProductList = ({ activeId, onSelectProduct, onAddToCart, onOpenAuth }) => {
     const { showToast } = useToast();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -173,12 +173,20 @@ const ProductList = ({ activeId, onSelectProduct, onAddToCart }) => {
                             min="0"
                             className="form-control" 
                             style={{ borderRadius: '20px', height: '40px', fontSize: '0.85rem', border: '1px solid rgba(0, 0, 0, 0.12)' }}
-                            placeholder="Giá Min (VNĐ)..."
+                            placeholder="Giá tối thiểu..."
                             value={minPrice}
+                            onKeyDown={(e) => {
+                                if (e.key === '-' || e.key === 'e' || e.key === 'E') {
+                                    e.preventDefault();
+                                }
+                            }}
                             onChange={(e) => {
                                 const val = e.target.value;
-                                if (val === '' || parseFloat(val) >= 0) {
-                                    setMinPrice(val);
+                                if (val === '') {
+                                    setMinPrice('');
+                                } else {
+                                    const num = parseFloat(val);
+                                    setMinPrice(num < 0 ? 0 : val);
                                 }
                             }}
                         />
@@ -188,12 +196,20 @@ const ProductList = ({ activeId, onSelectProduct, onAddToCart }) => {
                             min="0"
                             className="form-control" 
                             style={{ borderRadius: '20px', height: '40px', fontSize: '0.85rem', border: '1px solid rgba(0, 0, 0, 0.12)' }}
-                            placeholder="Giá Max (VNĐ)..."
+                            placeholder="Giá tối đa..."
                             value={maxPrice}
+                            onKeyDown={(e) => {
+                                if (e.key === '-' || e.key === 'e' || e.key === 'E') {
+                                    e.preventDefault();
+                                }
+                            }}
                             onChange={(e) => {
                                 const val = e.target.value;
-                                if (val === '' || parseFloat(val) >= 0) {
-                                    setMaxPrice(val);
+                                if (val === '') {
+                                    setMaxPrice('');
+                                } else {
+                                    const num = parseFloat(val);
+                                    setMaxPrice(num < 0 ? 0 : val);
                                 }
                             }}
                         />
@@ -221,7 +237,7 @@ const ProductList = ({ activeId, onSelectProduct, onAddToCart }) => {
                         <div className="no-products-found py-5 text-center">
                             <img 
                                 src="/no_products.png" 
-                                alt="No products found" 
+                                alt="Không tìm thấy sản phẩm" 
                                 style={{ width: '220px', height: 'auto', marginBottom: '1.5rem', opacity: '0.85' }} 
                             />
                             <p className="text-muted fs-5 fw-bold">Không tìm thấy sản phẩm nào phù hợp với tiêu chí của bạn.</p>
@@ -312,10 +328,15 @@ const ProductList = ({ activeId, onSelectProduct, onAddToCart }) => {
                                                 className="btn btn-outline-primary btn-sm flex-fill" 
                                                 style={{ borderRadius: '8px', height: '36px', fontSize: '0.8rem', fontWeight: 'bold' }}
                                                 onClick={() => {
+                                                    if (!localStorage.getItem('customerId')) {
+                                                        showToast('Vui lòng đăng nhập trước khi mua hàng!', 'warning');
+                                                        onOpenAuth();
+                                                        return;
+                                                    }
                                                     const qty = quantities[item.id] || 1;
                                                     const success = onAddToCart(item, qty);
                                                     if (success !== false) {
-                                                        navigate('/checkout');
+                                                        navigate('/checkout', { state: { checkoutItems: [{ ...item, quantity: qty }] } });
                                                     }
                                                 }}
                                                 disabled={item.stockQuantity === 0}

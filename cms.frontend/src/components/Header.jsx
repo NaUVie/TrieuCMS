@@ -77,7 +77,7 @@ const Header = ({
       <div className="container d-flex justify-content-between align-items-center">
         <Link to="/" className="brand" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span className="brand-dot"></span>
-          TRIEU TECHSTORE
+          NaUCMS.TechGear
         </Link>
 
         {/* Header Search Bar with Live Autocomplete Suggestions */}

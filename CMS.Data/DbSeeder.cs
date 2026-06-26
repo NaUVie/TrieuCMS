@@ -304,7 +304,7 @@ namespace CMS.Data
             {
                 var customers = new List<Customer>
                 {
-                    new Customer { FullName = "La Quang Triều", Email = "trieu@gmail.com", Phone = "0987654321", Address = "93 Cao Thắng, Quận 3, TP.HCM", Password = PasswordHasher.HashPassword("123") },
+                    new Customer { FullName = "La Quang Triều", Email = "trieu@gmail.com", Phone = "0987654321", Address = "63/6 đường 2, Phường Tăng Nhơn Phú B, TP Thủ Đức, TP. Hồ Chí Minh", Password = PasswordHasher.HashPassword("123") },
                     new Customer { FullName = "Nguyễn Cao Thái", Email = "thai@cms.edu.vn", Phone = "0909123456", Address = "Quy Nhơn, Bình Định", Password = PasswordHasher.HashPassword("123") }
                 };
                 context.Customers.AddRange(customers);

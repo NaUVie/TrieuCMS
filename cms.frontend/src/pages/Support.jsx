@@ -36,7 +36,7 @@ const Support = () => {
         }}
       >
         <span style={{ fontSize: '0.85rem', color: '#6366f1', fontWeight: '700', letterSpacing: '2px', textTransform: 'uppercase' }}>
-          Trieu TechStore Center
+          Trung tâm hỗ trợ NaUCMS.TechGear
         </span>
         <h1 style={{ fontSize: '2.2rem', fontWeight: '800', marginTop: '0.5rem', color: '#ffffff' }}>
           Trung Tâm Hỗ Trợ & Chính Sách
@@ -88,7 +88,7 @@ const Support = () => {
                   <i className="fa-solid fa-cart-shopping text-primary me-2"></i> Hướng Dẫn Mua Hàng Trực Tuyến
                 </h3>
                 <p className="text-muted" style={{ lineHeight: '1.8' }}>
-                  Tại Trieu TechStore, việc sở hữu các sản phẩm công nghệ cao cấp trở nên dễ dàng và nhanh chóng hơn bao giờ hết chỉ với 4 bước đơn giản:
+                  Tại NaUCMS.TechGear, việc sở hữu các sản phẩm công nghệ cao cấp trở nên dễ dàng và nhanh chóng hơn bao giờ hết chỉ với 4 bước đơn giản:
                 </p>
                 <div className="mt-4">
                   <div className="d-flex gap-3 mb-4">
@@ -129,7 +129,7 @@ const Support = () => {
                   <i className="fa-solid fa-shield-halved text-success me-2"></i> Chính Sách Bảo Hành Chính Hãng
                 </h3>
                 <p className="text-muted" style={{ lineHeight: '1.8' }}>
-                  Trieu TechStore cam kết mang lại sự an tâm tuyệt đối cho quý khách hàng bằng chính sách bảo hành tiêu chuẩn quốc tế:
+                  NaUCMS.TechGear cam kết mang lại sự an tâm tuyệt đối cho quý khách hàng bằng chính sách bảo hành tiêu chuẩn quốc tế:
                 </p>
                 <table className="table table-bordered mt-4" style={{ borderRadius: '12px', overflow: 'hidden' }}>
                   <thead>
@@ -177,7 +177,7 @@ const Support = () => {
                 <div className="card p-3 border-0 mt-4" style={{ background: '#fffbeb', borderLeft: '4px solid #f59e0b', borderRadius: '10px' }}>
                   <h6 style={{ fontWeight: '700', color: '#b45309' }}><i className="fa-solid fa-triangle-exclamation"></i> Quy trình đổi trả nhanh gọn:</h6>
                   <p className="text-muted mb-0 small" style={{ lineHeight: '1.6' }}>
-                    1. Khách hàng liên hệ tổng đài 1900 8198 hoặc mang máy đến cửa hàng gần nhất.<br/>
+                    1. Khách hàng liên hệ hotline 0973 651 140 hoặc mang máy đến cửa hàng gần nhất.<br/>
                     2. Chuyên viên kỹ thuật thẩm định nhanh lỗi sản phẩm trong vòng 30 phút.<br/>
                     3. Tiến hành đổi ngay thiết bị mới nguyên seal tương đương cho khách hàng.
                   </p>
@@ -191,7 +191,7 @@ const Support = () => {
                   <i className="fa-solid fa-user-lock text-info me-2"></i> Chính Sách Bảo Mật Thông Tin
                 </h3>
                 <p className="text-muted" style={{ lineHeight: '1.8' }}>
-                  Trieu TechStore tôn trọng quyền riêng tư của quý khách hàng và bảo mật dữ liệu tuyệt đối theo quy chuẩn quốc tế:
+                  NaUCMS.TechGear tôn trọng quyền riêng tư của quý khách hàng và bảo mật dữ liệu tuyệt đối theo quy chuẩn quốc tế:
                 </p>
                 <h5 className="mt-4" style={{ fontWeight: '700', color: '#1e293b' }}>1. Dữ liệu chúng tôi thu thập:</h5>
                 <p className="text-muted">Chỉ bao gồm các thông tin cần thiết phục vụ cho việc gửi hàng và gửi hóa đơn xác nhận đơn hàng như: Họ tên, Số điện thoại, Địa chỉ giao nhận, và Email liên hệ.</p>

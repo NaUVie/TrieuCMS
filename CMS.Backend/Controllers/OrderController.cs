@@ -24,6 +24,7 @@ namespace CMS.Backend.Controllers
             var query = _context.Orders
                 .Include(o => o.Customer)
                 .Include(o => o.OrderDetails)
+                    .ThenInclude(d => d.Product)
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(searchTerm))

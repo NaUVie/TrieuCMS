@@ -11,6 +11,7 @@ const MyOrders = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [expandedOrder, setExpandedOrder] = useState(null);
+    const [selectedStatus, setSelectedStatus] = useState('all');
 
     useEffect(() => {
         if (!isLoggedIn) {
@@ -68,6 +69,10 @@ const MyOrders = () => {
         );
     }
 
+    const filteredOrders = selectedStatus === 'all' 
+        ? orders 
+        : orders.filter(o => o.status === selectedStatus);
+
     return (
         <div className="container" style={{ maxWidth: '850px', margin: '2rem auto' }}>
             <div className="card border-0 shadow-lg" style={{ borderRadius: '24px', background: 'rgba(255, 255, 255, 0.85)', backdropFilter: 'blur(20px)' }}>
@@ -88,6 +93,41 @@ const MyOrders = () => {
                     </button>
                 </div>
                 <div className="card-body p-4">
+                    {/* Status Filter Tabs */}
+                    <div className="d-flex flex-wrap gap-2 mb-4 border-bottom pb-3" style={{ fontSize: '0.85rem' }}>
+                        {[
+                            { id: 'all', label: 'Tất cả', count: orders.length },
+                            { id: 0, label: 'Đã tiếp nhận', count: orders.filter(o => o.status === 0).length },
+                            { id: 1, label: 'Đang đóng gói', count: orders.filter(o => o.status === 1).length },
+                            { id: 2, label: 'Đang vận chuyển', count: orders.filter(o => o.status === 2).length },
+                            { id: 3, label: 'Đã hoàn thành', count: orders.filter(o => o.status === 3).length },
+                            { id: 4, label: 'Đã hủy', count: orders.filter(o => o.status === 4).length }
+                        ].map((tab) => (
+                            <button
+                                key={tab.id}
+                                className={`btn btn-sm px-3 py-2 fw-bold position-relative d-flex align-items-center gap-2 ${selectedStatus === tab.id ? 'btn-primary text-white' : 'btn-outline-secondary text-muted bg-white'}`}
+                                style={{ 
+                                    borderRadius: '10px',
+                                    border: selectedStatus === tab.id ? 'none' : '1px solid #e2e8f0',
+                                    background: selectedStatus === tab.id ? 'linear-gradient(135deg, #4f46e5, #db2777)' : '#fff',
+                                    boxShadow: selectedStatus === tab.id ? '0 4px 10px rgba(79, 70, 229, 0.25)' : 'none',
+                                    transition: 'all 0.2s'
+                                }}
+                                onClick={() => {
+                                    setSelectedStatus(tab.id);
+                                    setExpandedOrder(null);
+                                }}
+                            >
+                                {tab.label}
+                                {tab.count > 0 && (
+                                    <span className="badge rounded-pill bg-danger" style={{ fontSize: '0.65rem', padding: '3px 6px' }}>
+                                        {tab.count}
+                                    </span>
+                                )}
+                            </button>
+                        ))}
+                    </div>
+
                     {orders.length === 0 ? (
                         <div className="text-center py-5 bg-light rounded-4 my-3" style={{ border: '1px dashed rgba(0,0,0,0.1)' }}>
                             <i className="fa-solid fa-box-open fa-3x text-muted mb-3" style={{ opacity: '0.6' }}></i>
@@ -96,9 +136,14 @@ const MyOrders = () => {
                                 Đi tới cửa hàng mua sắm
                             </Link>
                         </div>
+                    ) : filteredOrders.length === 0 ? (
+                        <div className="text-center py-5 bg-light rounded-4 my-3" style={{ border: '1px dashed rgba(0,0,0,0.1)' }}>
+                            <i className="fa-solid fa-box-open fa-3x text-muted mb-3" style={{ opacity: '0.6' }}></i>
+                            <p className="text-muted fw-bold">Không có đơn hàng nào ở trạng thái này.</p>
+                        </div>
                     ) : (
                         <div className="orders-list mt-3">
-                            {orders.map((order) => {
+                            {filteredOrders.map((order) => {
                                 const isExpanded = expandedOrder === order.id;
                                 const orderTotal = getOrderTotal(order);
                                 return (

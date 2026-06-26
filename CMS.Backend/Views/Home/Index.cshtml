@@ -9,7 +9,7 @@
     <div class="row align-items-center">
         <div class="col-lg-9">
             <h2 class="fw-bold mb-2" style="color: #1e293b;">Xin chào, La Quang Triều!</h2>
-            <p class="text-muted mb-3" style="font-size: 0.95rem; line-height: 1.6;">Chào mừng quay trở lại hệ thống quản trị nội dung & bán hàng **TrieuCMS**. Thống kê tổng quan dữ liệu hệ thống được tổng hợp từ cơ sở dữ liệu **TrieuCMS_DB**.</p>
+            <p class="text-muted mb-3" style="font-size: 0.95rem; line-height: 1.6;">Chào mừng quay trở lại hệ thống quản trị nội dung & bán hàng **NaUCMS.TechGear**. Thống kê tổng quan dữ liệu hệ thống được tổng hợp từ cơ sở dữ liệu **NaUCMS_DB**.</p>
             <div class="d-flex flex-wrap gap-2">
                 <span class="badge-clean badge-clean-primary"><i class="bi bi-person-badge"></i> MSSV: 2123110160</span>
                 <span class="badge-clean badge-clean-secondary"><i class="bi bi-mortarboard"></i> Trường Cao đẳng Công Thương TP.HCM</span>
@@ -23,13 +23,13 @@
 </div>
 
 <!-- Metric Grid Panel -->
-<div class="metric-grid">
+<div class="metric-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
     <div class="metric-card">
         <div class="metric-icon blue">
             <i class="bi bi-file-earmark-post"></i>
         </div>
         <div>
-            <div class="metric-value">5</div>
+            <div class="metric-value">@(ViewBag.TotalPosts ?? 0)</div>
             <div class="metric-label">Bài viết</div>
         </div>
     </div>
@@ -39,7 +39,7 @@
             <i class="bi bi-box-seam"></i>
         </div>
         <div>
-            <div class="metric-value">5</div>
+            <div class="metric-value">@(ViewBag.TotalProducts ?? 0)</div>
             <div class="metric-label">Sản phẩm</div>
         </div>
     </div>
@@ -49,8 +49,8 @@
             <i class="bi bi-people"></i>
         </div>
         <div>
-            <div class="metric-value">5</div>
-            <div class="metric-label">Thành viên</div>
+            <div class="metric-value">@(ViewBag.TotalCustomers ?? 0)</div>
+            <div class="metric-label">Khách hàng</div>
         </div>
     </div>
 
@@ -59,8 +59,18 @@
             <i class="bi bi-receipt"></i>
         </div>
         <div>
-            <div class="metric-value">2</div>
+            <div class="metric-value">@(ViewBag.TotalOrders ?? 0)</div>
             <div class="metric-label">Đơn hàng</div>
+        </div>
+    </div>
+
+    <div class="metric-card" style="border-left: 3px solid #7c3aed;">
+        <div class="metric-icon" style="background: #faf5ff; color: #7c3aed;">
+            <i class="bi bi-cash-stack"></i>
+        </div>
+        <div>
+            <div class="metric-value" style="font-size: 1.15rem;">@(String.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:C0}", ViewBag.TotalRevenue ?? 0))</div>
+            <div class="metric-label">Doanh thu</div>
         </div>
     </div>
 </div>
@@ -139,6 +149,66 @@
     </div>
 </div>
 
+<!-- Charts Analytics Panel -->
+<div class="row g-4 mt-2 mb-4">
+    <!-- Chart 1: Doanh thu theo tháng -->
+    <div class="col-lg-8">
+        <div class="flat-card h-100 mb-0">
+            <h4 class="mb-4" style="color: #1e293b; border-bottom: 1px solid var(--border-light); padding-bottom: 12px;">
+                <i class="bi bi-bar-chart-line-fill text-primary me-2"></i> Doanh thu theo tháng (năm @DateTime.Now.Year)
+            </h4>
+            <div style="position: relative; height: 320px; width: 100%;">
+                <canvas id="monthlyRevenueChart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Chart 2: Trạng thái đơn hàng -->
+    <div class="col-lg-4">
+        <div class="flat-card h-100 mb-0">
+            <h4 class="mb-4" style="color: #1e293b; border-bottom: 1px solid var(--border-light); padding-bottom: 12px;">
+                <i class="bi bi-pie-chart-fill text-warning me-2"></i> Trạng thái đơn hàng
+            </h4>
+            <div style="position: relative; height: 320px; width: 100%; display: flex; align-items: center; justify-content: center;">
+                <canvas id="orderStatusChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <!-- Chart 3: Doanh thu theo danh mục sản phẩm -->
+    <div class="col-12">
+        <div class="flat-card">
+            <h4 class="mb-4" style="color: #1e293b; border-bottom: 1px solid var(--border-light); padding-bottom: 12px;">
+                <i class="bi bi-tags-fill text-success me-2"></i> Doanh thu theo danh mục sản phẩm
+            </h4>
+            <div class="row align-items-center g-4">
+                <div class="col-md-7">
+                    <div style="position: relative; height: 320px; width: 100%;">
+                        <canvas id="categoryRevenueChart"></canvas>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="clean-table-container">
+                        <table class="clean-table">
+                            <thead>
+                                <tr>
+                                    <th>Danh mục sản phẩm</th>
+                                    <th style="text-align: right;">Tổng Doanh thu</th>
+                                </tr>
+                            </thead>
+                            <tbody id="category-revenue-table-body">
+                                <!-- Will be populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Bản tin mới nhất (3 bài viết gần nhất) -->
 <div class="flat-card mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
@@ -184,3 +254,155 @@
         }
     </div>
 </div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Parse data from ViewBag JSON
+            var revenueByCategory = JSON.parse('@Html.Raw(ViewBag.RevenueByCategoryJson)');
+            var monthlyRevenue = JSON.parse('@Html.Raw(ViewBag.MonthlyRevenueJson)');
+            var orderStatusDistribution = JSON.parse('@Html.Raw(ViewBag.OrderStatusDistributionJson)');
+
+            // 1. Render Category Revenue Table
+            var tableBodyHtml = '';
+            if (revenueByCategory.length === 0) {
+                tableBodyHtml = '<tr><td colspan="2" class="text-center py-3 text-muted">Chưa có doanh thu phát sinh</td></tr>';
+            } else {
+                revenueByCategory.forEach(function (item) {
+                    var formattedRevenue = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.Revenue);
+                    tableBodyHtml += '<tr>' +
+                        '<td><span class="fw-semibold text-dark">' + item.CategoryName + '</span></td>' +
+                        '<td style="text-align: right;" class="fw-bold text-success">' + formattedRevenue + '</td>' +
+                        '</tr>';
+                });
+            }
+            $('#category-revenue-table-body').html(tableBodyHtml);
+
+            // 2. Chart 1: Monthly Revenue
+            var monthlyLabels = monthlyRevenue.map(item => item.Month);
+            var monthlyData = monthlyRevenue.map(item => item.Revenue);
+
+            new Chart(document.getElementById('monthlyRevenueChart'), {
+                type: 'line',
+                data: {
+                    labels: monthlyLabels,
+                    datasets: [{
+                        label: 'Doanh thu (VND)',
+                        data: monthlyData,
+                        fill: true,
+                        backgroundColor: function(context) {
+                            var chart = context.chart;
+                            var ctx = chart.ctx;
+                            var gradient = ctx.createLinearGradient(0, 0, 0, chart.height || 300);
+                            gradient.addColorStop(0, 'rgba(37, 99, 235, 0.25)');
+                            gradient.addColorStop(1, 'rgba(37, 99, 235, 0.00)');
+                            return gradient;
+                        },
+                        borderColor: 'rgb(37, 99, 235)',
+                        borderWidth: 3,
+                        pointBackgroundColor: 'rgb(37, 99, 235)',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 1.5,
+                        pointRadius: 4,
+                        pointHoverRadius: 7,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function (value) {
+                                    return new Intl.NumberFormat('vi-VN', { notation: 'compact' }).format(value);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 3. Chart 2: Order Status Distribution
+            var statusLabels = orderStatusDistribution.map(item => item.StatusName);
+            var statusData = orderStatusDistribution.map(item => item.Count);
+            
+            // Map statuses to distinct beautiful colors
+            var statusColors = {
+                "Đã tiếp nhận": '#6c757d',
+                "Đang đóng gói": '#ffc107',
+                "Đang vận chuyển": '#0d6efd',
+                "Đã hoàn thành": '#198754',
+                "Đã hủy": '#dc3545'
+            };
+            var bgColors = statusLabels.map(label => statusColors[label] || '#6c757d');
+
+            new Chart(document.getElementById('orderStatusChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: statusLabels,
+                    datasets: [{
+                        data: statusData,
+                        backgroundColor: bgColors,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { boxWidth: 12, font: { size: 11 } }
+                        }
+                    },
+                    cutout: '65%'
+                }
+            });
+
+            // 4. Chart 3: Category Revenue Chart
+            var catLabels = revenueByCategory.map(item => item.CategoryName);
+            var catData = revenueByCategory.map(item => item.Revenue);
+
+            if (catLabels.length === 0) {
+                catLabels = ['Chưa có doanh thu'];
+                catData = [1];
+                bgColors = ['#f1f5f9'];
+            } else {
+                // Generate a harmonious set of colors for categories
+                var categoryPalette = [
+                    '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', 
+                    '#ec4899', '#06b6d4', '#14b8a6', '#6366f1', '#64748b'
+                ];
+                bgColors = catLabels.map((_, idx) => categoryPalette[idx % categoryPalette.length]);
+            }
+
+            new Chart(document.getElementById('categoryRevenueChart'), {
+                type: 'pie',
+                data: {
+                    labels: catLabels,
+                    datasets: [{
+                        data: catData,
+                        backgroundColor: bgColors,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: { boxWidth: 12, font: { size: 11 } }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+}

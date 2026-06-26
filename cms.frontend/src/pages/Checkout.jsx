@@ -144,6 +144,13 @@ function Checkout({ cartItems, onRemoveItems }) {
           return;
       }
 
+      const phoneRegex = /^(0|\+84|84)(3|5|7|8|9)[0-9]{8}$/;
+      if (!phoneRegex.test(checkoutForm.phone)) {
+          showToast('Số điện thoại nhận hàng không đúng định dạng Việt Nam!', 'warning');
+          setError('Số điện thoại không đúng định dạng Việt Nam (10 số, ví dụ: 0912345678)!');
+          return;
+      }
+
       const totalAmount = checkoutItems.reduce((sum, item) => {
           const price = item.isOnSale ? item.salePrice : item.price;
           return sum + price * item.quantity;

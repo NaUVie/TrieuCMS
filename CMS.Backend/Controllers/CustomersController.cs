@@ -180,7 +180,7 @@ namespace CMS.Backend.Controllers
             _otpStore[input.Email] = (otp, expiry);
 
             // Send Email
-            string subject = "Mã OTP đặt lại mật khẩu - TrieuCMS Store";
+            string subject = "Mã OTP đặt lại mật khẩu - NaUCMS.TechGear Store";
             string body = $@"
                 <div style='font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;'>
                     <h2 style='color: #2563eb;'>Xác nhận yêu cầu đặt lại mật khẩu</h2>

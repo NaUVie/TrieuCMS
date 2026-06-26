@@ -47,6 +47,16 @@
         </form>
     </div>
 
+    <!-- Status Filter Tabs -->
+    <div class="d-flex flex-wrap gap-2 mb-3 mt-3">
+        <button class="btn btn-sm btn-primary filter-tab active" data-status="all" style="border-radius: 8px;">Tất cả (@(Model?.Count() ?? 0))</button>
+        <button class="btn btn-sm btn-outline-secondary filter-tab" data-status="0" style="border-radius: 8px;">Đã tiếp nhận (@(Model?.Count(o => o.Status == 0) ?? 0))</button>
+        <button class="btn btn-sm btn-outline-secondary filter-tab" data-status="1" style="border-radius: 8px;">Đang đóng gói (@(Model?.Count(o => o.Status == 1) ?? 0))</button>
+        <button class="btn btn-sm btn-outline-secondary filter-tab" data-status="2" style="border-radius: 8px;">Đang vận chuyển (@(Model?.Count(o => o.Status == 2) ?? 0))</button>
+        <button class="btn btn-sm btn-outline-secondary filter-tab" data-status="3" style="border-radius: 8px;">Đã hoàn thành (@(Model?.Count(o => o.Status == 3) ?? 0))</button>
+        <button class="btn btn-sm btn-outline-secondary filter-tab" data-status="4" style="border-radius: 8px;">Đã hủy (@(Model?.Count(o => o.Status != 0 && o.Status != 1 && o.Status != 2 && o.Status != 3) ?? 0))</button>
+    </div>
+
     <div class="clean-table-container">
         <table class="clean-table">
             <thead>
@@ -54,6 +64,7 @@
                     <th>Mã Đơn</th>
                     <th>Ngày đặt hàng</th>
                     <th>Khách hàng</th>
+                    <th>Sản phẩm</th>
                     <th>Trạng thái giao nhận</th>
                     <th>Ghi chú</th>
                     <th style="width: 160px; text-align: center;">Thao tác</th>
@@ -63,14 +74,14 @@
                 @if (Model == null || !Model.Any())
                 {
                     <tr>
-                        <td colspan="6" class="text-center py-4 text-muted">Không có đơn hàng nào trong hệ thống.</td>
+                        <td colspan="7" class="text-center py-4 text-muted">Không có đơn hàng nào trong hệ thống.</td>
                     </tr>
                 }
                 else
                 {
                     @foreach (var order in Model)
                     {
-                        <tr>
+                        <tr class="order-row" data-status-group="@(order.Status >= 0 && order.Status <= 3 ? order.Status : 4)">
                             <td>
                                 <strong>#@order.Id</strong>
                             </td>
@@ -79,6 +90,32 @@
                             </td>
                             <td>
                                 <span><i class="bi bi-person me-1 text-muted"></i> @order.Customer?.FullName</span>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center flex-wrap gap-2">
+                                    @if (order.OrderDetails != null)
+                                    {
+                                        @foreach (var detail in order.OrderDetails)
+                                        {
+                                            @if (detail.Product != null)
+                                            {
+                                                <div class="d-flex align-items-center position-relative me-2" title="@detail.Product.Name (x@detail.Quantity)">
+                                                    @if (!string.IsNullOrEmpty(detail.Product.ImageUrl))
+                                                    {
+                                                        <img src="@detail.Product.ImageUrl" alt="@detail.Product.Name" style="width: 32px; height: 32px; object-fit: contain; border-radius: 4px; border: 1px solid #e2e8f0; background: #fff;" onerror="this.src='https://images.unsplash.com/photo-1588449668338-d1345b11a4f1?w=800&auto=format&fit=crop'">
+                                                    }
+                                                    else
+                                                    {
+                                                        <div style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: #f8fafc; border-radius: 4px; border: 1px solid #e2e8f0; color: #94a3b8; font-size: 0.75rem;">
+                                                            <i class="bi bi-box-seam"></i>
+                                                        </div>
+                                                    }
+                                                    <span class="badge bg-secondary text-white position-absolute" style="font-size: 0.6rem; top: -6px; right: -8px; padding: 2px 4px; border-radius: 8px;">@detail.Quantity</span>
+                                                </div>
+                                            }
+                                        }
+                                    }
+                                </div>
                             </td>
                             <td>
                                 @if (order.Status == 0)
@@ -119,3 +156,35 @@
         </table>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.filter-tab').click(function () {
+                // Toggle active button style
+                $('.filter-tab').removeClass('btn-primary active').addClass('btn-outline-secondary');
+                $(this).addClass('btn-primary active').removeClass('btn-outline-secondary');
+
+                var status = $(this).data('status');
+                
+                // Hide temporary empty row if exists
+                $('#empty-filter-row').remove();
+
+                if (status === 'all') {
+                    $('.order-row').show();
+                } else {
+                    $('.order-row').hide();
+                    var visibleRows = $('.order-row[data-status-group="' + status + '"]');
+                    visibleRows.show();
+
+                    // If no rows are visible, append an empty state row
+                    if (visibleRows.length === 0) {
+                        $('.clean-table tbody').append(
+                            '<tr id="empty-filter-row"><td colspan="7" class="text-center py-4 text-muted">Không có đơn hàng nào thuộc trạng thái này.</td></tr>'
+                        );
+                    }
+                }
+            });
+        });
+    </script>
+}

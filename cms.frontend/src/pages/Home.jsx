@@ -10,7 +10,7 @@ import CategoryMenu from '../components/CategoryMenu';
 import ProductGrid from '../components/ProductGrid';
 import BlogSection from '../components/BlogSection';
 
-function Home({ onAddToCart }) {
+function Home({ onAddToCart, onOpenAuth }) {
   const [categories, setCategories] = useState([]);
   const [latestProducts, setLatestProducts] = useState([]);
   const [saleProducts, setSaleProducts] = useState([]);
@@ -51,7 +51,7 @@ function Home({ onAddToCart }) {
           const mapped = ads.map((ad, idx) => ({
             badge: idx === 0 ? "🔥 KHUYẾN MÃI HOT" : idx === 1 ? "⚡ DEAL ĐỘC QUYỀN" : "🆕 BẢN TIN KHUYẾN MÃI",
             title: ad.title,
-            desc: ad.subTitle || "Sản phẩm công nghệ cao cấp tại Trieu TechStore.",
+            desc: ad.subTitle || "Website bán Đồ Công Nghệ & Gaming Gear (NaUCMS.TechGear).",
             imageUrl: ad.imageUrl?.startsWith('/') ? BACKEND_URL + ad.imageUrl : ad.imageUrl,
             linkUrl: ad.linkUrl || "/shop"
           }));
@@ -85,6 +85,7 @@ function Home({ onAddToCart }) {
         quantities={quantities}
         setQuantities={setQuantities}
         onAddToCart={onAddToCart}
+        onOpenAuth={onOpenAuth}
         BACKEND_URL={BACKEND_URL}
         navigate={navigate}
       />
@@ -96,6 +97,7 @@ function Home({ onAddToCart }) {
         quantities={quantities}
         setQuantities={setQuantities}
         onAddToCart={onAddToCart}
+        onOpenAuth={onOpenAuth}
         BACKEND_URL={BACKEND_URL}
         navigate={navigate}
       />
@@ -131,6 +133,7 @@ function Home({ onAddToCart }) {
             quantities={quantities}
             setQuantities={setQuantities}
             onAddToCart={onAddToCart}
+            onOpenAuth={onOpenAuth}
             BACKEND_URL={BACKEND_URL}
             navigate={navigate}
           />

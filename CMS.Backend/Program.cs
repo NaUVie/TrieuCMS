@@ -42,6 +42,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 
 // Add services to the container.
+builder.Services.AddHttpClient();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddControllersWithViews(); // Lệnh này vừa nhận diện các API mới, vừa giữ quyền biên dịch các View (.cshtml) của Web MVC cũ.
 
@@ -51,7 +52,7 @@ builder.Services.AddSwaggerGen(); // -- Kích hoạt bộ sinh tài liệu API S
 
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowReactApp", policy => {
-        policy.WithOrigins("http://localhost:3000") // Cho phép ReactJS ở port 3000 gọi tới
+        policy.WithOrigins("http://localhost:3000", "http://127.0.0.1:3000") // Cho phép ReactJS gọi tới
               .AllowAnyHeader()                     // Cho phép mọi loại Header (Content-Type, Authorization...)
               .AllowAnyMethod()                     // Cho phép mọi phương thức HTTP (GET, POST, PUT, DELETE)
               .AllowCredentials();                  // Hỗ trợ truyền Cookie/Session nếu cần sau này

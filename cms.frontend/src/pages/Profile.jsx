@@ -193,6 +193,14 @@ const Profile = ({ onOpenAuth, onProfileUpdate, onLogout }) => {
             return;
         }
 
+        if (formData.phone) {
+            const phoneRegex = /^(0|\+84|84)(3|5|7|8|9)[0-9]{8}$/;
+            if (!phoneRegex.test(formData.phone)) {
+                setMessage({ text: 'Số điện thoại không đúng định dạng Việt Nam (10 số, ví dụ: 0912345678)!', type: 'error' });
+                return;
+            }
+        }
+
         setLoading(true);
         try {
             const updatePayload = {

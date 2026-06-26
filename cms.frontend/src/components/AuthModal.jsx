@@ -43,6 +43,11 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess }) => {
             setMessage({ text: 'Vui lòng điền Email trước khi bấm Quên mật khẩu!', type: 'error' });
             return;
         }
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!emailRegex.test(forgotEmail)) {
+            setMessage({ text: 'Địa chỉ Email không đúng định dạng!', type: 'error' });
+            return;
+        }
         setLoading(true);
         setMessage({ text: '', type: '' });
         try {
@@ -121,8 +126,31 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess }) => {
 
     const handleRegisterSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true);
         setMessage({ text: '', type: '' });
+
+        // Email validation
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!emailRegex.test(registerData.email)) {
+            setMessage({ text: 'Địa chỉ Email không đúng định dạng!', type: 'error' });
+            return;
+        }
+
+        // Phone validation (if provided)
+        if (registerData.phone) {
+            const phoneRegex = /^(0|\+84|84)(3|5|7|8|9)[0-9]{8}$/;
+            if (!phoneRegex.test(registerData.phone)) {
+                setMessage({ text: 'Số điện thoại không đúng định dạng Việt Nam (10 số, bắt đầu bằng 03/05/07/08/09)!', type: 'error' });
+                return;
+            }
+        }
+
+        // Password length validation
+        if (registerData.password.length < 6) {
+            setMessage({ text: 'Mật khẩu phải có độ dài tối thiểu 6 ký tự!', type: 'error' });
+            return;
+        }
+
+        setLoading(true);
 
         try {
             const result = await authService.register(registerData);
