@@ -14,6 +14,7 @@ function Home({ onAddToCart }) {
   const [categories, setCategories] = useState([]);
   const [latestProducts, setLatestProducts] = useState([]);
   const [saleProducts, setSaleProducts] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
   const [posts, setPosts] = useState([]);
   const [quantities, setQuantities] = useState({});
   const navigate = useNavigate();
@@ -38,6 +39,9 @@ function Home({ onAddToCart }) {
 
         const sales = await productService.getSaleProducts();
         setSaleProducts(sales.slice(0, 10));
+
+        const allProds = await productService.getAllProducts();
+        setAllProducts(allProds);
 
         const blogs = await blogService.getAllPosts();
         setPosts(blogs.slice(0, 3));
@@ -95,6 +99,43 @@ function Home({ onAddToCart }) {
         BACKEND_URL={BACKEND_URL}
         navigate={navigate}
       />
+
+      {/* Category Specific Grids */}
+      {categories.map(cat => {
+        const catProducts = allProducts.filter(p => p.categoryProductId === cat.id);
+        if (catProducts.length === 0) return null;
+
+        // Dynamic icon assignment based on category name
+        let iconClass = "fa-solid fa-layer-group text-primary";
+        const normalized = cat.name.toLowerCase();
+        if (normalized.includes('điện thoại') || normalized.includes('máy tính bảng') || normalized.includes('tablet')) {
+          iconClass = 'fa-solid fa-mobile-screen-button text-primary';
+        } else if (normalized.includes('laptop') || normalized.includes('máy tính') || normalized.includes('văn phòng')) {
+          iconClass = 'fa-solid fa-laptop text-info';
+        } else if (normalized.includes('phụ kiện') || normalized.includes('gear') || normalized.includes('bàn phím') || normalized.includes('chuột')) {
+          iconClass = 'fa-solid fa-keyboard text-success';
+        } else if (normalized.includes('đồng hồ') || normalized.includes('smartwatch')) {
+          iconClass = 'fa-solid fa-clock text-warning';
+        } else if (normalized.includes('màn hình') || normalized.includes('tv')) {
+          iconClass = 'fa-solid fa-tv text-danger';
+        } else if (normalized.includes('tay cầm') || normalized.includes('gamepad') || normalized.includes('chơi game')) {
+          iconClass = 'fa-solid fa-gamepad text-secondary';
+        }
+
+        return (
+          <ProductGrid 
+            key={cat.id}
+            title={cat.name}
+            iconClass={iconClass}
+            products={catProducts}
+            quantities={quantities}
+            setQuantities={setQuantities}
+            onAddToCart={onAddToCart}
+            BACKEND_URL={BACKEND_URL}
+            navigate={navigate}
+          />
+        );
+      })}
 
       <BlogSection posts={posts} BACKEND_URL={BACKEND_URL} />
     </div>
