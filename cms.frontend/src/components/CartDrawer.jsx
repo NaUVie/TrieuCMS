@@ -144,7 +144,7 @@ const CartDrawer = ({ isOpen, onClose, cartItems, onUpdateQuantity, onRemoveItem
                                                             style={{ background: 'none', border: 'none', padding: '3px 10px', cursor: 'pointer', fontWeight: '700' }}
                                                             onClick={() => {
                                                                 if (item.quantity >= item.stockQuantity) {
-                                                                    alert('Số lượng sản phẩm trong kho không đủ!');
+                                                                    showToast('Số lượng sản phẩm trong kho không đủ!', 'warning');
                                                                     return;
                                                                 }
                                                                 onUpdateQuantity(item.id, item.quantity + 1);

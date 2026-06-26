@@ -8,6 +8,7 @@ function Shop({ onAddToCart }) {
   const catParam = searchParams.get('category');
   
   const [activeCategoryId, setActiveCategoryId] = useState(null);
+  const [resetKey, setResetKey] = useState(0);
 
   useEffect(() => {
     if (catParam) {
@@ -26,6 +27,14 @@ function Shop({ onAddToCart }) {
     setSearchParams(searchParams);
   };
 
+  const handleClearAllFilters = () => {
+    searchParams.delete('category');
+    searchParams.delete('search');
+    setSearchParams(searchParams);
+    setActiveCategoryId(null);
+    setResetKey(prev => prev + 1);
+  };
+
   return (
     <div className="row mt-4">
       {/* Sidebar Categories */}
@@ -40,11 +49,12 @@ function Shop({ onAddToCart }) {
       <div className="col-lg-9 col-md-8">
         <div className="section-heading">
           <h4>Cửa Hàng Công Nghệ</h4>
-          <button className="view-all-btn" onClick={() => handleSelectCategory(null)}>
-            Xóa bộ lọc danh mục
+          <button className="view-all-btn" onClick={handleClearAllFilters}>
+            Xóa bộ lọc
           </button>
         </div>
         <ProductList 
+          key={resetKey}
           activeId={activeCategoryId} 
           onSelectProduct={(p) => window.location.href = `/product/${p.id}`}
           onAddToCart={onAddToCart}

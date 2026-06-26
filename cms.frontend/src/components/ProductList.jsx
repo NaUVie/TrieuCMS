@@ -170,20 +170,32 @@ const ProductList = ({ activeId, onSelectProduct, onAddToCart }) => {
                     <div className="col-md-6 col-lg-3 d-flex align-items-center gap-2">
                         <input 
                             type="number" 
+                            min="0"
                             className="form-control" 
                             style={{ borderRadius: '20px', height: '40px', fontSize: '0.85rem', border: '1px solid rgba(0, 0, 0, 0.12)' }}
                             placeholder="Giá Min (VNĐ)..."
                             value={minPrice}
-                            onChange={(e) => setMinPrice(e.target.value)}
+                            onChange={(e) => {
+                                const val = e.target.value;
+                                if (val === '' || parseFloat(val) >= 0) {
+                                    setMinPrice(val);
+                                }
+                            }}
                         />
                         <span className="text-muted" style={{ fontSize: '0.8rem' }}>tới</span>
                         <input 
                             type="number" 
+                            min="0"
                             className="form-control" 
                             style={{ borderRadius: '20px', height: '40px', fontSize: '0.85rem', border: '1px solid rgba(0, 0, 0, 0.12)' }}
                             placeholder="Giá Max (VNĐ)..."
                             value={maxPrice}
-                            onChange={(e) => setMaxPrice(e.target.value)}
+                            onChange={(e) => {
+                                const val = e.target.value;
+                                if (val === '' || parseFloat(val) >= 0) {
+                                    setMaxPrice(val);
+                                }
+                            }}
                         />
                     </div>
                     <div className="col-md-6 col-lg-4 text-end d-flex align-items-center gap-2 justify-content-end">

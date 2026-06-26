@@ -157,7 +157,7 @@ function Cart({ cartItems, onUpdateQuantity, onRemoveItem, onClearCart, onOpenAu
                           className="btn bg-transparent border-0 px-3"
                           onClick={() => {
                             if (item.quantity >= item.stockQuantity) {
-                              alert('Số lượng sản phẩm trong kho không đủ!');
+                              showToast('Số lượng sản phẩm trong kho không đủ!', 'warning');
                               return;
                             }
                             onUpdateQuantity(item.id, item.quantity + 1);
