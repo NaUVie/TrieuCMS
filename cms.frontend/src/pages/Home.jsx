@@ -34,10 +34,10 @@ function Home({ onAddToCart }) {
         setCategories(cats);
 
         const latest = await productService.getLatestProducts();
-        setLatestProducts(latest.slice(0, 3));
+        setLatestProducts(latest.slice(0, 10));
 
         const sales = await productService.getSaleProducts();
-        setSaleProducts(sales.slice(0, 3));
+        setSaleProducts(sales.slice(0, 10));
 
         const blogs = await blogService.getAllPosts();
         setPosts(blogs.slice(0, 3));

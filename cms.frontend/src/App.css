@@ -1504,4 +1504,68 @@ a { text-decoration: none !important; color: inherit; }
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
+/* Responsive Product Slider */
+.product-slider-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  --items-per-row: 5;
+  --gap: 16px;
+}
+
+@media (max-width: 1200px) {
+  .product-slider-container {
+    --items-per-row: 4;
+  }
+}
+
+@media (max-width: 992px) {
+  .product-slider-container {
+    --items-per-row: 3;
+  }
+}
+
+@media (max-width: 768px) {
+  .product-slider-container {
+    --items-per-row: 2;
+  }
+}
+
+@media (max-width: 480px) {
+  .product-slider-container {
+    --items-per-row: 1;
+  }
+}
+
+.product-slider-track-wrapper {
+  width: 100%;
+  overflow: hidden;
+  padding: 10px 0;
+}
+
+.product-slider-track {
+  display: flex;
+  gap: var(--gap);
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.product-slider-item {
+  flex: 0 0 calc((100% - (var(--items-per-row) - 1) * var(--gap)) / var(--items-per-row));
+  min-width: calc((100% - (var(--items-per-row) - 1) * var(--gap)) / var(--items-per-row));
+}
+
+.slider-arrow-btn {
+  transition: all 0.3s ease;
+}
+
+.slider-arrow-btn:not(:disabled):hover {
+  background-color: #4f46e5 !important;
+  border-color: #4f46e5 !important;
+}
+
+.slider-arrow-btn:not(:disabled):hover i {
+  color: #ffffff !important;
+}
+
 
