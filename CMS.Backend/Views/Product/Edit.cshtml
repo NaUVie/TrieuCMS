@@ -19,6 +19,15 @@
     <form asp-action="Edit" method="post" enctype="multipart/form-data">
         <!-- Hidden field to preserve Id -->
         <input type="hidden" asp-for="Id" />
+        <div asp-validation-summary="All" class="text-danger small mb-3 p-3 rounded" style="background: #fef2f2; border: 1px solid #fecaca; display: none;" id="validationSummary"></div>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                var summary = document.getElementById("validationSummary");
+                if (summary && summary.innerText.trim().length > 0) {
+                    summary.style.display = "block";
+                }
+            });
+        </script>
 
         <div class="row g-4">
             <!-- Left Column: Core Info -->

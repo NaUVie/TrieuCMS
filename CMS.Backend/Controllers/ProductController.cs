@@ -119,6 +119,7 @@ namespace CMS.Backend.Controllers
                 model.ImageUrl = SaveUploadedFile(ImageFile);
             }
             ModelState.Remove("ImageUrl");
+            ModelState.Remove("CategoryProduct");
 
             if (model.IsOnSale)
             {
@@ -172,6 +173,7 @@ namespace CMS.Backend.Controllers
                 model.ImageUrl = existingProduct.ImageUrl;
             }
             ModelState.Remove("ImageUrl");
+            ModelState.Remove("CategoryProduct");
 
             if (model.IsOnSale)
             {
