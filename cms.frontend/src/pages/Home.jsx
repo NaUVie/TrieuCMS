@@ -101,7 +101,7 @@ function Home({ onAddToCart }) {
       />
 
       {/* Category Specific Grids */}
-      {categories.map(cat => {
+      {categories.slice(0, 3).map(cat => {
         const catProducts = allProducts.filter(p => p.categoryProductId === cat.id);
         if (catProducts.length === 0) return null;
 
