@@ -1,5 +1,7 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import productService from '../services/productService';
+import { BACKEND_URL } from '../api/axiosClient';
 
 const Header = ({ 
   categories, 
@@ -11,6 +13,65 @@ const Header = ({
   setIsAuthModalOpen, 
   handleLogout 
 }) => {
+  const [allProducts, setAllProducts] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const suggestionsRef = useRef(null);
+  const navigate = useNavigate();
+
+  // Fetch all products once for quick autocomplete filtering
+  useEffect(() => {
+    const fetchAll = async () => {
+      try {
+        const data = await productService.getAllProducts();
+        setAllProducts(data);
+      } catch (err) {
+        console.error("Lỗi khi tải gợi ý tìm kiếm:", err);
+      }
+    };
+    fetchAll();
+  }, []);
+
+  // Hide suggestions when clicking outside
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (suggestionsRef.current && !suggestionsRef.current.contains(e.target)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, []);
+
+  const handleInputChange = (e) => {
+    const val = e.target.value;
+    setHeaderSearch(val);
+    if (val.trim().length > 0) {
+      const filtered = allProducts.filter(p => 
+        p.name.toLowerCase().includes(val.toLowerCase())
+      ).slice(0, 5);
+      setSuggestions(filtered);
+      setShowSuggestions(true);
+    } else {
+      setSuggestions([]);
+      setShowSuggestions(false);
+    }
+  };
+
+  const getProductImage = (url) => {
+    if (!url) return 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=100';
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+    return BACKEND_URL + '/uploads/' + url;
+  };
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    if (headerSearch.trim()) {
+      navigate(`/shop?search=${encodeURIComponent(headerSearch.trim())}`);
+      setShowSuggestions(false);
+    }
+  };
+
   return (
     <header className="site-header">
       <div className="container d-flex justify-content-between align-items-center">
@@ -19,15 +80,20 @@ const Header = ({
           TRIEU TECHSTORE
         </Link>
 
-        {/* Header Search Bar */}
-        <div className="header-search-wrapper" style={{ flex: '1', maxWidth: '320px', margin: '0 1.5rem' }}>
-          <form onSubmit={handleSearchSubmit} style={{ position: 'relative' }}>
+        {/* Header Search Bar with Live Autocomplete Suggestions */}
+        <div className="header-search-wrapper" style={{ flex: '1', maxWidth: '320px', margin: '0 1.5rem', position: 'relative' }}>
+          <form onSubmit={onSubmit} style={{ position: 'relative' }}>
             <input 
               type="text" 
               className="form-control" 
               placeholder="Tìm sản phẩm..."
               value={headerSearch}
-              onChange={(e) => setHeaderSearch(e.target.value)}
+              onChange={handleInputChange}
+              onFocus={() => {
+                if (headerSearch.trim().length > 0) {
+                  setShowSuggestions(true);
+                }
+              }}
               style={{
                 borderRadius: '20px',
                 paddingLeft: '35px',
@@ -40,6 +106,57 @@ const Header = ({
             />
             <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#9ca3af', fontSize: '0.85rem' }}></i>
           </form>
+
+          {/* Autocomplete Suggestion Dropdown */}
+          {showSuggestions && suggestions.length > 0 && (
+            <div ref={suggestionsRef} className="search-suggestions-dropdown" style={{ position: 'absolute', top: '110%', left: 0, width: '100%', background: '#fff', zIndex: 1000, borderRadius: '12px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', overflow: 'hidden', border: '1px solid #f3f4f6' }}>
+              {suggestions.map(p => {
+                const isSale = p.isOnSale;
+                const displayPrice = isSale ? p.salePrice : p.price;
+                return (
+                  <Link 
+                    key={p.id}
+                    to={`/product/${p.id}`}
+                    onClick={() => {
+                      setShowSuggestions(false);
+                      setHeaderSearch('');
+                    }}
+                    className="suggestion-item"
+                    style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '8px 12px', color: '#333', textDecoration: 'none', borderBottom: '1px solid #f3f4f6' }}
+                  >
+                    <img 
+                      src={getProductImage(p.imageUrl)} 
+                      alt={p.name} 
+                      style={{ width: '36px', height: '36px', objectFit: 'contain', background: '#f9fafb', borderRadius: '8px' }} 
+                    />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: '0.825rem', fontWeight: '600', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {p.name}
+                      </div>
+                      <div style={{ fontSize: '0.775rem', color: isSale ? '#ef4444' : '#6b7280', fontWeight: '700' }}>
+                        {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(displayPrice)}
+                        {isSale && (
+                          <span style={{ fontSize: '0.7rem', textDecoration: 'line-through', color: '#9ca3af', marginLeft: '6px', fontWeight: '400' }}>
+                            {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(p.price)}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+              <div style={{ padding: '6px 12px', background: '#f9fafb', textAlign: 'center' }}>
+                <Link 
+                  to={`/shop?search=${encodeURIComponent(headerSearch.trim())}`}
+                  onClick={() => setShowSuggestions(false)}
+                  className="btn btn-link btn-sm text-decoration-none p-0" 
+                  style={{ fontSize: '0.725rem', fontWeight: '600', color: '#4f46e5' }}
+                >
+                  Xem tất cả kết quả cho "{headerSearch}"
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
 
         <nav className="d-flex align-items-center">
