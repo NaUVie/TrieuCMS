@@ -160,6 +160,30 @@ namespace CMS.Backend.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // POST: Post/UploadImage
+        [HttpPost]
+        [IgnoreAntiforgeryToken]
+        public IActionResult UploadImage(IFormFile upload)
+        {
+            if (upload != null && upload.Length > 0)
+            {
+                var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+                var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(upload.FileName);
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    upload.CopyTo(fileStream);
+                }
+                var url = "/uploads/" + uniqueFileName;
+                return Json(new { url = url });
+            }
+            return Json(new { error = new { message = "Không có tệp tin được tải lên." } });
+        }
+
         // GET: Post/Delete/5
         public IActionResult Delete(int id)
         {

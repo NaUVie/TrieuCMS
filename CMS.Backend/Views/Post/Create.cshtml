@@ -84,9 +84,58 @@
     <!-- CKEditor 5 CDN -->
     <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
     <script>
+        class MyUploadAdapter {
+            constructor(loader) {
+                this.loader = loader;
+            }
+            upload() {
+                return this.loader.file
+                    .then(file => new Promise((resolve, reject) => {
+                        const xhr = new XMLHttpRequest();
+                        xhr.open('POST', '/Post/UploadImage', true);
+                        xhr.responseType = 'json';
+
+                        xhr.addEventListener('error', () => reject(`Không thể tải lên tệp: ${file.name}.`));
+                        xhr.addEventListener('abort', () => reject());
+                        xhr.addEventListener('load', () => {
+                            const response = xhr.response;
+                            if (!response || response.error) {
+                                return reject(response && response.error ? response.error.message : `Không thể tải lên tệp: ${file.name}.`);
+                            }
+                            resolve({
+                                default: response.url
+                            });
+                        });
+
+                        if (xhr.upload) {
+                            xhr.upload.addEventListener('progress', evt => {
+                                if (evt.lengthComputable) {
+                                    this.loader.uploadTotal = evt.total;
+                                    this.loader.uploaded = evt.loaded;
+                                }
+                            });
+                        }
+
+                        const data = new FormData();
+                        data.append('upload', file);
+                        xhr.send(data);
+                    }));
+            }
+            abort() {
+                // abort upload handler
+            }
+        }
+
+        function MyCustomUploadAdapterPlugin(editor) {
+            editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+                return new MyUploadAdapter(loader);
+            };
+        }
+
         ClassicEditor
             .create(document.querySelector('#Content'), {
-                toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ]
+                extraPlugins: [ MyCustomUploadAdapterPlugin ],
+                toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'imageUpload', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ]
             })
             .catch(error => {
                 console.error(error);
