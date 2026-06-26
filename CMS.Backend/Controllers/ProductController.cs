@@ -112,7 +112,7 @@ namespace CMS.Backend.Controllers
 
         // 2. POST: Handle Product creation
         [HttpPost]
-        public IActionResult Create(Product model, IFormFile ImageFile)
+        public IActionResult Create(Product model, IFormFile? ImageFile)
         {
             if (ImageFile != null && ImageFile.Length > 0)
             {
@@ -120,6 +120,12 @@ namespace CMS.Backend.Controllers
             }
             ModelState.Remove("ImageUrl");
             ModelState.Remove("CategoryProduct");
+            ModelState.Remove("ImageFile");
+
+            if (string.IsNullOrEmpty(model.ImageUrl) && (ImageFile == null || ImageFile.Length == 0))
+            {
+                ModelState.AddModelError("ImageFile", "Hình ảnh sản phẩm không được để trống.");
+            }
 
             if (model.IsOnSale)
             {
@@ -159,7 +165,7 @@ namespace CMS.Backend.Controllers
 
         // 4. POST: Handle Product edits
         [HttpPost]
-        public IActionResult Edit(Product model, IFormFile ImageFile)
+        public IActionResult Edit(Product model, IFormFile? ImageFile)
         {
             var existingProduct = _context.Products.AsNoTracking().FirstOrDefault(p => p.Id == model.Id);
             if (existingProduct == null) return NotFound();
@@ -174,6 +180,7 @@ namespace CMS.Backend.Controllers
             }
             ModelState.Remove("ImageUrl");
             ModelState.Remove("CategoryProduct");
+            ModelState.Remove("ImageFile");
 
             if (model.IsOnSale)
             {
