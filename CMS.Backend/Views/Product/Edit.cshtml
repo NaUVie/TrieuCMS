@@ -131,12 +131,17 @@
         
         function toggleSalePrice() {
             if (switchEl && containerEl) {
+                const input = containerEl.querySelector("input");
                 if (switchEl.checked) {
                     containerEl.style.display = "block";
-                    containerEl.querySelector("input").setAttribute("required", "required");
+                    input.setAttribute("required", "required");
+                    if (input.value === "0") {
+                        input.value = "";
+                    }
                 } else {
                     containerEl.style.display = "none";
-                    containerEl.querySelector("input").removeAttribute("required");
+                    input.removeAttribute("required");
+                    input.value = "0";
                 }
             }
         }
