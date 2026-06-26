@@ -219,8 +219,13 @@ const ProductList = ({ activeId, onSelectProduct, onAddToCart }) => {
                 {paginatedProducts.length === 0 ? (
                     <div className="col-12">
                         <div className="no-products-found py-5 text-center">
-                            <i className="fa-solid fa-box-open mb-3 display-4 text-muted"></i>
-                            <p className="text-muted fs-5">Không tìm thấy sản phẩm phù hợp yêu cầu.</p>
+                            <img 
+                                src="/no_products.png" 
+                                alt="No products found" 
+                                style={{ width: '220px', height: 'auto', marginBottom: '1.5rem', opacity: '0.85' }} 
+                            />
+                            <p className="text-muted fs-5 fw-bold">Không tìm thấy sản phẩm nào phù hợp với tiêu chí của bạn.</p>
+                            <p className="text-muted small">Hãy thử điều chỉnh khoảng giá hoặc từ khóa tìm kiếm của bạn.</p>
                         </div>
                     </div>
                 ) : (
