@@ -84,8 +84,15 @@
 
                         <div class="mb-3">
                             <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Tải lên hình ảnh sản phẩm:</label>
-                            <input type="file" name="ImageFile" class="form-control" accept="image/*" required />
+                            <input type="hidden" asp-for="ImageUrl" />
+                            <input type="file" name="ImageFile" class="form-control" accept="image/*" @(Model != null && !string.IsNullOrEmpty(Model.ImageUrl) ? "" : "required") />
                             <small class="text-muted d-block mt-1">Định dạng hỗ trợ: JPG, PNG, WEBP...</small>
+                            @if (Model != null && !string.IsNullOrEmpty(Model.ImageUrl))
+                            {
+                                <div class="mt-2 text-center">
+                                    <img src="@Model.ImageUrl" style="max-height: 100px; border-radius: 6px; border: 1px solid var(--border-light);" alt="Preview" />
+                                </div>
+                            }
                         </div>
                     </div>
 
