@@ -70,8 +70,16 @@ namespace CMS.Backend.Controllers
             var categoryProduct = _context.CategoriesProducts.Find(id);
             if (categoryProduct != null)
             {
+                // Find all products in this category and set CategoryProductId to null
+                var products = _context.Products.Where(p => p.CategoryProductId == id).ToList();
+                foreach (var product in products)
+                {
+                    product.CategoryProductId = null;
+                }
+
                 _context.CategoriesProducts.Remove(categoryProduct);
                 _context.SaveChanges();
+                TempData["Success"] = "Đã xóa danh mục sản phẩm thành công! Các sản phẩm thuộc danh mục này hiện đã được chuyển về trạng thái Không có danh mục.";
             }
             return RedirectToAction("Index");
         }

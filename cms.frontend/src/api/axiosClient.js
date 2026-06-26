@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Địa chỉ gốc của Backend (dùng để ghép đường dẫn ảnh upload)
-export const BACKEND_URL = 'https://localhost:7226';
+export const BACKEND_URL = process.env.REACT_APP_API_URL || 'https://localhost:7226';
 
 // Khởi tạo một thực thể axios với cấu hình base chung
 const axiosClient = axios.create({

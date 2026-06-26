@@ -479,13 +479,13 @@ a { text-decoration: none !important; color: inherit; }
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px;
+  padding: 0;
 }
 
 .product-img-wrapper img.product-img {
-  max-width: 100%;
-  max-height: 200px;
-  object-fit: contain;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   transition: transform 0.5s ease;
 }
 
@@ -1195,6 +1195,98 @@ a { text-decoration: none !important; color: inherit; }
 .banner-nav-arrow:hover {
   background: rgba(255, 255, 255, 0.3) !important;
   transform: translateY(-50%) scale(1.1) !important;
+}
+
+/* ========== NEW PREMIUM FOOTER STYLES ========== */
+.site-footer-premium {
+  background: #0f172a; /* Sleek dark slate blue */
+  color: #94a3b8;
+  padding: 5rem 0 2.5rem 0;
+  margin-top: 5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.9rem;
+}
+
+.site-footer-premium h5 {
+  color: #ffffff;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+  position: relative;
+}
+
+.site-footer-premium h5::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 35px;
+  height: 2px;
+  background: linear-gradient(90deg, #6366f1, #d946ef);
+}
+
+.site-footer-premium .footer-link {
+  color: #94a3b8;
+  text-decoration: none;
+  transition: all 0.3s;
+  display: inline-block;
+  margin-bottom: 0.75rem;
+}
+
+.site-footer-premium .footer-link:hover {
+  color: #a5b4fc;
+  transform: translateX(4px);
+}
+
+.site-footer-premium .social-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  color: #94a3b8;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  transition: all 0.3s;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.site-footer-premium .social-icon:hover {
+  background: linear-gradient(135deg, #6366f1, #d946ef);
+  color: #ffffff;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.site-footer-premium .contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.site-footer-premium .contact-item i {
+  color: #6366f1;
+  margin-top: 3px;
+}
+
+.site-footer-premium .bottom-bar {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 2rem;
+  margin-top: 3rem;
+}
+
+.site-footer-premium .payment-badge {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 4px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.75rem;
+  color: #cbd5e1;
+  font-weight: 600;
+  display: inline-block;
+  margin-right: 8px;
 }
 
 

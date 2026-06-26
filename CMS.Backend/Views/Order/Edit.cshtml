@@ -20,10 +20,11 @@
         <div class="mb-3">
             <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Trạng thái xử lý</label>
             <select asp-for="Status" class="form-select">
-                <option value="0">Chờ duyệt (Pending)</option>
-                <option value="1">Đang xử lý/Đóng gói (Processing)</option>
-                <option value="2">Đã giao hàng thành công (Completed)</option>
-                <option value="3">Đã hủy bỏ đơn hàng (Cancelled)</option>
+                <option value="0">Đã tiếp nhận (Received)</option>
+                <option value="1">Đang đóng gói (Packaging)</option>
+                <option value="2">Đang vận chuyển (Shipping)</option>
+                <option value="3">Đã hoàn thành (Completed)</option>
+                <option value="4">Đã hủy (Cancelled)</option>
             </select>
         </div>
 

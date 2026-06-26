@@ -29,9 +29,10 @@
             <h6 class="fw-bold text-slate">Thông tin đơn đặt:</h6>
             <p class="mb-1"><strong>Ngày đặt:</strong> @Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</p>
             <p class="mb-1"><strong>Trạng thái:</strong> 
-                @if (Model.Status == 0) { <span class="badge bg-warning text-dark">Chờ duyệt</span> }
-                else if (Model.Status == 1) { <span class="badge bg-info">Đang xử lý</span> }
-                else if (Model.Status == 2) { <span class="badge bg-success">Đã hoàn thành</span> }
+                @if (Model.Status == 0) { <span class="badge bg-secondary">Đã tiếp nhận</span> }
+                else if (Model.Status == 1) { <span class="badge bg-warning text-dark">Đang đóng gói</span> }
+                else if (Model.Status == 2) { <span class="badge bg-primary">Đang vận chuyển</span> }
+                else if (Model.Status == 3) { <span class="badge bg-success">Đã hoàn thành</span> }
                 else { <span class="badge bg-danger">Đã hủy</span> }
             </p>
             <p class="mb-1"><strong>Ghi chú:</strong> @(Model.Notes ?? "Không có ghi chú")</p>

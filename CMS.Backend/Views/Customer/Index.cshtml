@@ -16,6 +16,25 @@
         </a>
     </div>
 
+    <!-- Search Bar -->
+    <div class="mb-4">
+        <form method="get" action="@Url.Action("Index")" class="d-flex gap-2 align-items-center">
+            <div class="input-group input-group-sm" style="max-width: 400px;">
+                <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                <input type="text" name="searchTerm" class="form-control border-start-0 ps-0" placeholder="Nhập tên, email hoặc số điện thoại..." value="@ViewBag.SearchTerm" />
+            </div>
+            <button type="submit" class="btn-clean btn-sm px-3" style="height: 31px; display: inline-flex; align-items: center; justify-content: center; gap: 4px;">
+                <i class="bi bi-filter"></i> Tìm kiếm
+            </button>
+            @if (!string.IsNullOrEmpty(ViewBag.SearchTerm))
+            {
+                <a href="@Url.Action("Index")" class="btn-clean-outline btn-sm px-2 text-decoration-none text-center" style="height: 31px; display: inline-flex; align-items: center; justify-content: center;" title="Xóa tìm kiếm">
+                    <i class="bi bi-arrow-counterclockwise"></i> Xóa lọc
+                </a>
+            }
+        </form>
+    </div>
+
     <div class="clean-table-container">
         <table class="clean-table">
             <thead>
@@ -58,7 +77,7 @@
                             <td>
                                 <div class="d-flex gap-1 justify-content-center">
                                     <a asp-action="Edit" asp-route-id="@cust.Id" class="action-link action-link-edit"><i class="bi bi-pencil-square"></i> Sửa</a>
-                                    <a asp-action="Delete" asp-route-id="@cust.Id" class="action-link action-link-delete" onclick="return confirm('Bạn có chắc chắn muốn xóa khách hàng này?')"><i class="bi bi-trash"></i> Xóa</a>
+                                    <a asp-action="Delete" asp-route-id="@cust.Id" class="action-link action-link-delete" onclick="return confirm('CẢNH BÁO: Xóa khách hàng này sẽ chuyển các đơn hàng cũ của họ thành Vãng lai! Bạn có chắc chắn muốn xóa không?');"><i class="bi bi-trash"></i> Xóa</a>
                                 </div>
                             </td>
                         </tr>

@@ -19,13 +19,40 @@ namespace CMS.Backend.Controllers
         }
 
         // GET: Index
-        public IActionResult Index()
+        public IActionResult Index(string? searchTerm, int? status)
         {
-            var list = _context.Orders
+            var query = _context.Orders
                 .Include(o => o.Customer)
                 .Include(o => o.OrderDetails)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                var term = searchTerm.Trim().ToLower();
+                if (int.TryParse(term, out int orderId))
+                {
+                    query = query.Where(o => o.Id == orderId ||
+                                             (o.Customer != null && o.Customer.FullName.ToLower().Contains(term)));
+                }
+                else
+                {
+                    query = query.Where(o => (o.Customer != null && (o.Customer.FullName.ToLower().Contains(term) || o.Customer.Email.ToLower().Contains(term))) ||
+                                             (o.Notes != null && o.Notes.ToLower().Contains(term)));
+                }
+            }
+
+            if (status.HasValue)
+            {
+                query = query.Where(o => o.Status == status.Value);
+            }
+
+            var list = query
                 .OrderByDescending(o => o.OrderDate)
                 .ToList();
+
+            ViewBag.SearchTerm = searchTerm;
+            ViewBag.Status = status;
+
             return View(list);
         }
 

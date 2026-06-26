@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import Home from './pages/Home';
 import Shop from './pages/Shop';
 import ProductDetail from './pages/ProductDetail';
@@ -7,14 +7,30 @@ import PostDetail from './pages/PostDetail';
 import Blog from './pages/Blog';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
+import Profile from './pages/Profile';
+import MyOrders from './pages/MyOrders';
+import Support from './pages/Support';
 import AuthModal from './components/AuthModal';
 import categoryProductService from './services/categoryProductService';
 import './App.css';
+
+import Header from './components/Header';
+import Footer from './components/Footer';
 
 function App() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [customerName, setCustomerName] = useState('');
   const [categories, setCategories] = useState([]);
+  const [headerSearch, setHeaderSearch] = useState('');
+  const navigate = useNavigate();
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (headerSearch.trim()) {
+      navigate(`/shop?search=${encodeURIComponent(headerSearch.trim())}`);
+      setHeaderSearch('');
+    }
+  };
 
   // Cart state
   const [cart, setCart] = useState(() => {
@@ -59,22 +75,24 @@ function App() {
       setCart([]);
   };
 
-  const handleAddToCart = (product) => {
+  const handleAddToCart = (product, quantityToAdd = 1) => {
+      const qty = parseInt(quantityToAdd) || 1;
       const existing = cart.find(item => item.id === product.id);
       if (existing) {
-          if (existing.quantity >= product.stockQuantity) {
+          if (existing.quantity + qty > product.stockQuantity) {
               alert(`Số lượng sản phẩm trong kho không đủ! Chỉ còn ${product.stockQuantity} sản phẩm.`);
-              return;
+              return false;
           }
-          setCart(cart.map(item => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item));
+          setCart(cart.map(item => item.id === product.id ? { ...item, quantity: item.quantity + qty } : item));
       } else {
-          if (product.stockQuantity < 1) {
-              alert("Sản phẩm đã hết hàng!");
-              return;
+          if (product.stockQuantity < qty) {
+              alert(`Số lượng sản phẩm trong kho không đủ! Chỉ còn ${product.stockQuantity} sản phẩm.`);
+              return false;
           }
-          setCart([...cart, { ...product, quantity: 1 }]);
+          setCart([...cart, { ...product, quantity: qty }]);
       }
       alert(`Đã thêm "${product.name}" vào giỏ hàng!`);
+      return true;
   };
 
   const handleUpdateQuantity = (productId, newQuantity) => {
@@ -93,77 +111,24 @@ function App() {
       setCart([]);
   };
 
+  const handleRemoveItems = (productIds) => {
+      setCart(cart.filter(item => !productIds.includes(item.id)));
+  };
+
   const cartItemsCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <Router>
-      {/* ========== HEADER WITH GLASSMORPHIC NAVBAR ========== */}
-      <header className="site-header">
-        <div className="container d-flex justify-content-between align-items-center">
-          <Link to="/" className="brand" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span className="brand-dot"></span>
-            TRIEU TECHSTORE
-          </Link>
-          <nav className="d-flex align-items-center">
-            <Link to="/" className="nav-link-custom">Trang chủ</Link>
-            <Link to="/shop" className="nav-link-custom">Cửa hàng</Link>
-            <Link to="/blog" className="nav-link-custom">Tin tức</Link>
-            
-            {/* Category Dropdown Menu in Navbar */}
-            <div className="dropdown" style={{ marginRight: '5px' }}>
-              <button className="nav-link-custom dropdown-toggle border-0 bg-transparent" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Ngành hàng
-              </button>
-              <ul className="dropdown-menu border-0 shadow-lg" style={{ borderRadius: '15px', padding: '10px' }}>
-                <li><Link className="dropdown-item" style={{ borderRadius: '8px' }} to="/shop">Tất cả</Link></li>
-                {categories.map(cat => (
-                  <li key={cat.id}>
-                    <Link className="dropdown-item" style={{ borderRadius: '8px' }} to={`/shop?category=${cat.id}`}>
-                      {cat.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            
-            {/* Shopping Cart Trigger Icon with Badge Count */}
-            <Link 
-              className="nav-link-custom border-0 bg-transparent text-decoration-none" 
-              to="/cart"
-              style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}
-            >
-              <i className="fa-solid fa-cart-shopping"></i> Giỏ hàng
-              {cartItemsCount > 0 && (
-                <span style={{ background: '#ef4444', color: '#fff', fontSize: '0.7rem', fontWeight: '800', padding: '3px 8px', borderRadius: '10px', marginLeft: '3px', boxShadow: '0 2px 5px rgba(239, 68, 68, 0.4)' }}>
-                  {cartItemsCount}
-                </span>
-              )}
-            </Link>
-            
-            {/* Dynamic Customer Session Display */}
-            {customerName ? (
-                <div className="user-session" style={{ marginLeft: '10px' }}>
-                    <span className="user-welcome">
-                        <i className="fa-solid fa-user-circle user-avatar-icon"></i>
-                        Chào, <strong>{customerName}</strong>
-                    </span>
-                    <button className="btn-logout" onClick={handleLogout}>
-                        <i className="fa-solid fa-right-from-bracket"></i> Đăng xuất
-                    </button>
-                </div>
-            ) : (
-                <div className="auth-buttons" style={{ marginLeft: '10px' }}>
-                    <button className="btn-login" onClick={() => setIsAuthModalOpen(true)}>
-                        <i className="fa-solid fa-lock-open mr-1"></i> Đăng Nhập
-                    </button>
-                    <button className="btn-register" onClick={() => setIsAuthModalOpen(true)}>
-                        Đăng Ký
-                    </button>
-                </div>
-            )}
-          </nav>
-        </div>
-      </header>
+    <>
+      <Header 
+        categories={categories}
+        headerSearch={headerSearch}
+        setHeaderSearch={setHeaderSearch}
+        handleSearchSubmit={handleSearchSubmit}
+        customerName={customerName}
+        cartItemsCount={cartItemsCount}
+        setIsAuthModalOpen={setIsAuthModalOpen}
+        handleLogout={handleLogout}
+      />
 
       {/* ========== MAIN CONTENT ========== */}
       <main className="container" style={{ paddingTop: '2rem', paddingBottom: '2rem', minHeight: '60vh' }}>
@@ -174,16 +139,14 @@ function App() {
           <Route path="/blog" element={<Blog />} />
           <Route path="/post/:id" element={<PostDetail />} />
           <Route path="/cart" element={<Cart cartItems={cart} onUpdateQuantity={handleUpdateQuantity} onRemoveItem={handleRemoveItem} onClearCart={handleClearCart} onOpenAuth={() => setIsAuthModalOpen(true)} />} />
-          <Route path="/checkout" element={<Checkout cartItems={cart} onClearCart={handleClearCart} />} />
+          <Route path="/checkout" element={<Checkout cartItems={cart} onRemoveItems={handleRemoveItems} />} />
+          <Route path="/profile" element={<Profile onOpenAuth={() => setIsAuthModalOpen(true)} onProfileUpdate={handleAuthSuccess} onLogout={handleLogout} />} />
+          <Route path="/my-orders" element={<MyOrders />} />
+          <Route path="/support" element={<Support />} />
         </Routes>
       </main>
 
-      {/* ========== FOOTER ========== */}
-      <footer className="site-footer">
-        <div className="container">
-          &copy; 2026 <strong>Trieu TechStore</strong>. Siêu thị Thiết bị Số & Công nghệ cao cấp.
-        </div>
-      </footer>
+      <Footer />
 
       {/* ========== AUTH MODAL FOR CUSTOMERS ========== */}
       <AuthModal 
@@ -191,7 +154,7 @@ function App() {
           onClose={() => setIsAuthModalOpen(false)} 
           onAuthSuccess={handleAuthSuccess}
       />
-    </Router>
+    </>
   );
 }
 

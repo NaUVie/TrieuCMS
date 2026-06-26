@@ -31,6 +31,8 @@ namespace CMS.Backend.Controllers
                     p.ImageUrl,
                     p.StockQuantity,
                     p.CategoryProductId,
+                    p.IsOnSale,
+                    p.SalePrice,
                     CategoryName = p.CategoryProduct != null ? p.CategoryProduct.Name : ""
                 })
                 .ToListAsync();
@@ -43,7 +45,7 @@ namespace CMS.Backend.Controllers
         public async Task<IActionResult> GetSaleProducts()
         {
             var products = await _context.Products
-                .Where(p => p.Price > 5000000)
+                .Where(p => p.IsOnSale)
                 .OrderByDescending(p => p.Id)
                 .Select(p => new {
                     p.Id,
@@ -52,6 +54,8 @@ namespace CMS.Backend.Controllers
                     p.ImageUrl,
                     p.StockQuantity,
                     p.CategoryProductId,
+                    p.IsOnSale,
+                    p.SalePrice,
                     CategoryName = p.CategoryProduct != null ? p.CategoryProduct.Name : ""
                 })
                 .ToListAsync();
@@ -73,6 +77,8 @@ namespace CMS.Backend.Controllers
                     p.ImageUrl,
                     p.StockQuantity,
                     p.CategoryProductId,
+                    p.IsOnSale,
+                    p.SalePrice,
                     CategoryName = p.CategoryProduct != null ? p.CategoryProduct.Name : ""
                 })
                 .ToListAsync();
@@ -93,6 +99,8 @@ namespace CMS.Backend.Controllers
                     p.ImageUrl,
                     p.StockQuantity,
                     p.CategoryProductId,
+                    p.IsOnSale,
+                    p.SalePrice,
                     CategoryName = p.CategoryProduct != null ? p.CategoryProduct.Name : ""
                 })
                 .ToListAsync();
@@ -114,6 +122,8 @@ namespace CMS.Backend.Controllers
                     p.StockQuantity,
                     p.ImageUrl,
                     p.CategoryProductId,
+                    p.IsOnSale,
+                    p.SalePrice,
                     CategoryName = p.CategoryProduct != null ? p.CategoryProduct.Name : ""
                 })
                 .FirstOrDefaultAsync();
@@ -148,7 +158,9 @@ namespace CMS.Backend.Controllers
                 Price = input.Price,
                 StockQuantity = input.StockQuantity,
                 ImageUrl = input.ImageUrl,
-                CategoryProductId = input.CategoryProductId
+                CategoryProductId = input.CategoryProductId,
+                IsOnSale = input.IsOnSale,
+                SalePrice = input.SalePrice
             };
 
             _context.Products.Add(product);
@@ -187,6 +199,8 @@ namespace CMS.Backend.Controllers
             product.StockQuantity = input.StockQuantity;
             product.ImageUrl = input.ImageUrl;
             product.CategoryProductId = input.CategoryProductId;
+            product.IsOnSale = input.IsOnSale;
+            product.SalePrice = input.SalePrice;
 
             await _context.SaveChangesAsync();
 
@@ -221,5 +235,7 @@ namespace CMS.Backend.Controllers
         public int StockQuantity { get; set; }
         public string? ImageUrl { get; set; }
         public int CategoryProductId { get; set; }
+        public bool IsOnSale { get; set; }
+        public decimal SalePrice { get; set; }
     }
 }

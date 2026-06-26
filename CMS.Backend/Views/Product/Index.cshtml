@@ -15,6 +15,54 @@
     </a>
 </div>
 
+<!-- Search & Filter Bar -->
+<div class="flat-card p-3 mb-4" style="background: #ffffff; border: 1px solid var(--border-light); border-radius: 8px;">
+    <form method="get" action="@Url.Action("Index")" class="row g-3 align-items-end">
+        <div class="col-md-4 col-sm-12">
+            <label class="form-label fw-bold text-slate small mb-1">Tìm kiếm từ khóa:</label>
+            <div class="input-group input-group-sm">
+                <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                <input type="text" name="searchTerm" class="form-control border-start-0 ps-0" placeholder="Nhập tên sản phẩm..." value="@ViewBag.SearchTerm" />
+            </div>
+        </div>
+
+        <div class="col-md-2 col-sm-6">
+            <label class="form-label fw-bold text-slate small mb-1">Ngành hàng:</label>
+            <select name="categoryId" class="form-select form-select-sm" asp-items="ViewBag.CategoryProductList">
+                <option value="">Tất cả</option>
+            </select>
+        </div>
+
+        <div class="col-md-2 col-sm-6">
+            <label class="form-label fw-bold text-slate small mb-1">Khuyến mãi:</label>
+            <select name="onSaleStatus" class="form-select form-select-sm">
+                <option value="">Tất cả</option>
+                <option value="onsale" selected="@(ViewBag.OnSaleStatus == "onsale")">Đang giảm giá</option>
+                <option value="regular" selected="@(ViewBag.OnSaleStatus == "regular")">Không giảm giá</option>
+            </select>
+        </div>
+
+        <div class="col-md-2 col-sm-6">
+            <label class="form-label fw-bold text-slate small mb-1">Tồn kho:</label>
+            <select name="stockStatus" class="form-select form-select-sm">
+                <option value="">Tất cả</option>
+                <option value="instock" selected="@(ViewBag.StockStatus == "instock")">Còn hàng (> 20)</option>
+                <option value="lowstock" selected="@(ViewBag.StockStatus == "lowstock")">Sắp hết (1 - 20)</option>
+                <option value="outofstock" selected="@(ViewBag.StockStatus == "outofstock")">Hết hàng (0)</option>
+            </select>
+        </div>
+
+        <div class="col-md-2 col-sm-6 d-flex gap-2">
+            <button type="submit" class="btn-clean btn-sm px-3 flex-grow-1" style="height: 31px; display: inline-flex; align-items: center; justify-content: center; gap: 4px;">
+                <i class="bi bi-filter"></i> Lọc
+            </button>
+            <a href="@Url.Action("Index")" class="btn-clean-outline btn-sm px-2 text-decoration-none text-center" style="height: 31px; display: inline-flex; align-items: center; justify-content: center;" title="Xóa bộ lọc">
+                <i class="bi bi-arrow-counterclockwise"></i>
+            </a>
+        </div>
+    </form>
+</div>
+
 <div class="card-grid">
     @if (Model == null || !Model.Any())
     {
@@ -51,26 +99,42 @@
                     <p class="flat-item-card-desc">@item.Description</p>
                     
                     <!-- Pricing and Stocking -->
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="fw-bold text-dark" style="font-size: 0.975rem;">@item.Price.ToString("N0") VNĐ</span>
-                        @if (item.StockQuantity > 20)
-                        {
-                            <span class="badge-clean badge-clean-success" style="font-size: 0.725rem;"><i class="bi bi-check-circle-fill"></i> Tồn kho: @item.StockQuantity</span>
-                        }
-                        else if (item.StockQuantity > 0)
-                        {
-                            <span class="badge-clean badge-clean-warning" style="font-size: 0.725rem;"><i class="bi bi-exclamation-circle-fill"></i> Sắp hết: @item.StockQuantity</span>
-                        }
-                        else
-                        {
-                            <span class="badge-clean badge-clean-danger" style="font-size: 0.725rem;"><i class="bi bi-x-circle-fill"></i> Hết hàng</span>
-                        }
+                    <div class="d-flex flex-column gap-1 mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            @if (item.IsOnSale)
+                            {
+                                <div>
+                                    <span class="fw-bold text-danger" style="font-size: 0.95rem;">@item.SalePrice.ToString("N0") VNĐ</span>
+                                    <span class="text-decoration-line-through text-muted small ms-2" style="font-size: 0.8rem;">@item.Price.ToString("N0") VNĐ</span>
+                                    <span class="badge bg-danger ms-1 text-white" style="font-size: 0.65rem; padding: 2px 6px; border-radius: 4px;">KM</span>
+                                </div>
+                            }
+                            else
+                            {
+                                <span class="fw-bold text-dark" style="font-size: 0.95rem;">@item.Price.ToString("N0") VNĐ</span>
+                            }
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-1">
+                            <span class="text-muted small">Trạng thái kho:</span>
+                            @if (item.StockQuantity > 20)
+                            {
+                                <span class="badge-clean badge-clean-success" style="font-size: 0.725rem;"><i class="bi bi-check-circle-fill"></i> Tồn kho: @item.StockQuantity</span>
+                            }
+                            else if (item.StockQuantity > 0)
+                            {
+                                <span class="badge-clean badge-clean-warning" style="font-size: 0.725rem;"><i class="bi bi-exclamation-circle-fill"></i> Sắp hết: @item.StockQuantity</span>
+                            }
+                            else
+                            {
+                                <span class="badge-clean badge-clean-danger" style="font-size: 0.725rem;"><i class="bi bi-x-circle-fill"></i> Hết hàng</span>
+                            }
+                        </div>
                     </div>
                     
                     <!-- Actions -->
                     <div class="flat-item-card-footer">
                         <a asp-action="Edit" asp-route-id="@item.Id" class="btn-clean-outline btn-sm py-1 px-2" style="font-size: 0.775rem;"><i class="bi bi-pencil-square"></i> Sửa</a>
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn-clean-outline btn-sm py-1 px-2 text-danger" style="font-size: 0.775rem;" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này không?');"><i class="bi bi-trash"></i> Xóa</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn-clean-outline btn-sm py-1 px-2 text-danger" style="font-size: 0.775rem;" onclick="return confirm('CẢNH BÁO: Xóa sản phẩm này sẽ làm RỖNG sản phẩm ở các chi tiết đơn hàng cũ! Bạn có chắc chắn muốn xóa không?');"><i class="bi bi-trash"></i> Xóa</a>
                     </div>
                 </div>
             </div>
@@ -86,7 +150,7 @@
                 <!-- Nút trang trước -->
                 <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
                     <a class="page-link rounded-circle border d-flex align-items-center justify-content-center" 
-                       href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1 })" 
+                       href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1, searchTerm = ViewBag.SearchTerm, categoryId = ViewBag.CategoryId, onSaleStatus = ViewBag.OnSaleStatus, stockStatus = ViewBag.StockStatus })" 
                        style="width: 36px; height: 36px; color: #475569; background: #ffffff; border-color: #cbd5e1 !important; transition: all 0.2s ease;">
                         <i class="bi bi-chevron-left" style="font-size: 0.8rem;"></i>
                     </a>
@@ -106,7 +170,7 @@
                         else
                         {
                             <a class="page-link rounded-circle border d-flex align-items-center justify-content-center" 
-                               href="@Url.Action("Index", new { page = i })" 
+                               href="@Url.Action("Index", new { page = i, searchTerm = ViewBag.SearchTerm, categoryId = ViewBag.CategoryId, onSaleStatus = ViewBag.OnSaleStatus, stockStatus = ViewBag.StockStatus })" 
                                style="width: 36px; height: 36px; color: #475569; background: #ffffff; border-color: #cbd5e1 !important; transition: all 0.2s ease;">
                                 @i
                             </a>
@@ -117,7 +181,7 @@
                 <!-- Nút trang sau -->
                 <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
                     <a class="page-link rounded-circle border d-flex align-items-center justify-content-center" 
-                       href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1 })" 
+                       href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1, searchTerm = ViewBag.SearchTerm, categoryId = ViewBag.CategoryId, onSaleStatus = ViewBag.OnSaleStatus, stockStatus = ViewBag.StockStatus })" 
                        aria-label="Next"
                        style="width: 36px; height: 36px; color: #475569; background: #ffffff; border-color: #cbd5e1 !important; transition: all 0.2s ease;">
                         <i class="bi bi-chevron-right" style="font-size: 0.8rem;"></i>

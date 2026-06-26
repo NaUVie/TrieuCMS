@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using CMS.Backend.Services;
 
 namespace CMS.Backend.Controllers
 {
@@ -98,7 +99,7 @@ namespace CMS.Backend.Controllers
 
         // POST: api/Orders
         [HttpPost]
-        public async Task<IActionResult> CreateOrder([FromBody] OrderInputDTO input)
+        public async Task<IActionResult> CreateOrder([FromBody] OrderInputDTO input, [FromServices] IEmailService emailService)
         {
             if (input == null || input.CustomerId <= 0 || input.CartItems == null || !input.CartItems.Any())
             {
@@ -151,7 +152,8 @@ namespace CMS.Backend.Controllers
                             OrderId = newOrder.Id,
                             ProductId = item.ProductId,
                             Quantity = item.Quantity,
-                            UnitPrice = product.Price
+                            UnitPrice = product.IsOnSale ? product.SalePrice : product.Price,
+                            Product = product
                         };
 
                         _context.OrderDetails.Add(orderDetail);
@@ -159,6 +161,73 @@ namespace CMS.Backend.Controllers
 
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
+
+                    // Send order confirmation email
+                    var customer = await _context.Customers.FindAsync(input.CustomerId);
+                    if (customer != null && !string.IsNullOrEmpty(customer.Email))
+                    {
+                        try
+                        {
+                            var subject = $"Xác nhận đơn hàng #{newOrder.Id} - TrieuCMS Store";
+                            var itemsHtml = "";
+                            decimal totalSum = 0;
+
+                            foreach (var detail in newOrder.OrderDetails)
+                            {
+                                var prodName = detail.Product?.Name ?? "Sản phẩm";
+                                var price = detail.UnitPrice;
+                                var qty = detail.Quantity;
+                                var rowTotal = price * qty;
+                                totalSum += rowTotal;
+
+                                itemsHtml += $@"
+                                    <tr>
+                                        <td style='padding: 8px; border: 1px solid #e2e8f0;'>{prodName}</td>
+                                        <td style='padding: 8px; border: 1px solid #e2e8f0; text-align: center;'>{qty}</td>
+                                        <td style='padding: 8px; border: 1px solid #e2e8f0; text-align: right;'>{price:N0}đ</td>
+                                        <td style='padding: 8px; border: 1px solid #e2e8f0; text-align: right;'>{rowTotal:N0}đ</td>
+                                    </tr>";
+                            }
+
+                            var body = $@"
+                                <h3>Cảm ơn {customer.FullName} đã đặt hàng tại TrieuCMS Store!</h3>
+                                <p>Đơn hàng của bạn đã được tiếp nhận thành công và đang chờ ban quản trị duyệt.</p>
+                                <p><strong>Mã đơn hàng:</strong> #{newOrder.Id}</p>
+                                <p><strong>Ngày đặt:</strong> {newOrder.OrderDate:dd/MM/yyyy HH:mm}</p>
+                                <p><strong>Địa chỉ giao hàng:</strong> {customer.Address ?? "Chưa cung cấp"}</p>
+                                <p><strong>Số điện thoại:</strong> {customer.Phone ?? "Chưa cung cấp"}</p>
+                                
+                                <h4>Chi tiết đơn hàng:</h4>
+                                <table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
+                                    <thead>
+                                        <tr style='background-color: #f1f5f9;'>
+                                            <th style='padding: 8px; border: 1px solid #e2e8f0; text-align: left;'>Sản phẩm</th>
+                                            <th style='padding: 8px; border: 1px solid #e2e8f0; text-align: center;'>Số lượng</th>
+                                            <th style='padding: 8px; border: 1px solid #e2e8f0; text-align: right;'>Đơn giá</th>
+                                            <th style='padding: 8px; border: 1px solid #e2e8f0; text-align: right;'>Thành tiền</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {itemsHtml}
+                                        <tr style='font-weight: bold;'>
+                                            <td colspan='3' style='padding: 8px; border: 1px solid #e2e8f0; text-align: right;'>Tổng cộng:</td>
+                                            <td style='padding: 8px; border: 1px solid #e2e8f0; text-align: right; color: #2563eb;'>{totalSum:N0}đ</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                
+                                <p>Chúng tôi sẽ sớm liên hệ lại với bạn để giao hàng.</p>
+                                <br/>
+                                <p>Trân trọng,<br/>TrieuCMS Store</p>";
+
+                            // Send email asynchronously without blocking the client response
+                            _ = emailService.SendEmailAsync(customer.Email, subject, body);
+                        }
+                        catch (Exception ex)
+                        {
+                            // Silent catch to prevent order failures due to email sending issues
+                        }
+                    }
 
                     return StatusCode(201, new {
                         message = "Đặt hàng thành công!",

@@ -65,6 +65,17 @@
                             <span asp-validation-for="Price" class="text-danger small"></span>
                         </div>
 
+                        <div class="mb-3 form-check form-switch bg-light p-3 rounded" style="border: 1px solid var(--border-light); margin-left: 0; padding-left: 2.75rem;">
+                            <input asp-for="IsOnSale" class="form-check-input" type="checkbox" id="isOnSaleSwitch">
+                            <label class="form-check-label fw-bold text-slate" for="isOnSaleSwitch" style="font-size: 0.9rem;">Đang giảm giá / khuyến mãi</label>
+                        </div>
+
+                        <div class="mb-3" id="salePriceContainer" style="display: none;">
+                            <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Giá khuyến mãi (VNĐ):</label>
+                            <input asp-for="SalePrice" type="number" class="form-control" placeholder="Ví dụ: 12000000" min="0" />
+                            <span asp-validation-for="SalePrice" class="text-danger small"></span>
+                        </div>
+
                         <div class="mb-3">
                             <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Số lượng tồn kho:</label>
                             <input asp-for="StockQuantity" type="number" class="form-control" placeholder="Ví dụ: 50" min="0" required />
@@ -91,3 +102,27 @@
         </div>
     </form>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const switchEl = document.getElementById("isOnSaleSwitch");
+        const containerEl = document.getElementById("salePriceContainer");
+        
+        function toggleSalePrice() {
+            if (switchEl && containerEl) {
+                if (switchEl.checked) {
+                    containerEl.style.display = "block";
+                    containerEl.querySelector("input").setAttribute("required", "required");
+                } else {
+                    containerEl.style.display = "none";
+                    containerEl.querySelector("input").removeAttribute("required");
+                }
+            }
+        }
+        
+        if (switchEl) {
+            switchEl.addEventListener("change", toggleSalePrice);
+            toggleSalePrice(); // Initial trigger
+        }
+    });
+</script>

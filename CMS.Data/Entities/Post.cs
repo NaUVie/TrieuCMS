@@ -7,7 +7,7 @@ namespace CMS.Data.Entities {
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         
         // Khóa ngoại liên kết tới Category
-        public int CategoryId { get; set; }
+        public int? CategoryId { get; set; }
         public virtual Category? Category { get; set; }
     }
 }

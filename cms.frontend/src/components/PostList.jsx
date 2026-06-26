@@ -5,8 +5,9 @@ import { BACKEND_URL } from '../api/axiosClient';
 // Hàm ghép đường dẫn ảnh: nếu ảnh bắt đầu bằng "/" (upload từ admin) thì thêm domain Backend
 const getImageUrl = (url) => {
     if (!url) return 'https://images.unsplash.com/photo-1504711434969-e33886168d5c?w=400&auto=format&fit=crop';
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
     if (url.startsWith('/')) return BACKEND_URL + url;
-    return url;
+    return BACKEND_URL + '/uploads/' + url;
 };
 const PostList = () => {
     const [posts, setPosts] = useState([]);

@@ -18,9 +18,20 @@ namespace CMS.Backend.Controllers
         }
 
         // GET: Index
-        public IActionResult Index()
+        public IActionResult Index(string? searchTerm)
         {
-            var list = _context.Customers.ToList();
+            var query = _context.Customers.AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                var term = searchTerm.Trim().ToLower();
+                query = query.Where(c => c.FullName.ToLower().Contains(term) || 
+                                         c.Email.ToLower().Contains(term) || 
+                                         (c.Phone != null && c.Phone.Contains(term)));
+            }
+
+            ViewBag.SearchTerm = searchTerm;
+            var list = query.ToList();
             return View(list);
         }
 
@@ -98,8 +109,16 @@ namespace CMS.Backend.Controllers
             var customer = _context.Customers.Find(id);
             if (customer != null)
             {
+                // Find all orders of this customer and set CustomerId to null
+                var orders = _context.Orders.Where(o => o.CustomerId == id).ToList();
+                foreach (var order in orders)
+                {
+                    order.CustomerId = null;
+                }
+
                 _context.Customers.Remove(customer);
                 _context.SaveChanges();
+                TempData["Success"] = "Đã xóa tài khoản khách hàng thành công! Các đơn hàng cũ của khách hàng này hiện được lưu dưới dạng Khách vãng lai.";
             }
             return RedirectToAction(nameof(Index));
         }

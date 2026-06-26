@@ -7,16 +7,20 @@ using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 
+using Microsoft.AspNetCore.Hosting;
+
 namespace CMS.Backend.Controllers
 {
     [Authorize]
     public class AdvertisementController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public AdvertisementController(ApplicationDbContext context)
+        public AdvertisementController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         // Index
@@ -47,7 +51,7 @@ namespace CMS.Backend.Controllers
             // Xử lý upload hình ảnh
             if (uploadImage != null && uploadImage.Length > 0)
             {
-                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
                 if (!Directory.Exists(uploadsFolder))
                 {
                     Directory.CreateDirectory(uploadsFolder);
@@ -103,7 +107,7 @@ namespace CMS.Backend.Controllers
             // Xử lý upload hình ảnh mới
             if (uploadImage != null && uploadImage.Length > 0)
             {
-                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
                 if (!Directory.Exists(uploadsFolder))
                 {
                     Directory.CreateDirectory(uploadsFolder);

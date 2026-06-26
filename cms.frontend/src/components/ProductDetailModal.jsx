@@ -3,8 +3,9 @@ import { BACKEND_URL } from '../api/axiosClient';
 
 const getImageUrl = (url) => {
     if (!url) return 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&auto=format&fit=crop';
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
     if (url.startsWith('/')) return BACKEND_URL + url;
-    return url;
+    return BACKEND_URL + '/uploads/' + url;
 };
 
 const ProductDetailModal = ({ product, isOpen, onClose, onAddToCart }) => {
@@ -32,9 +33,22 @@ const ProductDetailModal = ({ product, isOpen, onClose, onAddToCart }) => {
                     <div className="detail-info">
                         <h2 className="detail-title">{product.name}</h2>
                         
-                        <p className="detail-price">
-                            {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}
-                        </p>
+                        <div className="detail-price-wrapper mb-3">
+                            {product.isOnSale ? (
+                                <>
+                                    <span className="detail-price text-danger me-2" style={{ fontSize: '1.6rem', fontWeight: '800' }}>
+                                        {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.salePrice)}
+                                    </span>
+                                    <span className="text-decoration-line-through text-muted small" style={{ fontSize: '1.05rem' }}>
+                                        {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}
+                                    </span>
+                                </>
+                            ) : (
+                                <span className="detail-price" style={{ fontSize: '1.6rem', fontWeight: '800' }}>
+                                    {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}
+                                </span>
+                            )}
+                        </div>
 
                         <div className="detail-description-title">Mô Tả Sản Phẩm</div>
                         <p className="detail-description">

@@ -8,21 +8,25 @@ using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 
+using Microsoft.AspNetCore.Hosting;
+
 namespace CMS.Backend.Controllers
 {
     [Authorize]
     public class PostController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
         // Constructor Injection
-        public PostController(ApplicationDbContext context)
+        public PostController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
+            _webHostEnvironment = webHostEnvironment;
         }
 
-        // Hàm Index: Hiển thị danh sách bài viết mẫu, hỗ trợ lọc theo danh mục
-        public IActionResult Index(int? id)
+        // Hàm Index: Hiển thị danh sách bài viết mẫu, hỗ trợ lọc theo danh mục & tìm kiếm
+        public IActionResult Index(int? id, string? searchTerm)
         {
             IQueryable<Post> query = _context.Posts.Include(p => p.Category);
             
@@ -31,7 +35,18 @@ namespace CMS.Backend.Controllers
                 query = query.Where(p => p.CategoryId == id);
             }
 
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                var term = searchTerm.Trim().ToLower();
+                query = query.Where(p => p.Title.ToLower().Contains(term) || (p.Content != null && p.Content.ToLower().Contains(term)));
+            }
+
             var posts = query.OrderByDescending(p => p.CreatedDate).ToList();
+
+            ViewBag.CategoryId = id;
+            ViewBag.SearchTerm = searchTerm;
+            ViewBag.CategoryList = new SelectList(_context.Categories, "Id", "Name", id);
+
             return View(posts);
         }
 
@@ -66,7 +81,7 @@ namespace CMS.Backend.Controllers
             // Xử lý upload ảnh
             if (uploadImage != null && uploadImage.Length > 0)
             {
-                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
                 if (!Directory.Exists(uploadsFolder))
                 {
                     Directory.CreateDirectory(uploadsFolder);
@@ -123,7 +138,7 @@ namespace CMS.Backend.Controllers
             // Xử lý upload ảnh mới
             if (uploadImage != null && uploadImage.Length > 0)
             {
-                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
                 if (!Directory.Exists(uploadsFolder))
                 {
                     Directory.CreateDirectory(uploadsFolder);

@@ -4,8 +4,9 @@ import { BACKEND_URL } from '../api/axiosClient';
 
 const getImageUrl = (url) => {
     if (!url) return 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&auto=format&fit=crop';
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
     if (url.startsWith('/')) return BACKEND_URL + url;
-    return url;
+    return BACKEND_URL + '/uploads/' + url;
 };
 
 const CartDrawer = ({ isOpen, onClose, cartItems, onUpdateQuantity, onRemoveItem, onClearCart, onOpenAuth }) => {

@@ -15,6 +15,35 @@
     </a>
 </div>
 
+<!-- Search & Filter Bar -->
+<div class="flat-card p-3 mb-4" style="background: #ffffff; border: 1px solid var(--border-light); border-radius: 8px;">
+    <form method="get" action="@Url.Action("Index")" class="row g-3 align-items-end">
+        <div class="col-md-5 col-sm-12">
+            <label class="form-label fw-bold text-slate small mb-1">Tìm kiếm bài viết:</label>
+            <div class="input-group input-group-sm">
+                <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                <input type="text" name="searchTerm" class="form-control border-start-0 ps-0" placeholder="Nhập tiêu đề hoặc nội dung bài viết..." value="@ViewBag.SearchTerm" />
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6">
+            <label class="form-label fw-bold text-slate small mb-1">Danh mục bài viết:</label>
+            <select name="id" class="form-select form-select-sm" asp-items="ViewBag.CategoryList">
+                <option value="">Tất cả danh mục</option>
+            </select>
+        </div>
+
+        <div class="col-md-4 col-sm-6 d-flex gap-2">
+            <button type="submit" class="btn-clean btn-sm px-3 flex-grow-1" style="height: 31px; display: inline-flex; align-items: center; justify-content: center; gap: 4px;">
+                <i class="bi bi-filter"></i> Lọc bài viết
+            </button>
+            <a href="@Url.Action("Index")" class="btn-clean-outline btn-sm px-2 text-decoration-none text-center" style="height: 31px; display: inline-flex; align-items: center; justify-content: center;" title="Xóa bộ lọc">
+                <i class="bi bi-arrow-counterclockwise"></i> Xóa lọc
+            </a>
+        </div>
+    </form>
+</div>
+
 <div class="card-grid">
     @if (Model != null && Model.Any())
     {

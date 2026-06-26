@@ -13,6 +13,40 @@
         </div>
     </div>
 
+    <!-- Search & Filter Bar -->
+    <div class="mb-4">
+        <form method="get" action="@Url.Action("Index")" class="row g-3 align-items-end">
+            <div class="col-md-5 col-sm-12">
+                <label class="form-label fw-bold text-slate small mb-1">Tìm kiếm đơn hàng:</label>
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                    <input type="text" name="searchTerm" class="form-control border-start-0 ps-0" placeholder="Nhập mã đơn, tên khách hàng hoặc ghi chú..." value="@ViewBag.SearchTerm" />
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <label class="form-label fw-bold text-slate small mb-1">Trạng thái:</label>
+                <select name="status" class="form-select form-select-sm">
+                    <option value="">Tất cả</option>
+                    <option value="0" selected="@(ViewBag.Status == 0)">Đã tiếp nhận</option>
+                    <option value="1" selected="@(ViewBag.Status == 1)">Đang đóng gói</option>
+                    <option value="2" selected="@(ViewBag.Status == 2)">Đang vận chuyển</option>
+                    <option value="3" selected="@(ViewBag.Status == 3)">Đã hoàn thành</option>
+                    <option value="4" selected="@(ViewBag.Status == 4)">Đã hủy</option>
+                </select>
+            </div>
+
+            <div class="col-md-4 col-sm-6 d-flex gap-2">
+                <button type="submit" class="btn-clean btn-sm px-3 flex-grow-1" style="height: 31px; display: inline-flex; align-items: center; justify-content: center; gap: 4px;">
+                    <i class="bi bi-filter"></i> Lọc đơn
+                </button>
+                <a href="@Url.Action("Index")" class="btn-clean-outline btn-sm px-2 text-decoration-none text-center" style="height: 31px; display: inline-flex; align-items: center; justify-content: center;" title="Xóa bộ lọc">
+                    <i class="bi bi-arrow-counterclockwise"></i> Xóa lọc
+                </a>
+            </div>
+        </form>
+    </div>
+
     <div class="clean-table-container">
         <table class="clean-table">
             <thead>
@@ -49,19 +83,23 @@
                             <td>
                                 @if (order.Status == 0)
                                 {
-                                    <span class="badge-clean badge-clean-warning"><i class="bi bi-hourglass-split"></i> Chờ duyệt</span>
+                                    <span class="badge bg-secondary"><i class="bi bi-receipt"></i> Đã tiếp nhận</span>
                                 }
                                 else if (order.Status == 1)
                                 {
-                                    <span class="badge-clean badge-clean-primary"><i class="bi bi-truck"></i> Đang giao</span>
+                                    <span class="badge bg-warning text-dark"><i class="bi bi-box-seam"></i> Đang đóng gói</span>
                                 }
                                 else if (order.Status == 2)
                                 {
-                                    <span class="badge-clean badge-clean-success"><i class="bi bi-check-circle-fill"></i> Đã xong</span>
+                                    <span class="badge bg-primary"><i class="bi bi-truck"></i> Đang vận chuyển</span>
+                                }
+                                else if (order.Status == 3)
+                                {
+                                    <span class="badge bg-success"><i class="bi bi-check-circle-fill"></i> Đã hoàn thành</span>
                                 }
                                 else
                                 {
-                                    <span class="badge-clean badge-clean-secondary"><i class="bi bi-x-circle-fill"></i> Đã hủy</span>
+                                    <span class="badge bg-danger"><i class="bi bi-x-circle-fill"></i> Đã hủy</span>
                                 }
                             </td>
                             <td class="text-truncate" style="max-width: 250px;">

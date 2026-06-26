@@ -1,14 +1,61 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { BACKEND_URL } from '../api/axiosClient';
 
 function Cart({ cartItems, onUpdateQuantity, onRemoveItem, onClearCart, onOpenAuth }) {
-  const totalAmount = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const navigate = useNavigate();
+  const [checkedItemIds, setCheckedItemIds] = useState([]);
+
+  // Initialize checked items to all items in cart when cart loaded
+  useEffect(() => {
+    if (cartItems.length > 0) {
+      setCheckedItemIds(prev => {
+        // Keep existing checked items that are still in the cart
+        const newChecked = prev.filter(id => cartItems.some(item => item.id === id));
+        // Add new items that were not in the previous selection list
+        cartItems.forEach(item => {
+          if (!prev.includes(item.id) && !newChecked.includes(item.id)) {
+            newChecked.push(item.id);
+          }
+        });
+        return newChecked;
+      });
+    } else {
+      setCheckedItemIds([]);
+    }
+  }, [cartItems]);
+
+  const getItemPrice = (item) => {
+    return item.isOnSale ? item.salePrice : item.price;
+  };
+
+  // Filter checked items
+  const checkedItems = cartItems.filter(item => checkedItemIds.includes(item.id));
+
+  // Totals for checked items only
+  const totalAmount = checkedItems.reduce((sum, item) => sum + getItemPrice(item) * item.quantity, 0);
+  const checkedItemsCount = checkedItems.reduce((acc, item) => acc + item.quantity, 0);
 
   const getImageUrl = (url) => {
-    if (!url) return 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&auto=format&fit=crop';
+    if (!url) return 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&auto=format&fit=crop';
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
     if (url.startsWith('/')) return BACKEND_URL + url;
-    return url;
+    return BACKEND_URL + '/uploads/' + url;
+  };
+
+  const handleCheckoutClick = (e) => {
+    e.preventDefault();
+    if (!localStorage.getItem('customerId')) {
+      alert('Vui lòng đăng nhập trước khi tiến hành thanh toán!');
+      onOpenAuth();
+      return;
+    }
+    if (checkedItems.length === 0) {
+      alert('Vui lòng chọn ít nhất một sản phẩm trong giỏ hàng để thanh toán!');
+      return;
+    }
+    // Navigate passing checkedItems only in the router state
+    navigate('/checkout', { state: { checkoutItems: checkedItems } });
   };
 
   return (
@@ -29,8 +76,47 @@ function Cart({ cartItems, onUpdateQuantity, onRemoveItem, onClearCart, onOpenAu
           {/* Left Column: Items List */}
           <div className="col-lg-8">
             <div style={{ background: '#fff', borderRadius: '24px', padding: '2rem', border: '1px solid rgba(0,0,0,0.06)' }}>
+              
+              {/* Select All Checkbox */}
+              <div className="d-flex align-items-center justify-content-between mb-3 pb-3" style={{ borderBottom: '2px solid rgba(0,0,0,0.05)' }}>
+                <div className="form-check d-flex align-items-center gap-2">
+                  <input 
+                    className="form-check-input" 
+                    type="checkbox" 
+                    id="selectAllCartItems"
+                    checked={checkedItemIds.length === cartItems.length && cartItems.length > 0}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setCheckedItemIds(cartItems.map(item => item.id));
+                      } else {
+                        setCheckedItemIds([]);
+                      }
+                    }}
+                    style={{ cursor: 'pointer', width: '18px', height: '18px', marginTop: 0 }}
+                  />
+                  <label className="form-check-label fw-bold text-muted" htmlFor="selectAllCartItems" style={{ cursor: 'pointer', fontSize: '0.95rem' }}>
+                    Chọn tất cả ({cartItems.length} sản phẩm)
+                  </label>
+                </div>
+              </div>
+
               {cartItems.map((item) => (
                 <div key={item.id} className="d-flex align-items-center gap-3 py-3" style={{ borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
+                  {/* Item Checkbox */}
+                  <input 
+                    type="checkbox" 
+                    className="form-check-input"
+                    style={{ width: '18px', height: '18px', cursor: 'pointer', flexShrink: 0 }}
+                    checked={checkedItemIds.includes(item.id)}
+                    onChange={() => {
+                      if (checkedItemIds.includes(item.id)) {
+                        setCheckedItemIds(checkedItemIds.filter(id => id !== item.id));
+                      } else {
+                        setCheckedItemIds([...checkedItemIds, item.id]);
+                      }
+                    }}
+                  />
+
                   <img 
                     src={getImageUrl(item.imageUrl)} 
                     alt={item.name} 
@@ -39,9 +125,22 @@ function Cart({ cartItems, onUpdateQuantity, onRemoveItem, onClearCart, onOpenAu
                   <div style={{ flex: 1 }}>
                     <h5 className="fw-bold text-dark mb-1" style={{ fontSize: '1.05rem' }}>{item.name}</h5>
                     <div className="d-flex justify-content-between align-items-center">
-                      <span className="fw-bold text-danger">
-                        {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}
-                      </span>
+                      <div>
+                        {item.isOnSale ? (
+                          <>
+                            <span className="fw-bold text-danger me-2">
+                              {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.salePrice)}
+                            </span>
+                            <span className="text-decoration-line-through text-muted small" style={{ fontSize: '0.8rem' }}>
+                              {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}
+                            </span>
+                          </>
+                        ) : (
+                          <span className="fw-bold text-danger">
+                            {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}
+                          </span>
+                        )}
+                      </div>
                       
                       {/* Quantity Controls */}
                       <div className="d-flex align-items-center border rounded-pill" style={{ overflow: 'hidden', borderColor: 'rgba(0,0,0,0.12)' }}>
@@ -93,7 +192,7 @@ function Cart({ cartItems, onUpdateQuantity, onRemoveItem, onClearCart, onOpenAu
               <h4 className="fw-bold mb-4" style={{ color: '#1f2937' }}>Tóm tắt đơn hàng</h4>
               
               <div className="d-flex justify-content-between mb-3" style={{ fontSize: '1.05rem', color: '#4b5563' }}>
-                <span>Tạm tính ({cartItems.reduce((acc, item) => acc + item.quantity, 0)} sản phẩm):</span>
+                <span>Đã chọn ({checkedItemsCount} sản phẩm):</span>
                 <span>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalAmount)}</span>
               </div>
               
@@ -111,20 +210,13 @@ function Cart({ cartItems, onUpdateQuantity, onRemoveItem, onClearCart, onOpenAu
                 </span>
               </div>
 
-              <Link 
-                to={localStorage.getItem('customerId') ? "/checkout" : "#"} 
-                className="auth-submit-btn text-center d-block text-decoration-none"
-                style={{ background: 'linear-gradient(135deg, #4f46e5, #db2777)', margin: 0, lineHeight: '2.5rem' }}
-                onClick={(e) => {
-                  if (!localStorage.getItem('customerId')) {
-                    e.preventDefault();
-                    alert('Vui lòng đăng nhập trước khi tiến hành thanh toán!');
-                    onOpenAuth();
-                  }
-                }}
+              <button 
+                onClick={handleCheckoutClick}
+                className="auth-submit-btn text-center d-block w-100 text-decoration-none border-0"
+                style={{ background: 'linear-gradient(135deg, #4f46e5, #db2777)', margin: 0, lineHeight: '2.5rem', borderRadius: '12px', fontWeight: 'bold' }}
               >
                 Tiến Hành Thanh Toán
-              </Link>
+              </button>
             </div>
           </div>
         </div>

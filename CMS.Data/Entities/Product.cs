@@ -22,9 +22,15 @@ namespace CMS.Data.Entities
         public string? ImageUrl { get; set; }
 
         // Khóa ngoại nối tới CategoryProduct
-        public int CategoryProductId { get; set; }
+        public int? CategoryProductId { get; set; }
 
         [ForeignKey("CategoryProductId")]
         public virtual CategoryProduct? CategoryProduct { get; set; }
+
+        public bool IsOnSale { get; set; } = false;
+
+        [Range(0, double.MaxValue)]
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal SalePrice { get; set; } = 0;
     }
 }

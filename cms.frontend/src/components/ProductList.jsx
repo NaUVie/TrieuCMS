@@ -1,22 +1,35 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import productService from '../services/productService';
 import { BACKEND_URL } from '../api/axiosClient';
 
 const getImageUrl = (url) => {
     if (!url) return 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&auto=format&fit=crop';
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
     if (url.startsWith('/')) return BACKEND_URL + url;
-    return url;
+    return BACKEND_URL + '/uploads/' + url;
 };
 
 const ProductList = ({ activeId, onSelectProduct, onAddToCart }) => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     
+    const [searchParams] = useSearchParams();
+    const urlSearch = searchParams.get('search') || '';
+    const navigate = useNavigate();
+    
+    // Track selected quantities for each product card
+    const [quantities, setQuantities] = useState({});
+
     // Search & Sort State
-    const [searchTerm, setSearchTerm] = useState('');
+    const [searchTerm, setSearchTerm] = useState(urlSearch);
     const [sortBy, setSortBy] = useState('default');
     const [minPrice, setMinPrice] = useState('');
     const [maxPrice, setMaxPrice] = useState('');
+
+    useEffect(() => {
+        setSearchTerm(urlSearch);
+    }, [urlSearch]);
 
     // Pagination State
     const [currentPage, setCurrentPage] = useState(1);
@@ -154,7 +167,8 @@ const ProductList = ({ activeId, onSelectProduct, onAddToCart }) => {
                     </div>
                 ) : (
                     paginatedProducts.map((item) => {
-                        const isSale = item.price > 5000000;
+                        const isSale = item.isOnSale;
+                        const discountPercent = isSale ? Math.round(((item.price - item.salePrice) / item.price) * 100) : 0;
                         return (
                             <div className="col-lg-4 col-md-6 col-sm-6 mb-4" key={item.id}>
                                 <div className="product-card" onClick={() => onSelectProduct(item)}>
@@ -164,8 +178,8 @@ const ProductList = ({ activeId, onSelectProduct, onAddToCart }) => {
                                             alt={item.name} 
                                             className="product-img"
                                         />
-                                        {isSale && (
-                                            <span className="product-badge" style={{ background: 'linear-gradient(135deg, #ef4444, #f43f5e)' }}>-15%</span>
+                                        {isSale && discountPercent > 0 && (
+                                            <span className="product-badge" style={{ background: 'linear-gradient(135deg, #ef4444, #f43f5e)' }}>-{discountPercent}%</span>
                                         )}
                                         {!isSale && item.stockQuantity <= 5 && item.stockQuantity > 0 && (
                                             <span className="product-badge" style={{ background: '#f59e0b' }}>Sắp hết</span>
@@ -179,28 +193,85 @@ const ProductList = ({ activeId, onSelectProduct, onAddToCart }) => {
                                         <p className="product-price" style={{ margin: '0 0 12px 0' }}>
                                             {isSale && (
                                                 <span style={{ textDecoration: 'line-through', color: '#9ca3af', fontSize: '0.85rem', marginRight: '8px', fontWeight: '500' }}>
-                                                    {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price * 1.15)}
+                                                    {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}
                                                 </span>
                                             )}
                                             <span style={{ color: isSale ? '#ef4444' : 'inherit' }}>
-                                                {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}
+                                                {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(isSale ? item.salePrice : item.price)}
                                             </span>
                                         </p>
-                                        <p className="product-stock">
-                                            <i className="fa-solid fa-box-open mr-1"></i>
-                                            Tồn kho: {item.stockQuantity} sản phẩm
-                                        </p>
-                                        <button 
-                                            className="btn-add-cart" 
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                onAddToCart(item);
-                                            }}
-                                            style={{ marginTop: 'auto' }}
-                                        >
-                                            <i className="fa-solid fa-cart-plus"></i>
-                                            Thêm vào giỏ
-                                        </button>
+                                        <div className="d-flex align-items-center justify-content-between mb-2">
+                                            <p className="product-stock" style={{ margin: 0 }}>
+                                                <i className="fa-solid fa-box-open mr-1"></i>
+                                                Tồn kho: {item.stockQuantity}
+                                            </p>
+                                            {item.stockQuantity > 0 && (
+                                                <div className="d-flex align-items-center" style={{ gap: '4px' }} onClick={(e) => e.stopPropagation()}>
+                                                    <button 
+                                                        className="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center" 
+                                                        style={{ width: '24px', height: '24px', padding: 0 }}
+                                                        onClick={() => {
+                                                            const currentQty = quantities[item.id] || 1;
+                                                            if (currentQty > 1) {
+                                                                setQuantities({ ...quantities, [item.id]: currentQty - 1 });
+                                                            }
+                                                        }}
+                                                    >
+                                                        -
+                                                    </button>
+                                                    <input 
+                                                        type="text" 
+                                                        className="form-control form-control-sm text-center" 
+                                                        style={{ width: '32px', height: '24px', padding: 0, fontSize: '0.8rem', fontWeight: 'bold' }} 
+                                                        value={quantities[item.id] || 1}
+                                                        readOnly 
+                                                    />
+                                                    <button 
+                                                        className="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center" 
+                                                        style={{ width: '24px', height: '24px', padding: 0 }}
+                                                        onClick={() => {
+                                                            const currentQty = quantities[item.id] || 1;
+                                                            if (currentQty < item.stockQuantity) {
+                                                                setQuantities({ ...quantities, [item.id]: currentQty + 1 });
+                                                            } else {
+                                                                alert(`Chỉ còn ${item.stockQuantity} sản phẩm trong kho!`);
+                                                            }
+                                                        }}
+                                                    >
+                                                        +
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <div className="d-flex gap-2" style={{ marginTop: 'auto' }} onClick={(e) => e.stopPropagation()}>
+                                            <button 
+                                                className="btn btn-outline-primary btn-sm flex-fill" 
+                                                style={{ borderRadius: '8px', height: '36px', fontSize: '0.8rem', fontWeight: 'bold' }}
+                                                onClick={() => {
+                                                    const qty = quantities[item.id] || 1;
+                                                    const success = onAddToCart(item, qty);
+                                                    if (success !== false) {
+                                                        navigate('/checkout');
+                                                    }
+                                                }}
+                                                disabled={item.stockQuantity === 0}
+                                            >
+                                                Mua ngay
+                                            </button>
+                                            <button 
+                                                className="btn btn-primary btn-sm flex-fill d-flex align-items-center justify-content-center gap-1" 
+                                                style={{ borderRadius: '8px', height: '36px', fontSize: '0.8rem', fontWeight: 'bold', background: 'linear-gradient(135deg, #2563eb, #1d4ed8)', border: 'none' }}
+                                                onClick={() => {
+                                                    const qty = quantities[item.id] || 1;
+                                                    onAddToCart(item, qty);
+                                                }}
+                                                disabled={item.stockQuantity === 0}
+                                            >
+                                                <i className="fa-solid fa-cart-plus"></i>
+                                                Thêm giỏ
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

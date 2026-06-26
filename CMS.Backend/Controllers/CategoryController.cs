@@ -79,17 +79,19 @@ namespace CMS.Backend.Controllers
         // 5. Action nhận vào Id của danh mục cần xóa
         public IActionResult Delete(int id)
         {
-            // Bước 1: Tìm đối tượng danh mục trong Database bằng Id
             var category = _context.Categories.Find(id);
-
-            // Kiểm tra nếu tìm thấy thì mới xóa
             if (category != null)
             {
-                // Bước 2: Lệnh xóa khỏi bộ nhớ tạm (Tracking)
-                _context.Categories.Remove(category);
+                // Find all posts in this category and set CategoryId to null
+                var posts = _context.Posts.Where(p => p.CategoryId == id).ToList();
+                foreach (var post in posts)
+                {
+                    post.CategoryId = null;
+                }
 
-                // Bước 3: Chốt phiên làm việc, xóa thực sự trong SQL Server
+                _context.Categories.Remove(category);
                 _context.SaveChanges();
+                TempData["Success"] = "Đã xóa danh mục bài viết thành công! Các bài viết thuộc danh mục này hiện đã được chuyển về trạng thái Không có danh mục.";
             }
 
             // Sau khi xóa xong, quay lại trang danh sách để cập nhật giao diện
