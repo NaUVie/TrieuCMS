@@ -49,3 +49,9 @@ Thumbs.db
 Desktop.ini
 *.tmp
 *.log
+
+# --- Project Specific Ignored Files ---
+laquangtrieu_*.sql
+tieuchi.md
+KetQua_TieuChi*.xlsx
+~$*.xlsx
