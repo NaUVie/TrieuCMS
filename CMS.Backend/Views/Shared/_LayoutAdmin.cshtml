@@ -135,22 +135,6 @@
 
             <!-- Render Body -->
             <div class="viewport text-start">
-                @if (TempData["Error"] != null)
-                {
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert" style="border-radius: 12px; margin-bottom: 1.5rem;">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                        @TempData["Error"]
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                }
-                @if (TempData["Success"] != null)
-                {
-                    <div class="alert alert-success alert-dismissible fade show" role="alert" style="border-radius: 12px; margin-bottom: 1.5rem;">
-                        <i class="bi bi-check-circle-fill me-2"></i>
-                        @TempData["Success"]
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                }
                 @RenderBody()
             </div>
 
@@ -169,10 +153,12 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
-    <!-- Sidebar toggle for mobile devices -->
+    <!-- Sidebar toggle & SweetAlert2 Confirmations -->
     <script>
         $(document).ready(function() {
+            // Sidebar toggle for mobile devices
             $("#sidebar-toggle").click(function(e) {
                 e.stopPropagation();
                 $(".sidebar").toggleClass("show");
@@ -182,6 +168,72 @@
                     $(".sidebar").removeClass("show");
                 }
             });
+
+            // Intercept all confirm calls on links and buttons
+            $('a[onclick*="confirm"], button[onclick*="confirm"], input[onclick*="confirm"]').each(function() {
+                var $el = $(this);
+                var onclickAttr = $el.attr('onclick');
+                
+                var match = onclickAttr.match(/confirm\(['"](.*?)['"]\)/);
+                if (match && match[1]) {
+                    var message = match[1];
+                    $el.removeAttr('onclick');
+                    
+                    $el.on('click', function(e) {
+                        e.preventDefault();
+                        var href = $el.attr('href');
+                        var form = $el.closest('form');
+                        
+                        Swal.fire({
+                            title: 'Xác nhận hành động',
+                            text: message,
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#ef4444',
+                            cancelButtonColor: '#6b7280',
+                            confirmButtonText: 'Đồng ý',
+                            cancelButtonText: 'Hủy bỏ',
+                            background: '#ffffff',
+                            color: '#1e293b'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                if (href) {
+                                    window.location.href = href;
+                                } else if (form.length > 0) {
+                                    form.submit();
+                                }
+                            }
+                        });
+                    });
+                }
+            });
+
+            // Handle TempData notifications with SweetAlert2
+            @if (TempData["Success"] != null)
+            {
+                <text>
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: '@Html.Raw(TempData["Success"])',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+                </text>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <text>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: '@Html.Raw(TempData["Error"])',
+                    confirmButtonColor: '#ef4444'
+                });
+                </text>
+            }
         });
     </script>
     
