@@ -82,11 +82,20 @@ const ProductGrid = ({
           <div 
             className="product-slider-track"
             style={{
-              transform: `translateX(calc(-1 * ${safeStartIndex} * (100% + var(--gap)) / var(--items-per-row)))`
+              transform: products.length > itemsPerRow ? `translateX(calc(-1 * ${safeStartIndex} * (100% + var(--gap)) / var(--items-per-row)))` : 'none',
+              justifyContent: products.length < itemsPerRow ? 'center' : 'flex-start'
             }}
           >
             {products.map(product => (
-              <div key={product.id} className="product-slider-item">
+              <div 
+                key={product.id} 
+                className="product-slider-item"
+                style={products.length < itemsPerRow ? {
+                  flex: '0 1 240px',
+                  minWidth: '200px',
+                  maxWidth: '280px'
+                } : {}}
+              >
                 <div className="product-card" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                   <Link to={`/product/${product.id}`}>
                     <div className="product-img-wrapper" style={{ padding: 0 }}>
