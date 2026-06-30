@@ -1,10 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import authService from '../services/authService';
 
-const AuthModal = ({ isOpen, onClose, onAuthSuccess }) => {
+const AuthModal = ({ isOpen, onClose, onAuthSuccess, initialView }) => {
     const [view, setView] = useState('login'); // 'login' | 'register' | 'forgot' | 'reset'
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState({ text: '', type: '' }); // type: 'success' | 'error'
+
+    useEffect(() => {
+        if (isOpen) {
+            setView(initialView || 'login');
+            setMessage({ text: '', type: '' });
+        }
+    }, [isOpen, initialView]);
 
     // Form inputs state
     const [loginData, setLoginData] = useState({ email: '', password: '' });

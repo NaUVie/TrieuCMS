@@ -24,7 +24,7 @@ function ProductDetail({ onAddToCart, onOpenAuth }) {
         if (allProds && data) {
           const related = allProds
             .filter(p => p.categoryProductId === data.categoryProductId && p.id !== data.id)
-            .slice(0, 4);
+            .slice(0, 4); // GIỚI HẠN: Số sản phẩm TƯƠNG TỰ hiển thị ở trang Chi tiết (mặc định lấy 4)
           setRelatedProducts(related);
         }
       } catch (error) {

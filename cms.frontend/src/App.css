@@ -524,6 +524,7 @@ a { text-decoration: none !important; color: inherit; }
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   height: 2.8rem;
@@ -671,6 +672,7 @@ a { text-decoration: none !important; color: inherit; }
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -682,6 +684,7 @@ a { text-decoration: none !important; color: inherit; }
   flex: 1;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }

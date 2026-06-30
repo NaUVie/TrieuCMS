@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
 import Shop from './pages/Shop';
 import ProductDetail from './pages/ProductDetail';
@@ -23,10 +23,30 @@ import AIChatBot from './components/AIChatBot';
 function App() {
   const { showToast } = useToast();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authModalView, setAuthModalView] = useState('login');
+
+  const handleOpenAuth = (val) => {
+    if (typeof val === 'string') {
+      setAuthModalView(val);
+      setIsAuthModalOpen(true);
+    } else if (val === true) {
+      setAuthModalView('login');
+      setIsAuthModalOpen(true);
+    } else {
+      setIsAuthModalOpen(val);
+    }
+  };
+
   const [customerName, setCustomerName] = useState('');
   const [categories, setCategories] = useState([]);
   const [headerSearch, setHeaderSearch] = useState('');
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+
+  // Scroll to top on route changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -130,21 +150,21 @@ function App() {
         handleSearchSubmit={handleSearchSubmit}
         customerName={customerName}
         cartItemsCount={cartItemsCount}
-        setIsAuthModalOpen={setIsAuthModalOpen}
+        setIsAuthModalOpen={handleOpenAuth}
         handleLogout={handleLogout}
       />
 
       {/* ========== MAIN CONTENT ========== */}
       <main className="container" style={{ paddingTop: '2rem', paddingBottom: '2rem', minHeight: '60vh' }}>
         <Routes>
-          <Route path="/" element={<Home onAddToCart={handleAddToCart} onOpenAuth={() => setIsAuthModalOpen(true)} />} />
-          <Route path="/shop" element={<Shop onAddToCart={handleAddToCart} onOpenAuth={() => setIsAuthModalOpen(true)} />} />
-          <Route path="/product/:id" element={<ProductDetail onAddToCart={handleAddToCart} onOpenAuth={() => setIsAuthModalOpen(true)} />} />
+          <Route path="/" element={<Home onAddToCart={handleAddToCart} onOpenAuth={() => handleOpenAuth('login')} />} />
+          <Route path="/shop" element={<Shop onAddToCart={handleAddToCart} onOpenAuth={() => handleOpenAuth('login')} />} />
+          <Route path="/product/:id" element={<ProductDetail onAddToCart={handleAddToCart} onOpenAuth={() => handleOpenAuth('login')} />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/post/:id" element={<PostDetail />} />
-          <Route path="/cart" element={<Cart cartItems={cart} onUpdateQuantity={handleUpdateQuantity} onRemoveItem={handleRemoveItem} onClearCart={handleClearCart} onOpenAuth={() => setIsAuthModalOpen(true)} />} />
+          <Route path="/cart" element={<Cart cartItems={cart} onUpdateQuantity={handleUpdateQuantity} onRemoveItem={handleRemoveItem} onClearCart={handleClearCart} onOpenAuth={() => handleOpenAuth('login')} />} />
           <Route path="/checkout" element={<Checkout cartItems={cart} onRemoveItems={handleRemoveItems} />} />
-          <Route path="/profile" element={<Profile onOpenAuth={() => setIsAuthModalOpen(true)} onProfileUpdate={handleAuthSuccess} onLogout={handleLogout} />} />
+          <Route path="/profile" element={<Profile onOpenAuth={() => handleOpenAuth('login')} onProfileUpdate={handleAuthSuccess} onLogout={handleLogout} />} />
           <Route path="/my-orders" element={<MyOrders />} />
           <Route path="/support" element={<Support />} />
         </Routes>
@@ -155,7 +175,8 @@ function App() {
       {/* ========== AUTH MODAL FOR CUSTOMERS ========== */}
       <AuthModal 
           isOpen={isAuthModalOpen} 
-          onClose={() => setIsAuthModalOpen(false)} 
+          initialView={authModalView}
+          onClose={() => handleOpenAuth(false)} 
           onAuthSuccess={handleAuthSuccess}
       />
 

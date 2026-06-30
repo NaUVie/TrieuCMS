@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import CategoryProductList from '../components/CategoryProductList';
 import ProductList from '../components/ProductList';
 
 function Shop({ onAddToCart, onOpenAuth }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const catParam = searchParams.get('category');
+  const navigate = useNavigate();
   
   const [activeCategoryId, setActiveCategoryId] = useState(null);
   const [resetKey, setResetKey] = useState(0);
@@ -56,7 +57,7 @@ function Shop({ onAddToCart, onOpenAuth }) {
         <ProductList 
           key={resetKey}
           activeId={activeCategoryId} 
-          onSelectProduct={(p) => window.location.href = `/product/${p.id}`}
+          onSelectProduct={(p) => navigate(`/product/${p.id}`)}
           onAddToCart={onAddToCart}
           onOpenAuth={onOpenAuth}
         />

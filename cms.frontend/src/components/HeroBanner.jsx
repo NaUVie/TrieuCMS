@@ -1,10 +1,20 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const HeroBanner = ({ bannerSlides, currentSlide }) => {
+const HeroBanner = ({ bannerSlides, currentSlide, setCurrentSlide }) => {
   if (!bannerSlides || bannerSlides.length === 0) return null;
   
   const slide = bannerSlides[currentSlide] || bannerSlides[0];
+
+  const handlePrev = (e) => {
+    e.preventDefault();
+    setCurrentSlide(prev => (prev - 1 + bannerSlides.length) % bannerSlides.length);
+  };
+
+  const handleNext = (e) => {
+    e.preventDefault();
+    setCurrentSlide(prev => (prev + 1) % bannerSlides.length);
+  };
   
   return (
     <div 
@@ -37,6 +47,109 @@ const HeroBanner = ({ bannerSlides, currentSlide }) => {
           Khám phá ngay <i className="fa-solid fa-arrow-right"></i>
         </Link>
       </div>
+
+      {/* Navigation Arrows */}
+      {bannerSlides.length > 1 && (
+        <>
+          <button 
+            onClick={handlePrev}
+            style={{
+              position: 'absolute',
+              left: '20px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              zIndex: 10,
+              width: '46px',
+              height: '46px',
+              borderRadius: '50%',
+              backgroundColor: 'rgba(255, 255, 255, 0.15)',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              border: '1px solid rgba(255, 255, 255, 0.25)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              color: '#ffffff',
+              transition: 'all 0.3s ease',
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
+              e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.15)';
+              e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
+            }}
+          >
+            <i className="fa-solid fa-chevron-left" style={{ fontSize: '1.2rem' }}></i>
+          </button>
+
+          <button 
+            onClick={handleNext}
+            style={{
+              position: 'absolute',
+              right: '20px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              zIndex: 10,
+              width: '46px',
+              height: '46px',
+              borderRadius: '50%',
+              backgroundColor: 'rgba(255, 255, 255, 0.15)',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              border: '1px solid rgba(255, 255, 255, 0.25)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              color: '#ffffff',
+              transition: 'all 0.3s ease',
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
+              e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.15)';
+              e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
+            }}
+          >
+            <i className="fa-solid fa-chevron-right" style={{ fontSize: '1.2rem' }}></i>
+          </button>
+        </>
+      )}
+
+      {/* Dots Indicators */}
+      {bannerSlides.length > 1 && (
+        <div style={{
+          position: 'absolute',
+          bottom: '20px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          display: 'flex',
+          gap: '8px',
+          zIndex: 10
+        }}>
+          {bannerSlides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentSlide(index)}
+              style={{
+                width: currentSlide === index ? '24px' : '8px',
+                height: '8px',
+                borderRadius: '4px',
+                border: 'none',
+                backgroundColor: currentSlide === index ? '#ffffff' : 'rgba(255, 255, 255, 0.4)',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                padding: 0
+              }}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

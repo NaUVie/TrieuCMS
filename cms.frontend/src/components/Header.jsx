@@ -188,10 +188,10 @@ const Header = ({
               </Link>
           ) : (
               <div className="auth-buttons" style={{ marginLeft: '10px' }}>
-                  <button className="btn-login" onClick={() => setIsAuthModalOpen(true)}>
+                  <button className="btn-login" onClick={() => setIsAuthModalOpen('login')}>
                       <i className="fa-solid fa-lock-open mr-1"></i> Đăng Nhập
                   </button>
-                  <button className="btn-register" onClick={() => setIsAuthModalOpen(true)}>
+                  <button className="btn-register" onClick={() => setIsAuthModalOpen('register')}>
                       Đăng Ký
                   </button>
               </div>

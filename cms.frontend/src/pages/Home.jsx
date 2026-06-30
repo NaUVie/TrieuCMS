@@ -35,10 +35,10 @@ function Home({ onAddToCart, onOpenAuth }) {
         setCategories(cats);
 
         const latest = await productService.getLatestProducts();
-        setLatestProducts(latest.slice(0, 10));
+        setLatestProducts(latest.slice(0, 10)); // GIỚI HẠN: Số sản phẩm MỚI NHẤT hiển thị trên Trang Chủ (mặc định lấy 10)
 
         const sales = await productService.getSaleProducts();
-        setSaleProducts(sales.slice(0, 10));
+        setSaleProducts(sales.slice(0, 10)); // GIỚI HẠN: Số sản phẩm GIẢM GIÁ hiển thị trên Trang Chủ (mặc định lấy 10)
 
         const allProds = await productService.getAllProducts();
         setAllProducts(allProds);
@@ -74,7 +74,7 @@ function Home({ onAddToCart, onOpenAuth }) {
 
   return (
     <div className="home-container">
-      <HeroBanner bannerSlides={bannerSlides} currentSlide={currentSlide} />
+      <HeroBanner bannerSlides={bannerSlides} currentSlide={currentSlide} setCurrentSlide={setCurrentSlide} />
       
       <CategoryMenu categories={categories} BACKEND_URL={BACKEND_URL} />
 
@@ -103,7 +103,7 @@ function Home({ onAddToCart, onOpenAuth }) {
       />
 
       {/* Category Specific Grids */}
-      {categories.slice(0, 3).map(cat => {
+      {categories.slice(0, 3).map(cat => { // GIỚI HẠN: Số lượng DANH MỤC sản phẩm hiển thị trên Trang Chủ (mặc định lấy 3 danh mục đầu tiên)
         const catProducts = allProducts.filter(p => p.categoryProductId === cat.id);
         if (catProducts.length === 0) return null;
 

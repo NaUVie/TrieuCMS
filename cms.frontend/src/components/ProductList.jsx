@@ -40,7 +40,7 @@ const ProductList = ({ activeId, onSelectProduct, onAddToCart, onOpenAuth }) => 
 
     // Pagination State
     const [currentPage, setCurrentPage] = useState(1);
-    const pageSize = 6; // 6 sản phẩm mỗi trang
+    const pageSize = 6; // GIỚI HẠN: Số lượng sản phẩm hiển thị trên một trang ở Cửa Hàng (Có thể thay đổi số này)
 
     useEffect(() => {
         const fetchProducts = async () => {
