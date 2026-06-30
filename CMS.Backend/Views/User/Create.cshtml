@@ -1,0 +1,72 @@
+@model CMS.Data.Entities.User
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Thêm thành viên mới";
+}
+
+<div class="container-fluid p-0">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="glass-breadcrumb" style="background: #ffffff; border: 1px solid var(--border-light); margin-bottom: 20px; padding: 10px 16px; border-radius: 8px;">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="/Home" class="text-primary text-decoration-none">Bảng điều khiển</a></li>
+            <li class="breadcrumb-item"><a href="/User" class="text-primary text-decoration-none">Quản lý Thành viên</a></li>
+            <li class="breadcrumb-item active" aria-current="page" style="color: #64748b;">Thêm thành viên mới</li>
+        </ol>
+    </nav>
+
+    <!-- Create Card Form -->
+    <div class="row justify-content-start">
+        <div class="col-lg-6">
+            <div class="flat-card p-4">
+                <div class="mb-4">
+                    <h4 class="fw-bold mb-1" style="color: #1e293b;"><i class="bi bi-person-plus text-primary me-2"></i>Thêm thành viên mới</h4>
+                    <p class="text-muted small mb-0">Đăng ký và cấu hình vai trò mới cho tài khoản tham gia quản trị hệ thống.</p>
+                </div>
+                <hr style="border-color: var(--border-light);" />
+
+                <form asp-action="Create" method="post" class="mt-4">
+                    <!-- Global Error Summary -->
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Tên đăng nhập (Username):</label>
+                        <input asp-for="Username" class="form-control" placeholder="Nhập tên tài khoản không dấu, viết liền..." required />
+                        <span asp-validation-for="Username" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Mật khẩu truy cập (Password):</label>
+                        <input asp-for="PasswordHash" type="password" class="form-control" placeholder="Nhập mật khẩu của thành viên..." required />
+                        <span asp-validation-for="PasswordHash" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Họ và tên thành viên:</label>
+                        <input asp-for="FullName" class="form-control" placeholder="Nhập họ và tên đầy đủ..." required />
+                        <span asp-validation-for="FullName" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Vai trò hệ thống (Role):</label>
+                        <select asp-for="Role" class="form-select" required>
+                            <option value="">-- Chọn vai trò --</option>
+                            <option value="Admin">Administrator (Toàn quyền hệ thống)</option>
+                            <option value="Editor">Editor (Biên tập bài viết/sản phẩm)</option>
+                        </select>
+                        <span asp-validation-for="Role" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex gap-2 pt-3 border-top mt-4" style="border-color: #f1f5f9 !important;">
+                        <button type="submit" class="btn-clean btn-sm px-4">
+                            <i class="bi bi-save"></i> Lưu thông tin thành viên
+                        </button>
+                        <a asp-action="Index" class="btn-clean-outline btn-sm text-decoration-none px-4">
+                            Hủy bỏ
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

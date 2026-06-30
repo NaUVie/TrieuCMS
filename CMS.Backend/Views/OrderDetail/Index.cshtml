@@ -1,0 +1,74 @@
+@model IEnumerable<CMS.Data.Entities.OrderDetail>
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Chi tiết mua hàng";
+}
+
+<div class="flat-card">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h3 class="fw-bold mb-1" style="color: #1e293b;">Chi tiết mua hàng</h3>
+            <p class="text-muted small mb-0">Thống kê doanh số bán ra và doanh thu thực nhận chi tiết trên từng hóa đơn giao dịch</p>
+        </div>
+    </div>
+
+    <div class="clean-table-container">
+        <table class="clean-table">
+            <thead>
+                <tr>
+                    <th style="width: 100px;">Chi tiết</th>
+                    <th style="width: 100px;">Mã Đơn</th>
+                    <th>Khách hàng đặt</th>
+                    <th>Tên sản phẩm</th>
+                    <th class="text-end">Đơn giá niêm yết</th>
+                    <th class="text-center" style="width: 100px;">Số lượng</th>
+                    <th class="text-end" style="width: 200px;">Thành tiền (Subtotal)</th>
+                    <th style="width: 160px; text-align: center;">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model == null || !Model.Any())
+                {
+                    <tr>
+                        <td colspan="7" class="text-center py-4 text-muted">Không có hồ sơ giao dịch chi tiết nào được ghi nhận.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var detail in Model)
+                    {
+                        var total = detail.UnitPrice * detail.Quantity;
+                        <tr>
+                            <td>
+                                <span class="badge-clean badge-clean-secondary">#@detail.Id</span>
+                            </td>
+                            <td>
+                                <strong>#@detail.OrderId</strong>
+                            </td>
+                            <td>
+                                <span><i class="bi bi-person-circle me-1 text-muted"></i> @detail.Order?.Customer?.FullName</span>
+                            </td>
+                            <td>
+                                <strong><i class="bi bi-box-seam me-1 text-primary"></i> @detail.Product?.Name</strong>
+                            </td>
+                            <td class="text-end text-dark">@detail.UnitPrice.ToString("N0") VNĐ</td>
+                            <td class="text-center">
+                                <span class="badge-clean badge-clean-primary" style="font-size: 0.725rem;">x @detail.Quantity</span>
+                            </td>
+                            <td class="text-end fw-bold text-dark">
+                                @total.ToString("N0") VNĐ
+                            </td>
+                            <td>
+                                <div class="d-flex gap-1 justify-content-center">
+                                    <a asp-action="Edit" asp-route-id="@detail.Id" class="action-link action-link-edit"><i class="bi bi-pencil-square"></i> Sửa</a>
+                                    <a asp-action="Delete" asp-route-id="@detail.Id" class="action-link action-link-delete" onclick="return confirm('Bạn có chắc chắn muốn xóa chi tiết này?')"><i class="bi bi-trash"></i> Xóa</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

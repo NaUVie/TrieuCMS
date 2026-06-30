@@ -1,0 +1,89 @@
+@model IEnumerable<CMS.Data.Entities.Customer>
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Quản lý khách hàng";
+}
+
+<div class="flat-card">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h3 class="fw-bold mb-1" style="color: #1e293b;">Danh sách khách hàng</h3>
+            <p class="text-muted small mb-0">Quản lý danh sách khách hàng đăng ký thành viên mua sắm và thông tin liên hệ giao nhận</p>
+        </div>
+        <a asp-action="Create" class="btn-clean btn-sm text-decoration-none">
+            <i class="bi bi-person-plus-fill"></i> Thêm khách hàng
+        </a>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="mb-4">
+        <form method="get" action="@Url.Action("Index")" class="d-flex gap-2 align-items-center">
+            <div class="input-group input-group-sm" style="max-width: 400px;">
+                <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                <input type="text" name="searchTerm" class="form-control border-start-0 ps-0" placeholder="Nhập tên, email hoặc số điện thoại..." value="@ViewBag.SearchTerm" />
+            </div>
+            <button type="submit" class="btn-clean btn-sm px-3" style="height: 31px; display: inline-flex; align-items: center; justify-content: center; gap: 4px;">
+                <i class="bi bi-filter"></i> Tìm kiếm
+            </button>
+            @if (!string.IsNullOrEmpty(ViewBag.SearchTerm))
+            {
+                <a href="@Url.Action("Index")" class="btn-clean-outline btn-sm px-2 text-decoration-none text-center" style="height: 31px; display: inline-flex; align-items: center; justify-content: center;" title="Xóa tìm kiếm">
+                    <i class="bi bi-arrow-counterclockwise"></i> Xóa lọc
+                </a>
+            }
+        </form>
+    </div>
+
+    <div class="clean-table-container">
+        <table class="clean-table">
+            <thead>
+                <tr>
+                    <th style="width: 80px;">ID</th>
+                    <th>Họ và tên</th>
+                    <th>Địa chỉ Email</th>
+                    <th>Số điện thoại</th>
+                    <th>Địa chỉ giao hàng</th>
+                    <th style="width: 160px; text-align: center;">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model == null || !Model.Any())
+                {
+                    <tr>
+                        <td colspan="6" class="text-center py-4 text-muted">Không có khách hàng nào trong hệ thống.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var cust in Model)
+                    {
+                        <tr>
+                            <td>
+                                <span class="badge-clean badge-clean-primary">#@cust.Id</span>
+                            </td>
+                            <td>
+                                <strong><i class="bi bi-person-badge-fill me-1" style="color: #475569;"></i> @cust.FullName</strong>
+                            </td>
+                            <td>
+                                <a href="mailto:@cust.Email" class="text-decoration-none" style="color: #475569;"><i class="bi bi-envelope me-1 text-muted"></i> @cust.Email</a>
+                            </td>
+                            <td>
+                                <span>@(cust.Phone ?? "Chưa cung cấp")</span>
+                            </td>
+                            <td class="text-truncate" style="max-width: 200px;">
+                                <i class="bi bi-geo-alt me-1 text-muted"></i> @(cust.Address ?? "Chưa cung cấp")
+                            </td>
+                            <td>
+                                <div class="d-flex gap-1 justify-content-center">
+                                    <a asp-action="Edit" asp-route-id="@cust.Id" class="action-link action-link-edit"><i class="bi bi-pencil-square"></i> Sửa</a>
+                                    <a asp-action="Delete" asp-route-id="@cust.Id" class="action-link action-link-delete" onclick="return confirm('CẢNH BÁO: Xóa khách hàng này sẽ chuyển các đơn hàng cũ của họ thành Vãng lai! Bạn có chắc chắn muốn xóa không?');"><i class="bi bi-trash"></i> Xóa</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

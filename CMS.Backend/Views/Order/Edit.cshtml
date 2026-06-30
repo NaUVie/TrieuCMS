@@ -1,0 +1,46 @@
+@model CMS.Data.Entities.Order
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Cập nhật đơn hàng #" + Model.Id;
+}
+
+<div class="flat-card" style="max-width: 800px; margin: 0 auto;">
+    <div class="mb-4">
+        <h4 class="fw-bold mb-1" style="color: #1e293b;"><i class="bi bi-pencil-square text-warning me-2"></i>Cập Nhật Trạng Thái Đơn Hàng #@Model.Id</h4>
+        <p class="text-muted small mb-0">Thay đổi trạng thái duyệt, đóng gói và vận chuyển của đơn hàng này.</p>
+    </div>
+    <hr style="border-color: var(--border-light);" />
+
+    <form asp-action="Edit" method="post" class="mt-4">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="CustomerId" />
+        <input type="hidden" asp-for="OrderDate" />
+
+        <div class="mb-3">
+            <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Trạng thái xử lý</label>
+            <select asp-for="Status" class="form-select">
+                <option value="0">Đã tiếp nhận (Received)</option>
+                <option value="1">Đang đóng gói (Packaging)</option>
+                <option value="2">Đang vận chuyển (Shipping)</option>
+                <option value="3">Đã hoàn thành (Completed)</option>
+                <option value="4">Đã hủy (Cancelled)</option>
+            </select>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Ghi chú & Địa chỉ giao nhận</label>
+            <textarea asp-for="Notes" class="form-control" rows="4"></textarea>
+            <span asp-validation-for="Notes" class="text-danger small"></span>
+        </div>
+
+        <div class="d-flex gap-2 pt-3 border-top" style="border-color: #f1f5f9 !important;">
+            <button type="submit" class="btn-clean btn-sm px-4" style="background: #eab308; border-color: #eab308;">
+                <i class="bi bi-check-circle"></i> Lưu cập nhật
+            </button>
+            <a asp-action="Index" class="btn-clean-outline btn-sm text-decoration-none px-3">
+                Hủy bỏ
+            </a>
+        </div>
+    </form>
+</div>

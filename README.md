@@ -1,96 +1,186 @@
-# 🚀 TrieuCMS Solution (ASP.NET Core Web API & ReactJS Frontend)
+# 🚀 NaUCMS.TechGear — ASP.NET Core 9.0 Web API & ReactJS Frontend
 
-Hệ thống quản lý nội dung và thương mại điện tử **TrieuCMS** được xây dựng bằng kiến trúc hiện đại, kết hợp sức mạnh của **ASP.NET Core 9.0 (Web API & MVC)** ở Backend và sự linh hoạt của **ReactJS** ở Frontend.
+Website bán **Đồ Công Nghệ & Gaming Gear** — hệ thống thương mại điện tử hiện đại mang tên **NaUCMS.TechGear**, được xây dựng trên kiến trúc **Full-Stack** với ASP.NET Core 9.0 (Web API & MVC) ở Backend và ReactJS ở Frontend.
 
----
-
-## 🛠️ Kiến Trúc Hệ Thống & Tính Năng Nổi Bật
-
-- **Backend (ASP.NET Core 9.0)**:
-  - **Entity Framework Core**: Quản lý cơ sở dữ liệu SQL Server tự động bằng Code-First Migrations (8 bảng dữ liệu thực).
-  - **Database Seeder**: Tự động sinh dữ liệu mẫu phong phú về sản phẩm, bài viết, người dùng và đơn hàng khi khởi động.
-  - **Mật khẩu Bảo mật**: Mã hóa một chiều sử dụng thuật toán **PBKDF2 (SHA256)** với Salt ngẫu nhiên 16-byte, tránh lưu mật khẩu thô cho cả quản trị viên (`User`) và khách hàng (`Customer`).
-  - **API Documentation**: Tích hợp sẵn **Swagger UI** trực quan để kiểm thử và tích hợp API.
-- **Frontend (ReactJS)**:
-  - Giao diện người dùng hiện đại, thiết kế theo ngôn ngữ Clean & Premium.
-  - Kết nối Web API thông suốt thông qua `axiosClient`.
+> 🎓 **Trường:** Cao đẳng Công Thương TP.HCM  
+> 👨‍💻 **Sinh viên:** La Quang Triều — MSSV: 2123110160  
 
 ---
 
-## 📂 Danh Sách 8 Bảng Dữ Liệu SQL Server
+## 🆕 Buổi 9 — Nội Dung Cải Tiến & Tính Năng Mới
 
-1. `Categories` - Danh mục bài viết / tin tức.
-2. `Posts` - Danh sách bài viết.
-3. `Users` - Thành viên tham gia quản trị hệ thống (Admin, Editor, Moderator, User).
-4. `CategoriesProducts` - Danh mục sản phẩm.
-5. `Products` - Danh sách sản phẩm (Điện thoại, Laptop, Phụ kiện, TV, Đồng hồ).
-6. `Customers` - Khách hàng đăng ký mua sắm.
-7. `Orders` - Đơn đặt hàng của khách hàng.
-8. `OrderDetails` - Chi tiết mặt hàng và số lượng của từng đơn hàng.
+### 🤖 AI Chatbot (NaUCMS.TechGear AI Assistant)
+- **Tích hợp Gemini AI:** Trợ lý ảo AI sử dụng Google Gemini API, được cấu hình với `systemInstruction` để đóng vai trợ lý bán hàng chuyên biệt của cửa hàng NaUCMS.TechGear.
+- **Hiển thị Card Sản Phẩm:** Khi chatbot đề cập hoặc gợi ý sản phẩm, hệ thống tự động quét và trả về danh sách sản phẩm tương ứng dưới dạng **card tương tác** ngay trong cửa sổ chat.
+- **Thao Tác Nhanh Trên Card:** Mỗi card sản phẩm trong chat có 3 nút hành động:
+  - 🛒 **Thêm Vào Giỏ** — Thêm trực tiếp vào giỏ hàng không cần rời khỏi chat.
+  - 💳 **Mua Ngay** — Chuyển thẳng sang trang thanh toán với sản phẩm đã chọn.
+  - 👁️ **Xem Chi Tiết** — Điều hướng sang trang chi tiết sản phẩm.
+- **Lưu Lịch Sử Chat (`localStorage`):** Lịch sử hội thoại được tự động lưu vào `localStorage` để giữ nguyên sau khi F5 (reload trang).
+- **Xóa Lịch Sử Chat:** Nút xóa toàn bộ lịch sử hiển thị ngay trong cửa sổ chat.
+- **Fallback Responses:** Hệ thống câu trả lời dự phòng có cấu trúc (khi không có API Key) cho các chủ đề: tay cầm chơi game, giao hàng, bảo hành, địa chỉ, thanh toán, chào hỏi và cảm ơn.
+
+---
+
+### 🛍️ Trang Chi Tiết Sản Phẩm (`ProductDetail.jsx`)
+- **Thiết kế nâng cấp:** Bố cục hai cột chuyên nghiệp, hiển thị đầy đủ thông tin hình ảnh, giá, giá khuyến mãi, mô tả, số lượng tồn kho.
+- **Sản Phẩm Liên Quan:** Tự động hiển thị các sản phẩm cùng danh mục bên dưới, hỗ trợ khám phá thêm.
+- **Nút Trở Về:** Nút ← Quay lại cố định ở góc trên bên trái, không bị đẩy xuống sau breadcrumb.
+- **Nút Hành Động Nhỏ Gọn:** Nút "Thêm Vào Giỏ" và "Mua Ngay" được điều chỉnh kích thước hợp lý, không chiếm toàn bộ chiều rộng.
+
+---
+
+### 🌐 Đồng Bộ Ngôn Ngữ Tiếng Việt
+- Loại bỏ toàn bộ văn bản tiếng Anh còn sót lại trong UI người dùng (nhãn "New", nút, thông báo...).
+- Chuẩn hóa toàn bộ giao diện frontend sang Tiếng Việt nhất quán.
+
+---
+
+### 🏷️ Tái Thương Hiệu Toàn Diện → NaUCMS.TechGear
+Tất cả các điểm xuất hiện của tên cũ **TrieuCMS** đã được cập nhật sang **NaUCMS.TechGear** trên toàn bộ hệ thống:
+
+| Khu vực | File / Component | Nội dung thay đổi |
+|---|---|---|
+| Frontend | `Header.jsx` | Logo, tên thương hiệu chính |
+| Frontend | `Footer.jsx` | Mô tả, email hỗ trợ, bản quyền |
+| Frontend | `AIChatBot.jsx` | Tiêu đề cửa sổ, lời chào AI |
+| Frontend | `Support.jsx` | Toàn bộ nội dung trang hỗ trợ |
+| Frontend | `Home.jsx` | Mô tả banner fallback |
+| Frontend | `public/index.html` | `<title>` & `<meta description>` SEO |
+| Backend | `ChatbotController.cs` | `systemInstruction`, fallback responses |
+| Backend | `OrdersController.cs` | Tiêu đề & nội dung email xác nhận đơn hàng |
+| Backend | `CustomersController.cs` | Tiêu đề email OTP đặt lại mật khẩu |
+| Backend | `EmailService.cs` | `SenderName` mặc định |
+| Backend | `appsettings.json` | `EmailSettings.SenderName` |
+| Backend MVC | `_Layout.cshtml` | Tiêu đề, logo, footer |
+| Backend MVC | `_LayoutAdmin.cshtml` | Tiêu đề, sidebar, footer |
+| Backend MVC | `Home/Index.cshtml` | Banner chào mừng dashboard |
+| Data Layer | `DbSeeder.cs` | Địa chỉ khách hàng mẫu |
+
+---
+
+### 📋 Quản Lý Đơn Hàng (Backend MVC)
+- Trang danh sách đơn hàng (`Order/Index.cshtml`) và chi tiết đơn hàng (`Order/Details.cshtml`) được cải thiện giao diện và xử lý dữ liệu.
+
+### 🔐 Quản Lý Người Dùng Admin
+- Trang tạo (`User/Create.cshtml`) và chỉnh sửa người dùng (`User/Edit.cshtml`) cải thiện form validation và UX.
+
+---
+
+## 🛠️ Kiến Trúc Hệ Thống
+
+### Backend — ASP.NET Core 9.0
+- **Entity Framework Core (Code-First):** Quản lý tự động cơ sở dữ liệu SQL Server với 8 bảng dữ liệu.
+- **DbSeeder:** Tự động sinh dữ liệu mẫu phong phú (sản phẩm Gaming Gear, bài viết, khách hàng, đơn hàng).
+- **Bảo Mật Mật Khẩu:** Mã hóa một chiều **PBKDF2 (SHA-256)** với Salt ngẫu nhiên 16-byte.
+- **Email Service:** Gửi email xác nhận đơn hàng & OTP đặt lại mật khẩu. Log email vào file khi không có SMTP credentials.
+- **Gemini AI Integration:** Tích hợp Google Gemini API cho tính năng AI Chatbot.
+- **Swagger UI:** Tài liệu API tương tác tích hợp sẵn.
+
+### Frontend — ReactJS
+- **Axios Client:** Giao tiếp API với backend qua `axiosClient`.
+- **React Router:** Điều hướng đa trang (Home, Shop, ProductDetail, Checkout, MyOrders, Profile...).
+- **Toast Notifications:** Hệ thống thông báo `ToastContext` tùy chỉnh (không dùng `alert()`).
+- **localStorage Cart & Auth:** Giỏ hàng và phiên đăng nhập được lưu cục bộ.
+
+---
+
+## 📂 Cấu Trúc Cơ Sở Dữ Liệu (8 Bảng)
+
+| # | Bảng | Mô tả |
+|---|---|---|
+| 1 | `Categories` | Danh mục bài viết / tin tức |
+| 2 | `Posts` | Danh sách bài viết |
+| 3 | `Users` | Thành viên quản trị (Admin, Editor, Moderator, User) |
+| 4 | `CategoriesProducts` | Danh mục sản phẩm (Tay cầm, Điện thoại, Laptop...) |
+| 5 | `Products` | Danh sách sản phẩm với giá, khuyến mãi, tồn kho |
+| 6 | `Customers` | Khách hàng đăng ký mua sắm |
+| 7 | `Orders` | Đơn đặt hàng |
+| 8 | `OrderDetails` | Chi tiết từng mặt hàng trong đơn hàng |
+| 9 | `Advertisements` | Banner quảng cáo trang chủ |
 
 ---
 
 ## 🚀 Hướng Dẫn Chạy Dự Án
 
-### 1. Chuẩn bị Cơ sở dữ liệu (SQL Server)
-- Đảm bảo máy tính đã cài đặt **SQL Server (LocalDB hoặc SQLEXPRESS)**.
-- Kết nối mặc định được cấu hình trong `CMS.Backend/appsettings.json`:
-  ```json
-  "DefaultConnection": "Server=.\\SQLEXPRESS;Database=TrieuCMS_DB;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True"
-  ```
-- *Lưu ý*: Bạn có thể thay đổi chuỗi kết nối này để phù hợp với cấu hình SQL Server trên máy của mình.
+### Yêu Cầu Hệ Thống
+- .NET 9 SDK
+- Node.js 18+ & npm
+- SQL Server (LocalDB hoặc SQLEXPRESS)
+
+### 1. Cấu Hình Database
+
+Chuỗi kết nối trong `CMS.Backend/appsettings.json`:
+```json
+"DefaultConnection": "Server=.\\SQLEXPRESS;Database=TrieuCMS_DB;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True"
+```
+Thay đổi `Server` nếu cần thiết. Database và dữ liệu mẫu sẽ được tự động tạo khi Backend khởi động lần đầu.
+
+### 2. Cấu Hình AI Chatbot (Tùy chọn)
+
+Thêm Gemini API Key vào `appsettings.json` để kích hoạt AI thực sự:
+```json
+"Gemini": {
+  "ApiKey": "YOUR_GEMINI_API_KEY_HERE"
+}
+```
+> Nếu không cấu hình API Key, chatbot sẽ dùng chế độ **Fallback** với các câu trả lời có sẵn.
+
+### 3. Khởi Chạy Tất Cả Cùng Lúc (Khuyên Dùng)
+```bat
+run_all.bat
+```
+
+### 4. Hoặc Chạy Thủ Công
+
+**Backend:**
+```bash
+cd CMS.Backend
+dotnet run --launch-profile https
+```
+Truy cập Swagger: `https://localhost:7226/swagger`
+
+**Frontend:**
+```bash
+cd cms.frontend
+npm install   # Chỉ lần đầu
+npm start
+```
+Truy cập: [http://localhost:3000](http://localhost:3000)
 
 ---
 
-### 💻 Hướng Dẫn Khởi Chạy Backend (ASP.NET)
+## 🔑 Tài Khoản Mặc Định
 
-Bạn có thể chạy dự án Backend bằng 2 cách dưới đây:
+### Admin (Backend MVC Dashboard)
+| Tài khoản | Mật khẩu |
+|---|---|
+| `admin` | `admin123` |
 
-#### Cách A: Chạy từ Visual Studio hoặc VS Code (Khuyên dùng - Nhấn F5)
-1. Mở file giải pháp `TrieuCMS_Solution.sln` bằng Visual Studio hoặc VS Code.
-2. Thiết lập dự án khởi động (Startup Project) là `CMS.Backend`.
-3. Nhấn phím **`F5`** (hoặc nút **Start** trên thanh công cụ) để build và chạy ứng dụng ở chế độ Debug.
-4. Trình duyệt sẽ tự động mở trang Swagger UI tại: `https://localhost:5001/swagger/index.html` hoặc `http://localhost:5000/swagger/index.html`.
-
-#### Cách B: Chạy qua dòng lệnh (CLI)
-1. Mở terminal tại thư mục gốc của dự án.
-2. Di chuyển vào thư mục dự án Backend:
-   ```bash
-   cd CMS.Backend
-   ```
-3. Chạy lệnh:
-   ```bash
-   dotnet run
-   ```
-4. Truy cập Swagger UI tại địa chỉ: `https://localhost:5001/swagger` hoặc `http://localhost:5000/swagger`.
+### Khách Hàng (Frontend Store)
+| Email | Mật khẩu |
+|---|---|
+| `trieu@gmail.com` | `123` |
+| `thai@cms.edu.vn` | `123` |
 
 ---
 
-### 🌐 Hướng Dẫn Khởi Chạy Frontend (ReactJS)
+## 📌 Lịch Sử Các Buổi Học
 
-1. Mở một terminal mới và di chuyển vào thư mục Frontend:
-   ```bash
-   cd cms.frontend
-   ```
-2. Cài đặt các gói thư viện phụ thuộc (chỉ cần làm ở lần đầu chạy):
-   ```bash
-   npm install
-   ```
-3. Khởi chạy ứng dụng Frontend:
-   ```bash
-   npm start
-   ```
-4. Ứng dụng Frontend ReactJS sẽ chạy tại địa chỉ: [http://localhost:3000](http://localhost:3000).
+| Buổi | Nội dung chính |
+|---|---|
+| Buổi 1–3 | Khởi tạo dự án, Entity Framework Core, CRUD cơ bản |
+| Buổi 4–5 | REST API, xác thực JWT, mã hóa mật khẩu PBKDF2 |
+| Buổi 6 | Tích hợp ReactJS Frontend, Axios, React Router |
+| Buổi 7 | Giỏ hàng, đặt hàng, quản lý đơn hàng, email xác nhận |
+| Buổi 8 | CKEditor upload ảnh, tìm kiếm thời gian thực, slider sản phẩm, Toast UI, SweetAlert2 |
+| **Buổi 9** | **AI Chatbot (Gemini), card sản phẩm trong chat, ProductDetail nâng cấp, tái thương hiệu NaUCMS.TechGear, đồng bộ tiếng Việt** |
 
 ---
 
-## 🔒 Cơ Chế Mã Hóa Mật Khẩu (Security)
+## 📞 Thông Tin Cửa Hàng
 
-Hệ thống triển khai lớp bảo mật `PasswordHasher` tại `CMS.Data/Security/PasswordHasher.cs`:
-- Sử dụng phương thức mã hóa **PBKDF2** với **SHA-256** và **10,000 vòng lặp (iterations)** cùng **Salt ngẫu nhiên 16-byte**.
-- Mật khẩu băm lưu vào cơ sở dữ liệu có dạng chuỗi Base64 gồm 48 bytes (16 bytes Salt + 32 bytes Hash).
-- **Luồng Đăng ký Khách hàng (`CustomerRegister`)**:
-  - Tự động kiểm tra trùng lặp email (`Email`) trong cơ sở dữ liệu trước khi đăng ký.
-  - Tự động mã hóa mật khẩu thô nhận được từ người dùng trước khi lưu bản ghi.
-- **Dữ liệu mẫu (Seed Data)**:
-  - Khi ứng dụng Backend khởi chạy, lớp `DbSeeder` sẽ quét cơ sở dữ liệu, nếu phát hiện tài khoản cũ nào đang có mật khẩu dạng thô (plain-text), hệ thống sẽ **tự động băm và cập nhật bảo mật** trực tiếp vào SQL Server.
+- 📍 **Địa chỉ:** 63/6 đường 2, Phường Tăng Nhơn Phú B, TP Thủ Đức, TP. Hồ Chí Minh
+- 🕗 **Giờ mở cửa:** 8:00 – 22:00 (Tất cả các ngày)
+- 📞 **Hotline:** 0973 651 140
+- 📧 **Email hỗ trợ:** support@naucmstechgear.vn

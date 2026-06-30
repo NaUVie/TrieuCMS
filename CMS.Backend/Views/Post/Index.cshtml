@@ -1,0 +1,95 @@
+@model IEnumerable<CMS.Data.Entities.Post>
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Quản lý Bài viết";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h3 class="fw-bold mb-1" style="color: #1e293b;">Quản lý Bài viết</h3>
+        <p class="text-muted small mb-0">Xem, tạo mới và quản lý tất cả các bài viết, tin tức công nghệ trên hệ thống.</p>
+    </div>
+    <a asp-action="Create" class="btn-clean btn-sm text-decoration-none">
+        <i class="bi bi-file-earmark-plus"></i> Tạo bài viết mới
+    </a>
+</div>
+
+<!-- Search & Filter Bar -->
+<div class="flat-card p-3 mb-4" style="background: #ffffff; border: 1px solid var(--border-light); border-radius: 8px;">
+    <form method="get" action="@Url.Action("Index")" class="row g-3 align-items-end">
+        <div class="col-md-5 col-sm-12">
+            <label class="form-label fw-bold text-slate small mb-1">Tìm kiếm bài viết:</label>
+            <div class="input-group input-group-sm">
+                <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                <input type="text" name="searchTerm" class="form-control border-start-0 ps-0" placeholder="Nhập tiêu đề hoặc nội dung bài viết..." value="@ViewBag.SearchTerm" />
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6">
+            <label class="form-label fw-bold text-slate small mb-1">Danh mục bài viết:</label>
+            <select name="id" class="form-select form-select-sm" asp-items="ViewBag.CategoryList">
+                <option value="">Tất cả danh mục</option>
+            </select>
+        </div>
+
+        <div class="col-md-4 col-sm-6 d-flex gap-2">
+            <button type="submit" class="btn-clean btn-sm px-3 flex-grow-1" style="height: 31px; display: inline-flex; align-items: center; justify-content: center; gap: 4px;">
+                <i class="bi bi-filter"></i> Lọc bài viết
+            </button>
+            <a href="@Url.Action("Index")" class="btn-clean-outline btn-sm px-2 text-decoration-none text-center" style="height: 31px; display: inline-flex; align-items: center; justify-content: center;" title="Xóa bộ lọc">
+                <i class="bi bi-arrow-counterclockwise"></i> Xóa lọc
+            </a>
+        </div>
+    </form>
+</div>
+
+<div class="card-grid">
+    @if (Model != null && Model.Any())
+    {
+        foreach (var item in Model)
+        {
+            <div class="flat-item-card">
+                <!-- Thumbnail -->
+                <img src="@item.ImageUrl" class="flat-item-card-img" alt="@item.Title" onerror="this.src='https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&auto=format&fit=crop'">
+                
+                <!-- Content Body -->
+                <div class="flat-item-card-body">
+                    <div class="mb-2">
+                        <span class="badge-clean badge-clean-primary" style="font-size: 0.7rem;">@item.Category?.Name</span>
+                    </div>
+                    <h5 class="flat-item-card-title text-truncate" title="@item.Title">@item.Title</h5>
+                    
+                    <!-- Strip HTML tags to display preview text cleanly -->
+                    @{
+                        var plainText = System.Text.RegularExpressions.Regex.Replace(item.Content ?? "", "<.*?>", string.Empty);
+                    }
+                    <p class="flat-item-card-desc">@plainText</p>
+                    
+                    <div class="flat-item-card-footer flex-wrap gap-2 pt-2 mt-auto" style="border-top: 1px solid var(--border-light);">
+                        <span class="small text-muted" style="font-size: 0.75rem;"><i class="bi bi-calendar-event me-1"></i> @item.CreatedDate.ToString("dd/MM/yyyy")</span>
+                        <div class="d-flex gap-1">
+                            <a asp-action="Details" asp-route-id="@item.Id" class="action-link action-link-detail" style="padding: 2px 6px; font-size: 0.75rem;" title="Xem chi tiết">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="action-link action-link-edit" style="padding: 2px 6px; font-size: 0.75rem;" title="Sửa bài viết">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="action-link action-link-delete" onclick="return confirm('Bạn có chắc chắn muốn xóa bài viết này không?');" style="padding: 2px 6px; font-size: 0.75rem;" title="Xóa bài viết">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12 text-center py-5 bg-white border rounded">
+            <i class="bi bi-journal-x text-muted" style="font-size: 3rem;"></i>
+            <p class="text-muted mt-2 mb-0">Chưa có bài viết nào trong hệ thống.</p>
+            <a asp-action="Create" class="btn-clean-outline btn-sm mt-3">Tạo bài viết ngay</a>
+        </div>
+    }
+</div>

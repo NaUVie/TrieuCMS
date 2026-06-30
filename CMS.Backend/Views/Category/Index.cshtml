@@ -1,0 +1,50 @@
+@model IEnumerable<CMS.Data.Entities.Category>
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Danh mục tin tức";
+}
+
+<div class="flat-card">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h3 class="fw-bold mb-1" style="color: #1e293b;">Danh mục tin tức</h3>
+            <p class="text-muted small mb-0">Quản lý phân loại các chủ đề tin tức, bài viết công nghệ & học tập</p>
+        </div>
+        <a asp-action="Create" class="btn-clean btn-sm text-decoration-none">
+            <i class="bi bi-plus-lg"></i> Thêm danh mục mới
+        </a>
+    </div>
+
+    <div class="clean-table-container">
+        <table class="clean-table">
+            <thead>
+                <tr>
+                    <th style="width: 80px;">ID</th>
+                    <th>Tên danh mục</th>
+                    <th>Mô tả chi tiết chủ đề</th>
+                    <th style="width: 160px; text-align: center;">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model) {
+                    <tr>
+                        <td>
+                            <span class="badge-clean badge-clean-primary">#@item.Id</span>
+                        </td>
+                        <td>
+                            <strong>@item.Name</strong>
+                        </td>
+                        <td>@item.Description</td>
+                        <td>
+                            <div class="d-flex gap-1 justify-content-center">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="action-link action-link-edit"><i class="bi bi-pencil-square"></i> Sửa</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="action-link action-link-delete" onclick="return confirm('CẢNH BÁO: Xóa danh mục này sẽ làm RỖNG danh mục của các bài viết liên quan hiện tại! Bạn có chắc chắn muốn xóa?')"><i class="bi bi-trash"></i> Xóa</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

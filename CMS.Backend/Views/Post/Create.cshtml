@@ -1,0 +1,144 @@
+@model CMS.Data.Entities.Post
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Tạo bài viết mới";
+}
+
+<div class="container-fluid p-0">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="glass-breadcrumb" style="background: #ffffff; border: 1px solid var(--border-light); margin-bottom: 20px; padding: 10px 16px; border-radius: 8px;">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="/Home" class="text-primary text-decoration-none">Bảng điều khiển</a></li>
+            <li class="breadcrumb-item"><a href="/Post" class="text-primary text-decoration-none">Quản lý Bài viết</a></li>
+            <li class="breadcrumb-item active" aria-current="page" style="color: #64748b;">Tạo bài viết mới</li>
+        </ol>
+    </nav>
+
+    <!-- Create Card Form -->
+    <div class="flat-card p-4">
+        <div class="mb-4">
+            <h4 class="fw-bold mb-1" style="color: #1e293b;"><i class="bi bi-file-earmark-plus text-primary me-2"></i>Tạo bài viết mới</h4>
+            <p class="text-muted small mb-0">Tạo tin tức công nghệ, tài liệu học tập hoặc các bài viết chia sẻ kiến thức mới.</p>
+        </div>
+        <hr style="border-color: var(--border-light);" />
+
+        <form asp-action="Create" method="post" enctype="multipart/form-data" class="mt-4">
+            <div class="row g-4">
+                <!-- Column 1: Main Content -->
+                <div class="col-lg-8">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Tiêu đề bài viết:</label>
+                        <input asp-for="Title" class="form-control form-control-lg fs-6" placeholder="Nhập tiêu đề hấp dẫn..." required />
+                        <span asp-validation-for="Title" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-slate" style="font-size: 0.9rem;">Nội dung bài viết:</label>
+                        <textarea asp-for="Content" id="Content" class="form-control" rows="12" placeholder="Viết nội dung bài viết của bạn tại đây..."></textarea>
+                        <span asp-validation-for="Content" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <!-- Column 2: Sidebar Settings -->
+                <div class="col-lg-4">
+                    <div class="p-3 rounded border" style="background: #fafafa; border-color: var(--border-light) !important;">
+                        <h5 class="fw-bold mb-3" style="font-size: 1rem; color: #334155;"><i class="bi bi-gear-fill me-2 text-secondary"></i>Cài đặt bài đăng</h5>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-slate" style="font-size: 0.85rem;">Danh mục chủ đề:</label>
+                            <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.CategoryList" required>
+                                <option value="">-- Chọn danh mục --</option>
+                            </select>
+                            <span asp-validation-for="CategoryId" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-slate" style="font-size: 0.85rem;">Tải lên hình ảnh:</label>
+                            <input type="file" name="uploadImage" class="form-control" accept="image/*" required />
+                            <small class="text-muted d-block mt-1">Định dạng hỗ trợ: JPG, PNG, WEBP...</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-slate" style="font-size: 0.85rem;">Ngày đăng:</label>
+                            <input asp-for="CreatedDate" class="form-control" type="datetime-local" required />
+                            <span asp-validation-for="CreatedDate" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-flex flex-column gap-2 pt-3 border-top mt-4" style="border-color: #e2e8f0 !important;">
+                            <button type="submit" class="btn-clean btn-sm justify-content-center py-2">
+                                <i class="bi bi-save"></i> Đăng bài viết
+                            </button>
+                            <a asp-action="Index" class="btn-clean-outline btn-sm justify-content-center py-2 text-decoration-none">
+                                Hủy bỏ quay lại
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- CKEditor 5 CDN -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+    <script>
+        class MyUploadAdapter {
+            constructor(loader) {
+                this.loader = loader;
+            }
+            upload() {
+                return this.loader.file
+                    .then(file => new Promise((resolve, reject) => {
+                        const xhr = new XMLHttpRequest();
+                        xhr.open('POST', '/Post/UploadImage', true);
+                        xhr.responseType = 'json';
+
+                        xhr.addEventListener('error', () => reject(`Không thể tải lên tệp: ${file.name}.`));
+                        xhr.addEventListener('abort', () => reject());
+                        xhr.addEventListener('load', () => {
+                            const response = xhr.response;
+                            if (!response || response.error) {
+                                return reject(response && response.error ? response.error.message : `Không thể tải lên tệp: ${file.name}.`);
+                            }
+                            resolve({
+                                default: response.url
+                            });
+                        });
+
+                        if (xhr.upload) {
+                            xhr.upload.addEventListener('progress', evt => {
+                                if (evt.lengthComputable) {
+                                    this.loader.uploadTotal = evt.total;
+                                    this.loader.uploaded = evt.loaded;
+                                }
+                            });
+                        }
+
+                        const data = new FormData();
+                        data.append('upload', file);
+                        xhr.send(data);
+                    }));
+            }
+            abort() {
+                // abort upload handler
+            }
+        }
+
+        function MyCustomUploadAdapterPlugin(editor) {
+            editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+                return new MyUploadAdapter(loader);
+            };
+        }
+
+        ClassicEditor
+            .create(document.querySelector('#Content'), {
+                extraPlugins: [ MyCustomUploadAdapterPlugin ],
+                toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'imageUpload', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ]
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
+}

@@ -1,0 +1,57 @@
+@model CMS.Data.Entities.Post
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="container-fluid p-0">
+    <!-- Clean Breadcrumb -->
+    <nav aria-label="breadcrumb" class="glass-breadcrumb" style="background: #ffffff; border: 1px solid var(--border-light); margin-bottom: 20px; padding: 10px 16px; border-radius: 8px;">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="/Home" class="text-primary text-decoration-none">Bảng điều khiển</a></li>
+            <li class="breadcrumb-item"><a href="/Post" class="text-primary text-decoration-none">Bài viết</a></li>
+            <li class="breadcrumb-item active" aria-current="page" style="color: #64748b;">Chi tiết bài viết</li>
+        </ol>
+    </nav>
+
+    <!-- Article Container -->
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="flat-card p-4 p-md-5">
+                <!-- Meta tags -->
+                <div class="d-flex align-items-center gap-3 mb-3 flex-wrap">
+                    <span class="badge-clean badge-clean-primary">
+                        <i class="bi bi-tag-fill"></i> @(Model.Category?.Name ?? "Chung")
+                    </span>
+                    <span class="text-muted small">
+                        <i class="bi bi-calendar3"></i> Ngày đăng: @Model.CreatedDate.ToString("dd/MM/yyyy HH:mm")
+                    </span>
+                </div>
+                
+                <!-- Title -->
+                <h1 class="fw-bold mb-4" style="color: #1e293b; font-size: 2.25rem;">@Model.Title</h1>
+                <hr style="border-color: var(--border-light);" />
+                
+                <!-- Image -->
+                <div class="rounded-3 overflow-hidden mb-4 border" style="max-height: 400px;">
+                    <img src="@Model.ImageUrl" class="w-100 img-fluid" alt="@Model.Title" 
+                         style="object-fit: cover; max-height: 400px;"
+                         onerror="this.src='https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&auto=format&fit=crop'">
+                </div>
+
+                <!-- Content -->
+                <div class="post-content text-dark fs-5 lh-lg mb-5" style="font-weight: 400; color: #334155 !important;">
+                    @Html.Raw(Model.Content)
+                </div>
+
+                <!-- Footer Back Navigation -->
+                <div class="border-top pt-4" style="border-color: var(--border-light) !important;">
+                    <a href="/Post" class="btn-clean-outline">
+                        <i class="bi bi-arrow-left"></i> Quay lại danh sách bài viết
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
